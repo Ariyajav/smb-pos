@@ -1,4 +1,95 @@
+/* egrow palette, taken from the egrow logo */
+:root {
+    --eb-blue: #0090d3;
+    --eb-blue-soft: #e5f4fb;
+    --eb-blue-dark: #00618f;
+    --eb-green: #00ca08;
+    --eb-green-soft: #e6f9e7;
+    --eb-green-dark: #08801a;
+    --eb-red: #cf171f;
+    --eb-red-soft: #fbe8e9;
+    --eb-ring: #a5c3d2;
+    --eb-ring-soft: #eef4f7;
+    --eb-text: #1f3a4d;
+}
+
+/* eBarimt confirm popup */
+.popup-ebarimt-new .eb-heading {
+    color: var(--eb-text);
+}
+
+.popup-ebarimt-new .eb-choice {
+    border: 2px solid var(--eb-ring);
+    background: var(--eb-ring-soft);
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.popup-ebarimt-new .eb-choice-label {
+    color: var(--eb-text);
+    font-size: 16px;
+}
+
+.popup-ebarimt-new .eb-choice-individual.eb-active {
+    border-color: var(--eb-green);
+    background: var(--eb-green-soft);
+}
+
+.popup-ebarimt-new .eb-choice-individual.eb-active .eb-choice-label {
+    color: var(--eb-green-dark);
+}
+
+.popup-ebarimt-new .eb-choice-organization.eb-active {
+    border-color: var(--eb-blue);
+    background: var(--eb-blue-soft);
+}
+
+.popup-ebarimt-new .eb-choice-organization.eb-active .eb-choice-label {
+    color: var(--eb-blue-dark);
+}
+
+.popup-ebarimt-new .eb-choice .form-check-input:checked {
+    background-color: var(--eb-blue);
+    border-color: var(--eb-blue);
+}
+
+.popup-ebarimt-new .eb-choice-individual .form-check-input:checked {
+    background-color: var(--eb-green-dark);
+    border-color: var(--eb-green-dark);
+}
+
+.popup-ebarimt-new .eb-note {
+    background: var(--eb-ring-soft);
+    border: 1px solid var(--eb-ring);
+    color: var(--eb-text);
+}
+
+.popup-ebarimt-new .eb-found {
+    background: var(--eb-green-soft);
+    border-left: 4px solid var(--eb-green);
+    color: var(--eb-green-dark);
+}
+
+.popup-ebarimt-new .form-control:focus {
+    border-color: var(--eb-blue);
+    box-shadow: 0 0 0 0.2rem rgba(0, 144, 211, 0.25);
+}
+
+.modal-footer .btn-primary.confirm {
+    background-color: var(--eb-blue);
+    border-color: var(--eb-blue);
+}
+
+.modal-footer .btn-primary.confirm:hover {
+    background-color: var(--eb-blue-dark);
+    border-color: var(--eb-blue-dark);
+}
+
 /* POS eBarimt Receipt Styles */
+.pos-ebarimt-receipt .eb-offline {
+    color: var(--eb-red);
+    font-weight: bold;
+}
+
 .pos-ebarimt-receipt .ebarimt-section {
     font-family: 'Courier New', monospace;
     background: #ffffff;
