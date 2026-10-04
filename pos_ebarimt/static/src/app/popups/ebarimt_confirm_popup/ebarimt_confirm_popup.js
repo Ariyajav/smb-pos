@@ -27,12 +27,14 @@ export class EbarimtConfirmPopup extends Component {
     setup() {
         this.dialog = useService("dialog");
         const partner = this.props.partner || null;
+        const customerTin = (partner && (partner.vat_tin || partner.vat)) || "";
         this.state = useState({
-            receiptType: "individual",
+            // A company customer with a TIN usually wants a company bill.
+            receiptType: partner && partner.is_company && customerTin ? "organization" : "individual",
             manualCustomerTin: "",
             hasCustomer: !!partner,
             customerName: (partner && partner.name) || "",
-            customerTin: (partner && (partner.vat_tin || partner.vat)) || "",
+            customerTin,
         });
     }
 

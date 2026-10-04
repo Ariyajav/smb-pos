@@ -30,7 +30,12 @@
                         <div>
                             <strong>Захиалга:</strong> <t t-esc="o.name"/><br/>
                             <strong>Огноо:</strong> <t t-esc="o.date_order" t-options='{"widget": "datetime", "format": "yyyy-MM-dd HH:mm"}'/>
-                            <t t-if="o.partner_id"><br/><strong>Харилцагч:</strong> <t t-esc="o.partner_id.name"/></t>
+                            <t t-if="o.partner_id and not ebarimt['buyer_tin']"><br/><strong>Харилцагч:</strong> <t t-esc="o.partner_id.name"/></t>
+                            <t t-if="ebarimt['buyer_tin']">
+                                <br/><strong>Худалдан авагч:</strong>
+                                <t t-if="ebarimt['buyer_name']"><t t-esc="ebarimt['buyer_name']"/>,</t>
+                                ТТД: <t t-esc="ebarimt['buyer_tin']"/>
+                            </t>
                         </div>
 
                         <hr/>

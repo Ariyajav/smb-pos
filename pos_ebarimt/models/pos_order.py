@@ -1106,6 +1106,8 @@ class PosOrder(models.Model):
             'vat': self._ebarimt_fmt(receipt.vat) if receipt else '',
             'city_tax': self._ebarimt_fmt(receipt.city_tax) if receipt and receipt.city_tax else '',
             'seller_tin': seller_tin,
+            'buyer_tin': receipt.customer_tin if receipt and receipt.bill_type == 'B2B_RECEIPT' else '',
+            'buyer_name': self._ebarimt_buyer_name(receipt),
             'qr': self._ebarimt_qr_base64(receipt.qr_data) if receipt else '',
         }
 
@@ -1138,6 +1140,16 @@ class PosOrder(models.Model):
         return self.env.ref('pos_ebarimt.action_report_pos_ebarimt').report_action(self)
 
     @api.model
+    def _ebarimt_buyer_name(self, receipt):
+        """Name of the company a B2B bill was issued to, when the order's
+        customer is that company (a TIN typed in the popup has no name)."""
+        self.ensure_one()
+        if not receipt or receipt.bill_type != 'B2B_RECEIPT' or not receipt.customer_tin:
+            return ''
+        partner = self.partner_id
+        tins = {getattr(partner, 'vat_tin', False), partner.vat} - {False, ''}
+        return partner.name if receipt.customer_tin in tins else ''
+
     def get_ebarimt_receipt_data(self, order_identifier, config_id=None):
         """Bill id / lottery / QR of one order, for the POS receipt.
 
@@ -1266,6 +1278,7 @@ class PosOrder(models.Model):
                 'pos_id': receipt.pos_id or '',
                 'merchant_tin': receipt.merchant_tin or '',
                 'customer_tin': receipt.customer_tin or '',
+                'customer_name': order._ebarimt_buyer_name(receipt),
                 'bill_state': receipt.bill_state or 'done',
                 'order_id': order.id,
                 'order_name': order.name,
