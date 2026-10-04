@@ -100,6 +100,12 @@ def _setup_taxes(env, company):
         group = city_group if spec.get("city_tax") else vat_group
         vals = dict(common, ebarimt_send_data=True, tax_group_id=group.id, **spec)
         taxes[key] = _xmlid(env, Tax.create(vals), key)
+    # The generic chart's own taxes (15%, 0% Exports, ...) don't exist in
+    # Mongolia: archive them and make VAT 10% the default sales tax.
+    ours = [t.id for t in taxes.values()]
+    env["account.tax"].search([("company_id", "=", company.id), ("id", "not in", ours)]).active = False
+    company.account_sale_tax_id = taxes["tax_vat10"]
+    company.account_purchase_tax_id = False
     return taxes
 
 
@@ -196,7 +202,18 @@ def _setup_pos(env, company):
     _xmlid(env, config, "pos_config_demo")
 
 
+def _check_empty_database(env):
+    """The hook rewrites the main company: refuse anything but a new database."""
+    from odoo.exceptions import UserError
+    if env["account.move"].search_count([], limit=1) or env["pos.order"].search_count([], limit=1):
+        raise UserError(
+            "ebarimt_demo may only be installed in a new, empty database: "
+            "it renames the main company and changes its currency."
+        )
+
+
 def post_init_hook(env):
+    _check_empty_database(env)
     company = _setup_company(env)
     _setup_posapi(env, company)
     taxes = _setup_taxes(env, company)
