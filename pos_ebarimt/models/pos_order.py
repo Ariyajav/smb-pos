@@ -1027,16 +1027,62 @@ class PosOrder(models.Model):
             })
         return lines
 
+    @staticmethod
+    def _ebarimt_fmt(amount):
+        """Whole tugrik with thousands separators: 28000.0 -> '28,000'."""
+        return '{:,.0f}'.format(round(amount or 0.0))
+
+    @staticmethod
+    def _ebarimt_qr_base64(qr_data):
+        """PNG of the eBarimt QR as base64, or '' when it can't be made."""
+        if not qr_data:
+            return ''
+        try:
+            import base64
+            import io
+            import qrcode
+            qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=8, border=2)
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+            buffer = io.BytesIO()
+            qr.make_image(fill_color="black", back_color="white").save(buffer, format='PNG')
+            return base64.b64encode(buffer.getvalue()).decode()
+        except Exception as e:
+            _logger.warning("Could not make the eBarimt QR image: %s", e)
+            return ''
+
     def ebarimt_report_data(self):
         """For the PDF receipt: the current bill, whether it replaced an
-        earlier one, and the kept items."""
+        earlier one, the printed items and the amounts, ready to show."""
         self.ensure_one()
         receipt = self._ebarimt_current_receipt()
         replaced = self._ebarimt_is_replacement(receipt)
+        if replaced:
+            items = self._ebarimt_print_lines()
+        else:
+            items = [{
+                'name': line.full_product_name or line.product_id.display_name,
+                'qty': line.qty,
+                'amount': line.price_subtotal_incl,
+            } for line in self.lines if line.qty]
+        lines = [{
+            'name': item['name'],
+            'qty': '%g' % item['qty'],
+            'unit': self._ebarimt_fmt(item['amount'] / item['qty']),
+            'amount': self._ebarimt_fmt(item['amount']),
+        } for item in items]
+        total = receipt.amount if replaced else self.amount_total
+        company = self.company_id
+        seller_tin = (getattr(company.partner_id, 'vat_tin', False) or company.vat or '')
         return {
             'receipt': receipt,
             'replaced': replaced,
-            'lines': self._ebarimt_print_lines() if replaced else [],
+            'lines': lines,
+            'total': self._ebarimt_fmt(total),
+            'vat': self._ebarimt_fmt(receipt.vat) if receipt else '',
+            'city_tax': self._ebarimt_fmt(receipt.city_tax) if receipt and receipt.city_tax else '',
+            'seller_tin': seller_tin,
+            'qr': self._ebarimt_qr_base64(receipt.qr_data) if receipt else '',
         }
 
     @api.model

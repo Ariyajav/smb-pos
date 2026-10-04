@@ -125,6 +125,11 @@ patch(OrderReceipt.prototype, {
         return null;
     },
 
+    // Whole tugrik with thousands separators: 28000 -> "28,000"
+    ebarimtFmt(amount) {
+        return Math.round(amount || 0).toLocaleString("en-US");
+    },
+
     get isReplacementBill() {
         return Boolean(this.hasEbarimt && this.ebarimtData.replaced && this.ebarimtData.items);
     },

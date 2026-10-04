@@ -14,93 +14,77 @@
                     </style>
                     
                     <div class="receipt-content">
-                        <!-- Header -->
-                        <div class="text-center">
-                            <h3><t t-esc="o.company_id.name"/></h3>
-                            <p><t t-esc="o.session_id.config_id.name"/></p>
-                        </div>
-                        
-                        <hr/>
-                        
-                        <!-- Order Info -->
-                        <p>
-                            <strong>Баримт №:</strong> <t t-esc="o.name"/><br/>
-                            <strong>Огноо:</strong> <t t-esc="o.date_order" t-options='{"widget": "datetime", "format": "yyyy-MM-dd HH:mm:ss"}'/><br/>
-                            <t t-if="o.partner_id">
-                                <strong>Харилцагч:</strong> <t t-esc="o.partner_id.name"/>
-                            </t>
-                        </p>
-                        
-                        <!-- The bill that counts now; after a partial return it
-                             covers only the kept items. -->
                         <t t-set="ebarimt" t-value="o.ebarimt_report_data()"/>
                         <t t-set="receipt" t-value="ebarimt['receipt']"/>
-                        <t t-set="replaced" t-value="ebarimt['replaced']"/>
 
-                        <!-- Order Lines -->
+                        <!-- Header -->
+                        <div class="text-center">
+                            <h3 style="margin: 0;"><t t-esc="o.company_id.name"/></h3>
+                            <div t-if="ebarimt['seller_tin']">ТТД: <t t-esc="ebarimt['seller_tin']"/></div>
+                            <div><t t-esc="o.session_id.config_id.name"/></div>
+                        </div>
+
+                        <hr/>
+
+                        <!-- Order Info -->
+                        <div>
+                            <strong>Захиалга:</strong> <t t-esc="o.name"/><br/>
+                            <strong>Огноо:</strong> <t t-esc="o.date_order" t-options='{"widget": "datetime", "format": "yyyy-MM-dd HH:mm"}'/>
+                            <t t-if="o.partner_id"><br/><strong>Харилцагч:</strong> <t t-esc="o.partner_id.name"/></t>
+                        </div>
+
+                        <hr/>
+
+                        <!-- Items: name on its own line, then qty x unit price and the line total.
+                             After a partial return only the kept items are shown. -->
+                        <div t-if="ebarimt['replaced']" style="margin-bottom: 4px;">
+                            <strong>Хэсэгчилсэн буцаалтын дараах баримт</strong>
+                        </div>
                         <table width="100%">
-                            <t t-if="replaced">
-                                <tr><td colspan="2"><strong>Хэсэгчилсэн буцаалтын дараах баримт</strong></td></tr>
-                                <t t-foreach="ebarimt['lines']" t-as="item">
-                                    <tr>
-                                        <td><t t-esc="item['name']"/> x <t t-esc="item['qty']"/></td>
-                                        <td class="text-right"><t t-esc="item['amount']"/></td>
-                                    </tr>
-                                </t>
-                            </t>
-                            <t t-else="">
-                                <t t-foreach="o.lines" t-as="line">
-                                    <tr>
-                                        <td><t t-esc="line.product_id.name"/></td>
-                                        <td class="text-right"><t t-esc="line.qty"/> x <t t-esc="line.price_unit"/></td>
-                                        <td class="text-right"><t t-esc="line.price_subtotal_incl"/></td>
-                                    </tr>
-                                </t>
+                            <t t-foreach="ebarimt['lines']" t-as="item">
+                                <tr><td colspan="2" style="word-break: break-word;"><t t-esc="item['name']"/></td></tr>
+                                <tr>
+                                    <td style="padding-left: 8px;"><t t-esc="item['qty']"/> x <t t-esc="item['unit']"/></td>
+                                    <td class="text-right" style="white-space: nowrap;"><t t-esc="item['amount']"/></td>
+                                </tr>
                             </t>
                         </table>
-                        
+
                         <hr/>
-                        
+
                         <!-- Totals -->
                         <table width="100%">
                             <tr>
                                 <td><strong>Нийт:</strong></td>
-                                <td class="text-right"><strong><t t-esc="receipt.amount if replaced else o.amount_total"/> ₮</strong></td>
+                                <td class="text-right" style="white-space: nowrap;"><strong><t t-esc="ebarimt['total']"/> ₮</strong></td>
+                            </tr>
+                            <tr t-if="receipt">
+                                <td>НӨАТ:</td>
+                                <td class="text-right" style="white-space: nowrap;"><t t-esc="ebarimt['vat']"/> ₮</td>
+                            </tr>
+                            <tr t-if="ebarimt['city_tax']">
+                                <td>НХАТ:</td>
+                                <td class="text-right" style="white-space: nowrap;"><t t-esc="ebarimt['city_tax']"/> ₮</td>
                             </tr>
                         </table>
-                        
+
                         <!-- eBarimt Section -->
                         <t t-if="receipt">
                             <hr/>
-                            <div class="text-center">
-                                <h4>ДДТД</h4>
-                                
-                                <!-- QR Code -->
-                                <div style="margin: 10px 0;">
-                                    <img t-attf-src="/report/barcode/?type=QR&amp;value={{receipt.qr_data or receipt.bill_id}}&amp;width=150&amp;height=150"/>
-                                </div>
-                                
-                                <p>
-                                    <strong>Баримт №:</strong><br/>
-                                    <t t-esc="receipt.bill_id"/><br/><br/>
-                                    <strong>НӨАТ:</strong> <t t-esc="receipt.vat"/> ₮<br/>
-                                    <t t-if="receipt.city_tax > 0">
-                                        <strong>НХАТ:</strong> <t t-esc="receipt.city_tax"/> ₮<br/>
-                                    </t>
-                                </p>
-                                
-                                <!-- Lottery -->
-                                <div style="border: 2px solid #000; padding: 10px; margin: 10px 0;">
-                                    <strong>СУГАЛААНЫ ДУГААР</strong><br/>
-                                    <span style="font-size: 20px; font-weight: bold;">
-                                        <t t-esc="receipt.lottery or ''"/>
-                                    </span>
-                                </div>
-                                
-                                <p style="font-size: 10px;">
-                                    ebarimt.mn сайтаар баримтаа шалгана уу
-                                </p>
+                            <div style="word-break: break-all;"><strong>ДДТД:</strong> <t t-esc="receipt.bill_id"/></div>
+
+                            <div t-if="ebarimt['qr']" class="text-center" style="margin: 10px 0;">
+                                <img t-att-src="'data:image/png;base64,%s' % ebarimt['qr']" style="width: 150px; height: 150px;"/>
                             </div>
+
+                            <div t-if="receipt.lottery" class="text-center" style="border: 2px solid #000; padding: 8px; margin: 10px 0;">
+                                <strong>СУГАЛААНЫ ДУГААР</strong><br/>
+                                <span style="font-size: 18px; font-weight: bold;"><t t-esc="receipt.lottery"/></span>
+                            </div>
+
+                            <p class="text-center" style="font-size: 10px;">
+                                ebarimt.mn сайтаар баримтаа шалгана уу
+                            </p>
                         </t>
                     </div>
                 </div>

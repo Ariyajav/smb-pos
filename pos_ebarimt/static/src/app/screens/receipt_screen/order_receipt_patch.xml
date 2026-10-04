@@ -32,7 +32,7 @@
                         <table class="w-100">
                             <tr t-foreach="ebarimtData.items" t-as="item" t-key="item_index">
                                 <td><t t-esc="item.name"/> x <t t-esc="item.qty"/></td>
-                                <td class="text-end"><t t-esc="Math.round(item.amount)"/></td>
+                                <td class="text-end"><t t-esc="ebarimtFmt(item.amount)"/></td>
                             </tr>
                         </table>
                         <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
@@ -42,23 +42,23 @@
                     <table class="w-100">
                         <tr>
                             <td>Нийт дүн</td>
-                            <td class="text-end"><t t-esc="Math.round(ebarimtTotal)"/></td>
+                            <td class="text-end"><t t-esc="ebarimtFmt(ebarimtTotal)"/></td>
                         </tr>
                         <tr>
                             <td>Татварын өмнөх дүн</td>
-                            <td class="text-end"><t t-esc="Math.round(ebarimtTotalExcl)"/></td>
+                            <td class="text-end"><t t-esc="ebarimtFmt(ebarimtTotalExcl)"/></td>
                         </tr>
                         <tr>
                             <td>НӨАТ</td>
                             <td class="text-end">
-                                <t t-if="hasEbarimt and ebarimtData.vat"><t t-esc="Math.round(ebarimtData.vat)"/></t>
-                                <t t-else=""><t t-esc="Math.round(order.amountTaxes)"/></t>
+                                <t t-if="hasEbarimt and ebarimtData.vat"><t t-esc="ebarimtFmt(ebarimtData.vat)"/></t>
+                                <t t-else=""><t t-esc="ebarimtFmt(order.amountTaxes)"/></t>
                             </td>
                         </tr>
                         <tr>
                             <td>НХАТ</td>
                             <td class="text-end">
-                                <t t-if="hasEbarimt and ebarimtData.city_tax"><t t-esc="Math.round(ebarimtData.city_tax)"/></t>
+                                <t t-if="hasEbarimt and ebarimtData.city_tax"><t t-esc="ebarimtFmt(ebarimtData.city_tax)"/></t>
                                 <t t-else="">0</t>
                             </td>
                         </tr>
@@ -67,7 +67,7 @@
                     <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
 
                     <!-- Payment info section -->
-                    <div t-if="order.change and order.change > 0">Хариулт: <t t-esc="Math.round(order.change)"/> ₮</div>
+                    <div t-if="order.change and order.change > 0">Хариулт: <t t-esc="ebarimtFmt(order.change)"/> ₮</div>
 
                     <!-- Lottery section -->
                     <div t-if="hasEbarimt and isConsumerReceipt and formattedLottery" class="lottery-box">
@@ -77,7 +77,7 @@
                     <!-- Registration amount -->
                     <div>
                         иБаримтад бүртгүүлэх дүн:
-                        <span class="fw-bold"><t t-esc="Math.round(ebarimtTotal)"/></span>
+                        <span class="fw-bold"><t t-esc="ebarimtFmt(ebarimtTotal)"/></span>
                     </div>
 
                     <!-- QR Code -->
