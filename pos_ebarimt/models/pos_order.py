@@ -1139,7 +1139,6 @@ class PosOrder(models.Model):
         # Report action буцаах
         return self.env.ref('pos_ebarimt.action_report_pos_ebarimt').report_action(self)
 
-    @api.model
     def _ebarimt_buyer_name(self, receipt):
         """Name of the company a B2B bill was issued to, when the order's
         customer is that company (a TIN typed in the popup has no name)."""
@@ -1150,6 +1149,7 @@ class PosOrder(models.Model):
         tins = {getattr(partner, 'vat_tin', False), partner.vat} - {False, ''}
         return partner.name if receipt.customer_tin in tins else ''
 
+    @api.model
     def get_ebarimt_receipt_data(self, order_identifier, config_id=None):
         """Bill id / lottery / QR of one order, for the POS receipt.
 
