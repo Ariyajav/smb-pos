@@ -10,8 +10,10 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-# Public PosAPI test TIN (the ITC test merchant), not a real business.
+# Public PosAPI test TINs (the ITC test merchant and one of its test
+# customers), not real businesses.
 DEMO_MERCHANT_TIN = "37900846788"
+DEMO_CUSTOMER_TIN = "61200064714"
 # Placeholder: point it at your own PosAPI or gateway after install.
 DEMO_SERVICE_URL = "http://localhost:7080"
 
@@ -89,7 +91,6 @@ def _setup_taxes(env, company):
     specs = {
         "tax_vat10": {"name": "НӨАТ 10%", "amount": 10.0, "ebarimt_tax_type": "VAT_ABLE"},
         "tax_city2": {"name": "НХАТ 2%", "amount": 2.0, "city_tax": True},
-        "tax_city1": {"name": "НХАТ 1%", "amount": 1.0, "city_tax": True},
         "tax_vat_free": {"name": "НӨАТ-аас чөлөөлөгдсөн 0%", "amount": 0.0, "ebarimt_tax_type": "VAT_FREE"},
         "tax_vat_zero": {"name": "НӨАТ 0% (экспорт)", "amount": 0.0, "ebarimt_tax_type": "VAT_ZERO"},
         "tax_vat10_excl": {"name": "НӨАТ 10% (үнэд нэмэгдэнэ)", "amount": 10.0, "ebarimt_tax_type": "VAT_ABLE",
@@ -134,7 +135,6 @@ def _setup_products(env, taxes, vat_free_code, vat_zero_code):
     specs = [
         ("product_vat", "Demo 1 · НӨАТ 10%", 11000, tax_ids("tax_vat10"), {}),
         ("product_vat_city", "Demo 2 · НӨАТ 10% + НХАТ 2% (архи)", 28000, tax_ids("tax_vat10", "tax_city2"), {}),
-        ("product_vat_city1", "Demo 3 · НӨАТ 10% + НХАТ 1%", 11100, tax_ids("tax_vat10", "tax_city1"), {}),
         ("product_vat_free", "Demo 4 · НӨАТ-гүй (код 305)", 3500, tax_ids("tax_vat_free"),
          {"vat_code_id": vat_free_code.id}),
         ("product_vat_zero", "Demo 5 · НӨАТ 0% (код 501)", 50000, tax_ids("tax_vat_zero"),
@@ -165,15 +165,15 @@ def _setup_partners(env):
         "name": "Demo Хувь хүн (B2C)",
         "country_id": env.ref("base.mn").id,
     }), "partner_b2c")
-    # Fill vat_tin with a TIN from your PosAPI test set to try a B2B bill.
     _xmlid(env, Partner.create({
         "name": "Demo Байгууллага (B2B)",
         "is_company": True,
+        "vat_tin": DEMO_CUSTOMER_TIN,
         "country_id": env.ref("base.mn").id,
     }), "partner_b2b")
 
 
-def _setup_pos(env, company):
+def _setup_pos(env, company, taxes):
     Journal = env["account.journal"].with_company(company)
     cash_journal = _xmlid(env, Journal.create({
         "name": "eBarimt Demo Cash", "type": "cash", "code": "EDCSH", "company_id": company.id,
@@ -190,6 +190,15 @@ def _setup_pos(env, company):
         "name": "Карт", "journal_id": card_journal.id, "company_id": company.id,
         "ebarimt_payment_code": "PAYMENT_CARD",
     }), "payment_card")
+    # The order discount line carries VAT like the items it reduces.
+    discount = _xmlid(env, env["product.product"].create({
+        "name": "Хөнгөлөлт",
+        "type": "service",
+        "list_price": 0,
+        "taxes_id": [(6, 0, [taxes["tax_vat10"].id])],
+        "available_in_pos": True,
+        "sale_ok": True,
+    }), "product_discount")
     config = env["pos.config"].with_company(company).create({
         "name": "eBarimt Demo POS",
         "company_id": company.id,
@@ -198,6 +207,9 @@ def _setup_pos(env, company):
         "ebarimt_branch_no": "0001",
         "limit_categories": True,
         "iface_available_categ_ids": [(6, 0, [env.ref("ebarimt_demo.pos_categ_demo").id])],
+        "module_pos_discount": True,
+        "discount_product_id": discount.id,
+        "discount_pc": 10.0,
     })
     _xmlid(env, config, "pos_config_demo")
 
@@ -220,5 +232,5 @@ def post_init_hook(env):
     vat_free_code, vat_zero_code = _setup_vat_codes(env)
     _setup_products(env, taxes, vat_free_code, vat_zero_code)
     _setup_partners(env)
-    _setup_pos(env, company)
+    _setup_pos(env, company, taxes)
     _logger.info("eBarimt demo data created for %s", company.name)
