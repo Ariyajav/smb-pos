@@ -7,33 +7,33 @@
 
                 <!-- Баримтын төрөл сонгох -->
                 <div class="mb-3">
-                    <h4 class="mb-2 fs-5" style="color: #2c3e50;">Баримтын төрөл:</h4>
+                    <h4 class="mb-2 fs-5 eb-heading">Баримтын төрөл:</h4>
 
                     <!-- Хувь хүн -->
-                    <div class="mb-2 p-2 rounded-3" style="border: 2px solid #28a745; background: #d4edda;">
-                        <label class="d-flex align-items-center m-0" style="cursor: pointer;"
+                    <div class="mb-2 p-2 rounded-3 eb-choice eb-choice-individual" t-att-class="{'eb-active': state.receiptType === 'individual'}">
+                        <label class="d-flex align-items-center m-0 w-100" style="cursor: pointer;"
                                t-on-click="() => this.changeReceiptType('individual')">
                             <input type="radio" name="receiptType" value="individual"
                                    class="form-check-input me-2"
                                    t-att-checked="state.receiptType === 'individual'"/>
-                            <strong style="color: #155724; font-size: 16px;">👤 Хувь хүн</strong>
+                            <strong class="eb-choice-label">👤 Хувь хүн</strong>
                         </label>
                     </div>
 
                     <!-- Байгууллага -->
-                    <div class="mb-2 p-2 rounded-3" style="border: 2px solid #007bff; background: #e3f2fd;">
-                        <label class="d-flex align-items-center m-0" style="cursor: pointer;"
+                    <div class="mb-2 p-2 rounded-3 eb-choice eb-choice-organization" t-att-class="{'eb-active': state.receiptType === 'organization'}">
+                        <label class="d-flex align-items-center m-0 w-100" style="cursor: pointer;"
                                t-on-click="() => this.changeReceiptType('organization')">
                             <input type="radio" name="receiptType" value="organization"
                                    class="form-check-input me-2"
                                    t-att-checked="state.receiptType === 'organization'"/>
-                            <strong style="color: #0056b3; font-size: 16px;">🏢 Байгууллага</strong>
+                            <strong class="eb-choice-label">🏢 Байгууллага</strong>
                         </label>
                     </div>
                 </div>
 
                 <!-- Customer Info харуулах -->
-                <div t-if="state.hasCustomer" class="mb-3 p-2 rounded" style="background: #fff3cd; border: 1px solid #ffc107; color: #856404;">
+                <div t-if="state.hasCustomer" class="mb-3 p-2 rounded eb-note">
                     <div class="small">
                         <strong>📋 Сонгосон харилцагч:</strong> <t t-esc="state.customerName"/>
                     </div>
@@ -44,12 +44,12 @@
 
                 <!-- CustomerTin Input - зөвхөн байгууллага сонгосон үед -->
                 <div t-if="state.receiptType === 'organization'" class="mb-2">
-                    <label class="d-block mb-2 fw-bold small" style="color: #2c3e50;">
+                    <label class="d-block mb-2 fw-bold small eb-heading">
                         🆔 Байгууллагын регистр:
                     </label>
 
                     <div t-if="state.hasCustomer and state.customerTin"
-                         class="mb-2 p-2 rounded" style="background: #d4edda; border-left: 4px solid #28a745; color: #155724;">
+                         class="mb-2 p-2 rounded eb-found">
                         <div class="small mb-1">Харилцагчаас автоматаар авагдсан:</div>
                         <div class="font-monospace fw-bold"><t t-esc="state.customerTin"/></div>
                     </div>

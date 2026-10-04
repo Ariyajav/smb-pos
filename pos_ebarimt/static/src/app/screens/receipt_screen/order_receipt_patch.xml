@@ -67,7 +67,6 @@
                     <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
 
                     <!-- Payment info section -->
-                    <div t-if="hasEbarimt" class="text-break">ДДТД <t t-esc="ebarimtData.bill_id"/></div>
                     <div t-if="order.change and order.change > 0">Хариулт: <t t-esc="Math.round(order.change)"/> ₮</div>
 
                     <!-- Lottery section -->
@@ -94,7 +93,7 @@
                     </div>
 
                     <!-- OFFLINE РЕЖИМ -->
-                    <div t-if="!hasEbarimt" class="text-center" style="color: #ff0000; margin-top: 10px;">OFFLINE РЕЖИМ</div>
+                    <div t-if="!hasEbarimt" class="text-center eb-offline" style="margin-top: 10px;">OFFLINE РЕЖИМ</div>
                 </div>
             </div>
         </xpath>
