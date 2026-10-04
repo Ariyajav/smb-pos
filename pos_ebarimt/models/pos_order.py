@@ -12,6 +12,14 @@ _logger = logging.getLogger(__name__)
 EBARIMT_MAX_ATTEMPTS = 20
 EBARIMT_SENDING_STALE_MINUTES = 15
 
+
+
+class EbarimtDataError(ValidationError):
+    """The order itself cannot be turned into a bill (missing VAT code, no
+    customer TIN, ...). Sending again will not help until someone fixes the
+    data, so such orders are parked for a person instead of retried."""
+
+
 bill_types = {
     "1": "B2C_RECEIPT",
     "3": "B2B_RECEIPT"
@@ -27,7 +35,9 @@ class PosOrder(models.Model):
     ebarimt_manual_customer_tin = fields.Char('eBarimt Manual Customer TIN', help="Manually entered customer TIN")
     ebarimt_config_json = fields.Text('eBarimt Config JSON', help="Full eBarimt configuration from POS")
 
-    vat_sent = fields.Boolean('eBarimt Sent?', default=False)
+    # copy=False: a refund made from the backend copies the original order,
+    # and must not look as if its own bill was already sent.
+    vat_sent = fields.Boolean('eBarimt Sent?', default=False, copy=False)
     vat_receipts = fields.One2many("vat.receipt", "pos_order_id", "eBarimt Bills")
     vat_bill_state = fields.Selection([
         ('done', 'Bill Sent'),
@@ -190,6 +200,14 @@ class PosOrder(models.Model):
             order = self.browse(order_id)
             try:
                 state, note = order._ebarimt_send_one()
+            except EbarimtDataError as e:
+                self.env.cr.rollback()
+                self.env.invalidate_all()
+                _logger.warning("eBarimt: %s cannot be sent until its data is fixed: %s", order.name, e)
+                super(PosOrder, order).write({'ebarimt_state': 'manual', 'ebarimt_error': str(e)})
+                self.env.cr.commit()
+                failed += 1
+                continue
             except Exception as e:
                 self.env.cr.rollback()
                 self.env.invalidate_all()
@@ -441,7 +459,7 @@ class PosOrder(models.Model):
                 
                 # Хэрвээ хоёулаа байхгүй бол алдаа өгчих
                 _logger.error("❌ Organization receipt requires a customer TIN, but none provided")
-                raise ValidationError("Байгууллагын баримтанд ТТД заавал оруулна уу.")
+                raise EbarimtDataError("Байгууллагын баримтанд ТТД заавал оруулна уу.")
             
             # 5. Individual receipt бол ТТД хоосон
             if self.ebarimt_receipt_type == 'individual':
@@ -574,6 +592,7 @@ class PosOrder(models.Model):
             tax_product_code = tmpl.vat_code_id.name or ''
         return {
             'tax_type': tax_type,
+            'has_tax': bool(taxes),
             'name': tmpl.name,
             'barCode': line.product_id.barcode or line.product_id.default_code or "",
             'barCodeType': 'GS1' if (line.product_id.barcode and len(line.product_id.barcode) == 13) else 'UNDEFINED',
@@ -619,7 +638,7 @@ class PosOrder(models.Model):
             discount = -sum(it['total'] for it in negatives)
             base = sum(it['total'] for it in positives)
             if discount >= base:
-                raise UserError(_("Order %s: the discounts are larger than the items they apply to; "
+                raise EbarimtDataError(_("Order %s: the discounts are larger than the items they apply to; "
                                   "eBarimt cannot be issued for it.", self.name))
             factor = (base - discount) / base
             for it in positives:
@@ -627,10 +646,15 @@ class PosOrder(models.Model):
                     it[key] = it[key] * factor
             items = positives
 
+        no_tax = [it['name'] for it in items if not it['has_tax'] and not it['taxProductCode']]
+        if no_tax:
+            raise EbarimtDataError(_("These products have no sales tax. Add VAT 10%%, or, if they are "
+                                     "VAT free, an eBarimt VAT code (product form, eBarimt tab): %s",
+                                     ", ".join(no_tax)))
         missing_code = [it['name'] for it in items if it['tax_type'] != 'VAT_ABLE' and not it['taxProductCode']]
         if missing_code:
-            raise UserError(_("These products are VAT free or VAT 0%% but have no eBarimt VAT code "
-                              "(product form, eBarimt tab): %s", ", ".join(missing_code)))
+            raise EbarimtDataError(_("These products are VAT free or VAT 0%% but have no eBarimt VAT code "
+                                     "(product form, eBarimt tab): %s", ", ".join(missing_code)))
 
         sub_receipts = []
         receipts_per_tax_type = {}
