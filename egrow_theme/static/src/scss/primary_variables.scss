@@ -1,0 +1,20 @@
+// egrow palette, taken from the egrow logo. Odoo declares these variables
+// with !default, so the values set here (loaded first) win everywhere.
+// Shades are darkened where white text sits on them, for a contrast of
+// at least 4.5:1.
+
+$egrow-blue: #007ab8;   // logo blue #0090d3, darkened for white text
+$egrow-green: #008a0b;  // logo green #00ca08, darkened for white text
+$egrow-red: #cf171f;    // logo red
+$egrow-ring: #a5c3d2;   // logo grey-blue
+
+$o-community-color: $egrow-blue;
+$o-enterprise-color: $egrow-blue;
+$o-enterprise-action-color: $egrow-blue;
+$o-brand-odoo: $egrow-blue;
+$o-brand-primary: $egrow-blue;
+$o-action: $egrow-blue;
+
+$o-success: $egrow-green;
+$o-danger: $egrow-red;
+$o-info: #0090d3;
