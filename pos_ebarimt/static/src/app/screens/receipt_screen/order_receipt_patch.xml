@@ -24,6 +24,13 @@
                         ДДТД <t t-esc="ebarimtData.bill_id"/>
                     </div>
 
+                    <!-- Company bill: the buyer -->
+                    <div t-if="hasEbarimt and ebarimtData.bill_type === 'B2B_RECEIPT' and ebarimtData.customer_tin" class="text-start text-break">
+                        Худалдан авагч:
+                        <t t-if="ebarimtData.customer_name"><t t-esc="ebarimtData.customer_name"/>,</t>
+                        ТТД <t t-esc="ebarimtData.customer_tin"/>
+                    </div>
+
                     <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
 
                     <!-- After a partial return the bill covers only the kept items -->
