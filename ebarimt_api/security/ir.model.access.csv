@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_ebarimt_posapi,account.ebarimt.posapi,model_account_ebarimt_posapi,account.group_account_user,1,1,1,1
+access_vat_receipt,vat.receipt,model_vat_receipt,account.group_account_user,1,1,1,1
+access_product_classification_code,product.classification.code,model_product_classification_code,account.group_account_user,1,1,1,1
+access_product_vat_code,product.vat.code,model_product_vat_code,account.group_account_user,1,1,1,1
+access_account_ebarimt_confirmation,account.ebarimt.confirmation,model_account_ebarimt_confirmation,account.group_account_user,1,1,1,1
+access_res_country_sub_state,res.country.sub.state,model_res_country_sub_state,base.group_user,1,0,0,0
+access_res_country_sub_state_admin,res.country.sub.state admin,model_res_country_sub_state,base.group_system,1,1,1,1

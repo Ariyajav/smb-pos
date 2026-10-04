@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Receipt template -->
+    <template id="report_pos_ebarimt" name="POS eBarimt Receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article" style="font-family: 'DejaVu Sans Mono', monospace; font-size: 12px;">
+                    <!-- Тусгай receipt style -->
+                    <style>
+                        .receipt-content { width: 300px; margin: 0 auto; }
+                        .text-center { text-align: center; }
+                        .text-right, .text-end { text-align: right; }
+                        hr { border-top: 1px dashed #000; }
+                    </style>
+                    
+                    <div class="receipt-content">
+                        <!-- Header -->
+                        <div class="text-center">
+                            <h3><t t-esc="o.company_id.name"/></h3>
+                            <p><t t-esc="o.session_id.config_id.name"/></p>
+                        </div>
+                        
+                        <hr/>
+                        
+                        <!-- Order Info -->
+                        <p>
+                            <strong>Баримт №:</strong> <t t-esc="o.name"/><br/>
+                            <strong>Огноо:</strong> <t t-esc="o.date_order" t-options='{"widget": "datetime", "format": "yyyy-MM-dd HH:mm:ss"}'/><br/>
+                            <t t-if="o.partner_id">
+                                <strong>Харилцагч:</strong> <t t-esc="o.partner_id.name"/>
+                            </t>
+                        </p>
+                        
+                        <!-- The bill that counts now; after a partial return it
+                             covers only the kept items. -->
+                        <t t-set="ebarimt" t-value="o.ebarimt_report_data()"/>
+                        <t t-set="receipt" t-value="ebarimt['receipt']"/>
+                        <t t-set="replaced" t-value="ebarimt['replaced']"/>
+
+                        <!-- Order Lines -->
+                        <table width="100%">
+                            <t t-if="replaced">
+                                <tr><td colspan="2"><strong>Хэсэгчилсэн буцаалтын дараах баримт</strong></td></tr>
+                                <t t-foreach="ebarimt['lines']" t-as="item">
+                                    <tr>
+                                        <td><t t-esc="item['name']"/> x <t t-esc="item['qty']"/></td>
+                                        <td class="text-right"><t t-esc="item['amount']"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <t t-foreach="o.lines" t-as="line">
+                                    <tr>
+                                        <td><t t-esc="line.product_id.name"/></td>
+                                        <td class="text-right"><t t-esc="line.qty"/> x <t t-esc="line.price_unit"/></td>
+                                        <td class="text-right"><t t-esc="line.price_subtotal_incl"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                        
+                        <hr/>
+                        
+                        <!-- Totals -->
+                        <table width="100%">
+                            <tr>
+                                <td><strong>Нийт:</strong></td>
+                                <td class="text-right"><strong><t t-esc="receipt.amount if replaced else o.amount_total"/> ₮</strong></td>
+                            </tr>
+                        </table>
+                        
+                        <!-- eBarimt Section -->
+                        <t t-if="receipt">
+                            <hr/>
+                            <div class="text-center">
+                                <h4>ДДТД</h4>
+                                
+                                <!-- QR Code -->
+                                <div style="margin: 10px 0;">
+                                    <img t-attf-src="/report/barcode/?type=QR&amp;value={{receipt.qr_data or receipt.bill_id}}&amp;width=150&amp;height=150"/>
+                                </div>
+                                
+                                <p>
+                                    <strong>Баримт №:</strong><br/>
+                                    <t t-esc="receipt.bill_id"/><br/><br/>
+                                    <strong>НӨАТ:</strong> <t t-esc="receipt.vat"/> ₮<br/>
+                                    <t t-if="receipt.city_tax > 0">
+                                        <strong>НХАТ:</strong> <t t-esc="receipt.city_tax"/> ₮<br/>
+                                    </t>
+                                </p>
+                                
+                                <!-- Lottery -->
+                                <div style="border: 2px solid #000; padding: 10px; margin: 10px 0;">
+                                    <strong>СУГАЛААНЫ ДУГААР</strong><br/>
+                                    <span style="font-size: 20px; font-weight: bold;">
+                                        <t t-esc="receipt.lottery or ''"/>
+                                    </span>
+                                </div>
+                                
+                                <p style="font-size: 10px;">
+                                    ebarimt.mn сайтаар баримтаа шалгана уу
+                                </p>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report action - Paper format БАЙХГҮЙ -->
+    <record id="action_report_pos_ebarimt" model="ir.actions.report">
+        <field name="name">POS eBarimt Receipt</field>
+        <field name="model">pos.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pos_ebarimt.report_pos_ebarimt</field>
+        <field name="report_file">POS_eBarimt_Receipt</field>
+        <field name="binding_model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

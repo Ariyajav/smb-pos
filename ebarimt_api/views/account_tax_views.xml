@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Account Tax form view-г inherit хийх -->
+        <record id="view_tax_form_inherit_ss_ebarimt_api" model="ir.ui.view">
+            <field name="name">view_tax_form.inherit.ebarimt_api</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <!-- Advanced booleans group дотор шинэ талбарууд нэмэх -->
+                <xpath expr="//group[@name='advanced_booleans']" position="inside">
+                    <field name="ebarimt_send_data"
+                           invisible="type_tax_use not in ['sale', 'none']"/>
+                    <field name="ebarimt_tax_type"
+                           invisible="not ebarimt_send_data"/>
+                    <field name="city_tax"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

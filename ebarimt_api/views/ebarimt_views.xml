@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- eBarimtPosAPI View -->
+  <record id="view_account_ebarimt_posapi_form" model="ir.ui.view">
+    <field name="name">view.account.ebarimt.posapi.form</field>
+    <field name="model">account.ebarimt.posapi</field>
+    <field name="arch" type="xml">
+      <form string="eBarimt PosAPI">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_check_service" class="oe_stat_button" type="object" icon="fa-play">
+              Run Check
+            </button>
+          </div>
+          <div class="oe_title">
+            <h1>
+              <field name="name" placeholder="Name" />
+            </h1>
+          </div>
+          <group>
+            <group>
+              <field name="service_url" placeholder="http://192.168.10.25:9010" />
+              <field name="api_key" password="True" />
+              <field name="send_interval_unit" />
+              <field name="company_id" options="{'no_open': True}" />
+            </group>
+            <group>
+              <field name="last_send_date" />
+              <field name="next_send_date" />
+            </group>
+          </group>
+          <notebook>
+            <page string="Last Message" name="last_message">
+              <field name="message" nolabel="1" colspan="2" readonly="1" />
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="account_ebarimt_posapi_kanban" model="ir.ui.view">
+    <field name="name">account.ebarimt.posapi.kanban</field>
+    <field name="model">account.ebarimt.posapi</field>
+    <field name="arch" type="xml">
+      <kanban quick_create="false" create="true" class="o_kanban_ebarimt_posapi">
+        <field name="last_send_date" />
+        <templates>
+          <t t-name="card" class="flex-row">
+            <aside class="me-2">
+              <img src="/ebarimt_api/static/src/img/ebarimt.png" alt="eBarimt" style="max-width: 64px;" />
+            </aside>
+            <main class="o_ebarimt_posapi_desc">
+              <field name="name" class="fw-bold fs-5 mt4" />
+              <div t-if="record.last_send_date.raw_value">
+                <b>Last Send Date:</b>
+                <field name="last_send_date" />
+              </div>
+              <field name="company_id" options="{'no_open': true}" />
+            </main>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="account_ebarimt_posapi_tree" model="ir.ui.view">
+    <field name="name">account.ebarimt.posapi.list</field>
+    <field name="model">account.ebarimt.posapi</field>
+    <field name="arch" type="xml">
+      <list string="eBarimt PosAPI">
+        <field name="name"/>
+        <field name="last_send_date"/>
+        <field name="company_id" />
+      </list>
+    </field>
+  </record>
+
+</odoo>

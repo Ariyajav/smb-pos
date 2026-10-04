@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_district_code_tree_view" model="ir.ui.view">
+        <field name="name">dictrict.code.list.view</field>
+        <field name="model">disctric.code</field>
+        <field name="arch" type="xml">
+            <list string="District Code" sample="1">
+                <field name="combined_code"/>
+                <field name="branch_code"/>
+                <field name="branch_name"/>
+                <field name="subbranch_code"/>
+                <field name="subbranch_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_district_code_form_view" model="ir.ui.view">
+        <field name="name">dictrict.code.form.view</field>
+        <field name="model">disctric.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="get_district_code_data" type="object" string="Send Request" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="combined_code"/>
+                        <field name="branch_code"/>
+                        <field name="branch_name"/>
+                        <field name="subbranch_code"/>
+                        <field name="subbranch_name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_district_code_tree" model="ir.actions.act_window">
+        <field name="name">District LIST</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">disctric.code</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_district_code" name="District Code" parent="account.menu_finance_configuration" action="action_district_code_tree" sequence="101"/>
+</odoo>

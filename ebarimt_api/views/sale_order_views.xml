@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sale Order form view-г inherit хийх -->
+        <record id="view_order_form_inherit_ss_ebarimt_api" model="ir.ui.view">
+            <field name="name">view_order_form.inherit.ebarimt_api</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Partner details group дотор partner_id-н дараа VAT TIN нэмэх -->
+                <xpath expr="//group[@name='partner_details']/field[@name='partner_id']" position="after">
+                    <field name="vat_tin"
+                           readonly="state in ['sale', 'cancel']"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

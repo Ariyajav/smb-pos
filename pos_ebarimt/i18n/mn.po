@@ -1,0 +1,1185 @@
+# Mongolian translation additions for ebarimt_api and pos_ebarimt (Odoo 19).
+# Merge these entries into each module's i18n/mn.po.
+# The first three entries are Python messages that can only be translated from the .po file.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-15 07:44+0000\n"
+"Language: mn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/product_classification_buna.py:0
+#, python-format
+msgid "%d баркод татагдлаа"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid ""
+"<br/>\n"
+"                            <strong>Огноо:</strong>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid ""
+"<br/><br/>\n"
+"                                    <strong>НӨАТ:</strong>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "<strong>Баримт №:</strong>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "<strong>Баримт №:</strong><br/>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "<strong>НХАТ:</strong>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "<strong>Нийт:</strong>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "<strong>СУГАЛААНЫ ДУГААР</strong><br/>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "<strong>Харилцагч:</strong>"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_config__send_ebarimt
+msgid "Automatically send eBarimt receipts when orders are paid"
+msgstr "Захиалга төлөгдөхөд иБаримтыг автоматаар илгээнэ"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_bill_type
+msgid "B2C_RECEIPT or B2B_RECEIPT"
+msgstr "B2C_RECEIPT (хувь хүн) эсвэл B2B_RECEIPT (байгууллага)"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_product_barcode_buna
+msgid "BUNA Barcode Information"
+msgstr "БҮНА бар кодын мэдээлэл"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_product_classification_buna
+msgid "BUNA Classification Cache"
+msgstr "БҮНА ангиллын кэш"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__barcode
+msgid "Barcode"
+msgstr "Баркод"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__barcode_count
+msgid "Barcode Count"
+msgstr "Баркодын тоо"
+
+#. module: pos_ebarimt
+#: model:ir.model.constraint,message:pos_ebarimt.constraint_product_barcode_buna_unique_barcode_classification
+msgid "Barcode must be unique within classification!"
+msgstr "Бар код нь ангилал дотороо давхцахгүй байх ёстой!"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__barcode_ids
+msgid "Barcodes"
+msgstr "Баркодууд"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_tree
+msgid "Baркод тоо"
+msgstr "Баркод тоо"
+
+# Corrections to existing translations
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__vat_bill_state__done
+msgid "Bill Sent"
+msgstr "Баримт илгээсэн"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__branch_code
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_config__branch_code_id
+msgid "Branch Code"
+msgstr "Салбарын код"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__branch_name
+msgid "Branch Name"
+msgstr "Салбарын нэр    "
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_res_company__branch_no
+msgid "Branch No"
+msgstr "Салбарын дугаар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_res_company__branch_no
+msgid "Branch number for eBarimt reporting"
+msgstr "eBarimt тайлан гаргах салбарын дугаар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__cached_at
+msgid "Cached At"
+msgstr "Кэшлэсэн огноо"
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Cash"
+msgstr "Бэлэн мөнгө"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__child_ids
+msgid "Children"
+msgstr "Дэд ангиллууд"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__classification_id
+msgid "Classification"
+msgstr "Ангилал"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__code
+msgid "Code"
+msgstr "Код"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__combined_code
+msgid "Combined Code"
+msgstr "Нийлсэн код"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_res_company
+msgid "Companies"
+msgstr "Компаниуд"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_res_company__vat_tin
+msgid "Company TIN"
+msgstr "Компанийн ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__create_uid
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__create_uid
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__create_uid
+msgid "Created by"
+msgstr "Үүсгэсэн хэрэглэгч"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__create_date
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__create_date
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__create_date
+msgid "Created on"
+msgstr "Үүсгэсэн огноо"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__description
+msgid "Description"
+msgstr "Тайлбар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__display_name
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__display_name
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__display_name
+msgid "Display Name"
+msgstr "Дэлгэцийн нэр"
+
+#. module: pos_ebarimt
+#: model:ir.ui.menu,name:pos_ebarimt.menu_district_code
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_district_code_tree_view
+msgid "District Code"
+msgstr "Дүүргийн код"
+
+#. module: pos_ebarimt
+#: model:ir.actions.act_window,name:pos_ebarimt.action_district_code_tree
+msgid "District LIST"
+msgstr "Дүүргийн жагсаалт"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_disctric_code
+msgid "District code"
+msgstr "Дүүргийн код"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "District code refreshed: %s"
+msgstr "Дүүргийн кодыг шинэчилсэн: %s"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_res_company__ebarimt_pos_number
+msgid "Ebarimt pos number"
+msgstr "ИБаримтын ПОС-ын дугаар"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Error"
+msgstr "Алдаа"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Failed to refresh district code: %s"
+msgstr "Дүүргийн кодыг сэргээж чадсангүй: %s"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_customer_tin
+msgid "Final customer TIN used for eBarimt"
+msgstr "иБаримтад ашигласан харилцагчийн эцсийн ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_config_json
+msgid "Full eBarimt configuration from POS"
+msgstr "ПОС-оос ирсэн иБаримтын бүрэн тохиргоо"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__has_children
+msgid "Has Children"
+msgstr "Дэд ангилалтай"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__id
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__id
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__id
+msgid "ID"
+msgstr "ID дугаар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__vat_bill_state__invoice
+msgid "Invoice"
+msgstr "Нэхэмжлэх"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code____last_update
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna____last_update
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna____last_update
+msgid "Last Modified on"
+msgstr "Хамгийн сүүлд өөрчилсөн"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__write_uid
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__write_uid
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд шинэчилсэн хэрэглэгч"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__write_date
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_barcode_buna__write_date
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__write_date
+msgid "Last Updated on"
+msgstr "Сүүлд шинэчилсэн огноо"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__level
+msgid "Level"
+msgstr "Түвшин"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_manual_customer_tin
+msgid "Manually entered customer TIN"
+msgstr "Гараар оруулсан харилцагчийн ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__name
+msgid "Name"
+msgstr "Нэр"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__vat_bill_state__old
+msgid "Needs to be Refunded"
+msgstr "Буцаан олгох шаардлагатай"
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "OFFLINE РЕЖИМ"
+msgstr "Оффлайн горим"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__p1
+msgid "P1 (Sector)"
+msgstr "P1 Салбар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__p2
+msgid "P2 (Subsector)"
+msgstr "P2 Дэд салбар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__p3
+msgid "P3 (Group)"
+msgstr "P3 Бүлэг"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__p4
+msgid "P4 (Class)"
+msgstr "P4 Ангилал"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__p5
+msgid "P5 (Subclass)"
+msgstr "P5 Дэд ангилал"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__p6
+msgid "P6 (BUNA Code)"
+msgstr "P6 БҮНА код"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_res_company__service_url
+msgid "POS API Request URL"
+msgstr "POS API хүсэлтийн URL"
+
+#. module: pos_ebarimt
+#: model:ir.actions.report,name:pos_ebarimt.action_report_pos_ebarimt
+msgid "POS eBarimt Receipt"
+msgstr "POS eBarimt баримт"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_classification_buna__parent_id
+msgid "Parent"
+msgstr "Эцэг ангилал"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_res_company__parent_merchant_tin
+msgid "Parent Merchant TIN"
+msgstr "Үндсэн борлуулагчийн ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Борлуулалтын цэгийн тохиргоо"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_pos_order
+msgid "Point of Sale Orders"
+msgstr "ПОС захиалга"
+
+#. module: pos_ebarimt
+#: model:ir.model,name:pos_ebarimt.model_product_template
+msgid "Product"
+msgstr "Бараа"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__vat_bill_state__refund
+msgid "Refunded"
+msgstr "Буцаан олгосон"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_pos_pos_form_inherit_pos_ebarimt
+msgid "Resend eBarimt"
+msgstr "иБаримт дахин илгээх"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_pos_pos_form_inherit_pos_ebarimt
+msgid "Return eBarimt"
+msgstr "иБаримт буцаах"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_config__branch_code_id
+msgid "Select the branch code for eBarimt reporting"
+msgstr "eBarimt тайлангийн салбарын кодыг сонгоно уу"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_district_code_form_view
+msgid "Send Request"
+msgstr "Хүсэлт илгээх"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_config__send_ebarimt
+msgid "Send eBarimt"
+msgstr "иБаримт илгээх"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__subbranch_code
+msgid "Subbranch Code"
+msgstr "Дэд салбарын код"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_disctric_code__subbranch_name
+msgid "Subbranch Name"
+msgstr "Дэд салбарын нэр"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Success"
+msgstr "Амжилт"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_res_company__parent_merchant_tin
+msgid "Tax Identification Number for Parent Merchant in eBarimt"
+msgstr "Үндсэн борлуулагчийн татвар төлөгчийн дугаар (ТТД)"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_res_company__vat_tin
+msgid "Tax Identification Number for eBarimt"
+msgstr "иБаримтад ашиглах татвар төлөгчийн дугаар (ТТД)"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_res_company__service_url
+msgid "URL for eBarimt POS API service"
+msgstr "eBarimt POS API үйлчилгээний URL"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__vat_bill_state
+msgid "VAT Bill State"
+msgstr "НӨАТ баримтын төлөв"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_bill_type
+msgid "eBarimt Bill Type"
+msgstr "иБаримтны төрөл"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__vat_receipts
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_pos_pos_form_inherit_pos_ebarimt
+msgid "eBarimt Bills"
+msgstr "иБаримтууд"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_config_json
+msgid "eBarimt Config JSON"
+msgstr "иБаримтын тохиргоо (JSON)"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_customer_tin
+msgid "eBarimt Customer TIN"
+msgstr "иБаримт харилцагчийн ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_manual_customer_tin
+msgid "eBarimt Manual Customer TIN"
+msgstr "Гараар оруулсан харилцагчийн ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_receipt_type
+msgid "eBarimt Receipt Type"
+msgstr "eBarimt баримтын төрөл"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_pos_order_tree_inherit_pos_ebarimt
+msgid "eBarimt Resent"
+msgstr "иБаримт дахин илгээгдсэн"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__vat_sent
+msgid "eBarimt Sent?"
+msgstr "иБаримт илгээсэн үү?"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.pos_config_view_form_inherit_pos_ebarimt
+msgid "ebarimt Configuration"
+msgstr "иБаримтын тохиргоо"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_company_form_inherit_pos_ebarimt
+msgid "ebarimt POS API Setting"
+msgstr "иБаримт POS API тохиргоо"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_company_form_inherit_pos_ebarimt
+msgid "ebarimt Setting"
+msgstr "иБаримтын тохиргоо"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "ebarimt.mn сайтаар баримтаа шалгана уу"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_receipt_type
+msgid "individual or organization"
+msgstr "Хувь хүн эсвэл Байгууллага"
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "| ТТД:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/product_classification_buna.py:0
+#, python-format
+msgid "Амжилттай"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__product_classification_buna__level__class
+msgid "Анги"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/js/screens/payment_screen_extend.js:0
+#, python-format
+msgid "Баримтын төрөл сонгоно уу"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "Баримтын төрөл:"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_form
+msgid "Баркод"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_form
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_tree
+msgid "Баркод татах"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_barcode_buna_form
+msgid "БҮНА Barcode"
+msgstr "БҮНА баркод"
+
+#. module: pos_ebarimt
+#: model:ir.actions.act_window,name:pos_ebarimt.action_product_barcode_buna
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_barcode_buna_tree
+msgid "БҮНА Barcodes"
+msgstr "БҮНА баркодууд"
+
+#. module: pos_ebarimt
+#: model:ir.ui.menu,name:pos_ebarimt.menu_buna_barcodes
+msgid "БҮНА Baркод"
+msgstr "БҮНА баркод"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_product__buna_classification_id
+#: model:ir.model.fields,field_description:pos_ebarimt.field_product_template__buna_classification_id
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.product_template_form_view_inherit_buna_classification
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_form
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_tree
+msgid "БҮНА Classification"
+msgstr "БҮНА ангилал"
+
+#. module: pos_ebarimt
+#: model:ir.actions.act_window,name:pos_ebarimt.action_product_classification_buna
+#: model:ir.ui.menu,name:pos_ebarimt.menu_buna_classification_root
+msgid "БҮНА Classifications"
+msgstr "БҮНА ангилал"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_product_product__buna_classification_id
+#: model:ir.model.fields,help:pos_ebarimt.field_product_template__buna_classification_id
+msgid "БҮНА classification code for eBarimt"
+msgstr "eBarimt-ийн БҮБА ангиллын код"
+
+#. module: pos_ebarimt
+#: model:ir.ui.menu,name:pos_ebarimt.menu_buna_classifications
+msgid "БҮНА Ангилал"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.product_template_form_view_inherit_buna_classification
+msgid "БҮНА ангилал сонгох"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.actions.act_window,help:pos_ebarimt.action_product_classification_buna
+msgid "БҮНА ангиллын систем хоосон байна"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__product_classification_buna__level__buna_code
+msgid "БҮНА код"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__product_classification_buna__level__group
+msgid "Бүлэг"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Бүтээгдэхүүний нэр"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Гишүүн ID:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+#, python-format
+msgid "ДДТД"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_tree
+msgid "Детал татах"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__product_classification_buna__level__subclass
+msgid "Дэд анги"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__product_classification_buna__level__subsector
+msgid "Дэд салбар"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Дүн"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "Илгээх"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "НХАТ"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Нийт дүн"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "НӨАТ"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Огноо:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Оноо нэмэх:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "Регистр энд оруулна уу"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__product_classification_buna__level__sector
+msgid "Салбар"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model:ir.actions.server,name:pos_ebarimt.action_init_buna_sectors
+#: model:ir.ui.menu,name:pos_ebarimt.menu_init_buna_sectors
+msgid "Салбарын жагсаалт татах"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Сугалааны дугаар:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Татварын өмнөх дүн"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Тоо"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Утас:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "Харилцагчаас автоматаар авагдсан:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Хариулт:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Хүрмтлүүлсэн оноо:"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_form
+msgid "Хүүхэд ангилал"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.view_product_classification_buna_form
+msgid "Хүүхэд ангилал татах"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "Цуцлах"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.actions.act_window,help:pos_ebarimt.action_product_classification_buna
+msgid "Эхлээд \"Салбарын жагсаалт татах\" товчийг дарж салбаруудыг татна уу."
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "иБаримтад бүртгүүлэх дүн:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/receipt.xml:0
+#, python-format
+msgid "Үнэ"
+msgstr ""
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.report_pos_ebarimt
+msgid "₮<br/>"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "🆔 Байгууллагын регистр:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "🆔 ТТД:"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "🏢 Байгууллага"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "👤 Хувь хүн"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "💡 Байгууллагын регистр бүрэн оруулна уу"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "💡 Хоосон байвал харилцагчийн ТТД ашиглана"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/js/screens/payment_screen_extend.js:0
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "📄 eBarimt тохиргоо"
+msgstr ""
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/xml/popups/ebarimt_confirm_popup.xml:0
+#, python-format
+msgid "📋 Сонгосон харилцагч:"
+msgstr ""
+
+#~ msgid ""
+#~ "Your Service URL might be not qualified. Please use such URL: "
+#~ "http://192.168.10.25:9010"
+#~ msgstr ""
+#~ "Сервисийн URL буруу байж магадгүй. Дараах хэлбэрийн URL ашиглана уу: "
+#~ "http://192.168.10.25:9010"
+
+#~ msgid "eBarimt information cleared"
+#~ msgstr "иБаримтын мэдээллийг цэвэрлэлээ"
+
+#~ msgid "eBarimt information updated successfully"
+#~ msgstr "иБаримтын мэдээлэл амжилттай шинэчлэгдлээ"
+
+#~ msgid "<b>Last Send Date:</b>"
+#~ msgstr "<b>Сүүлд илгээсэн огноо:</b>"
+
+#~ msgid "Ask Confirmation when sending eBarimt"
+#~ msgstr "иБаримт илгээхэд баталгаажуулалт асуух"
+
+#~ msgid "Auto-computed from State and Sub-state codes"
+#~ msgstr "Аймаг/хот болон сум/дүүргийн кодоос автоматаар тооцоологдоно"
+
+#~ msgid "Bill ID"
+#~ msgstr "Баримтын ДДТД"
+
+#~ msgid "Inactive Bill ID"
+#~ msgstr "Идэвхгүй баримтын ДДТД"
+
+#~ msgid "Invoice ID"
+#~ msgstr "Нэхэмжлэхийн дугаар"
+
+#~ msgid "Label"
+#~ msgstr "Гарчиг"
+
+#~ msgid "Last Date of sendData function of PosAPI was called"
+#~ msgstr "PosAPI-ийн sendData функцийг хамгийн сүүлд дуудсан огноо"
+
+#~ msgid "Last Message"
+#~ msgstr "Сүүлийн мессеж"
+
+#~ msgid "Last Send Date"
+#~ msgstr "Сүүлд илгээсэн огноо"
+
+#~ msgid "Last Verified"
+#~ msgstr "Сүүлд баталгаажуулсан"
+
+#~ msgid "Pos ID"
+#~ msgstr "ПОС-ын ID"
+
+#~ msgid "Sub-states (Districts)"
+#~ msgstr "Сум/Дүүрэг"
+
+#~ msgid "Sub-states Count"
+#~ msgstr "Сум/дүүргийн тоо"
+
+#~ msgid "Sub-states are used to manage districts or regions within a state."
+#~ msgstr ""
+#~ "Сум/дүүрэг нь аймаг, хотын доторх нутаг дэвсгэрийн нэгжийг бүртгэхэд "
+#~ "ашиглагдана."
+
+#~ msgid "VAT Code"
+#~ msgstr "НӨАТ-ын код"
+
+#~ msgid "VAT Tin No"
+#~ msgstr "НӨАТ-ын ТТД"
+
+#~ msgid "eBarimt Receipts"
+#~ msgstr "иБаримтын баримтууд"
+
+#~ msgid "eBarimt Tax Type"
+#~ msgstr "иБаримтын татварын төрөл"
+
+#~ msgid "eBarimt Verified"
+#~ msgstr "иБаримтаар баталгаажсан"
+
+#~ msgid "Bill Type"
+#~ msgstr "Баримтын төрөл"
+
+#~ msgid "State/Province"
+#~ msgstr "Аймаг/Хот"
+
+#~ msgid "Country state"
+#~ msgstr "Аймаг/Хот"
+
+#~ msgid "eBarimt Confirmation"
+#~ msgstr "иБаримт баталгаажуулах"
+
+#~ msgid "Sub-state"
+#~ msgstr "Сум/Дүүрэг"
+
+#~ msgid "Sub-states"
+#~ msgstr "Сум/Дүүрэг"
+
+#~ msgid "Sub-state Code"
+#~ msgstr "Сум/дүүргийн код"
+
+#~ msgid "Sub-state Name"
+#~ msgstr "Сум/дүүргийн нэр"
+
+#~ msgid "Create a new sub-state"
+#~ msgstr "Шинэ сум/дүүрэг үүсгэх"
+
+#~ msgid "District/Sub-state"
+#~ msgstr "Сум/Дүүрэг"
+
+#~ msgid "Sub-state code must be at least 2 characters!"
+#~ msgstr "Сум/дүүргийн код хамгийн багадаа 2 тэмдэгттэй байх ёстой!"
+
+#~ msgid "The code of the sub-state must be unique by state!"
+#~ msgstr "Сум/дүүргийн код нь аймаг/хот дотроо давхцахгүй байх ёстой!"
+
+#~ msgid "eBarimt Invoice Sent?"
+#~ msgstr "иБаримтын нэхэмжлэх илгээсэн үү?"
+
+#~ msgid "Customer Tin"
+#~ msgstr "Харилцагчийн ТТД"
+
+#~ msgid "Merchant Tin"
+#~ msgstr "Борлуулагчийн ТТД"
+
+#~ msgid "Tax Identification Number from eBarimt"
+#~ msgstr "иБаримтаас авсан ТТД"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_state
+msgid "eBarimt Status"
+msgstr "иБаримтын төлөв"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_error
+msgid "eBarimt Error"
+msgstr "иБаримтын алдаа"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_attempts
+msgid "eBarimt Attempts"
+msgstr "иБаримт илгээх оролдлого"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_next_try
+msgid "eBarimt Next Try"
+msgstr "иБаримт дахин илгээх цаг"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__ebarimt_state__pending
+msgid "Waiting to send"
+msgstr "Илгээхийг хүлээж байна"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__ebarimt_state__sending
+msgid "Sending"
+msgstr "Илгээж байна"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__ebarimt_state__sent
+msgid "Sent"
+msgstr "Илгээсэн"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__ebarimt_state__failed
+msgid "Failed, will retry"
+msgstr "Амжилтгүй, дахин оролдоно"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_order__ebarimt_state__manual
+msgid "Needs attention"
+msgstr "Шалгах шаардлагатай"
+
+#. module: pos_ebarimt
+#: model:ir.actions.server,name:pos_ebarimt.ir_cron_send_pending_ebarimt_ir_actions_server
+msgid "eBarimt: send pending bills"
+msgstr "иБаримт: хүлээгдэж буй баримтуудыг илгээх"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+msgid "Refund is not linked to exactly one original order; return its eBarimt bill by hand."
+msgstr "Буцаалт нэг анхны захиалгатай холбогдоогүй байна; иБаримтыг гараар буцаана уу."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Original order %s has no eBarimt bill yet; waiting for it."
+msgstr "Анхны захиалга %s-д иБаримт хараахан үүсээгүй; хүлээж байна."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Original order %s has no eBarimt bill; nothing was returned."
+msgstr "Анхны захиалга %s-д иБаримт байхгүй; юу ч буцаагаагүй."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "eBarimt return of %(order)s failed: %(error)s"
+msgstr "%(order)s-ийн иБаримт буцаалт амжилтгүй: %(error)s"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+msgid "no response"
+msgstr "хариу ирсэнгүй"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Gave up after %(n)s attempts. Last error: %(error)s"
+msgstr "%(n)s удаа оролдоод зогсов. Сүүлийн алдаа: %(error)s"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+msgid "Interrupted while sending; check eBarimt before resending."
+msgstr "Илгээх үед тасарсан; дахин илгээхийн өмнө иБаримтыг шалгана уу."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+msgid "PosAPI answered but the result could not be saved; check eBarimt before resending."
+msgstr "PosAPI хариу өгсөн боловч үр дүнг хадгалж чадсангүй; дахин илгээхийн өмнө иБаримтыг шалгана уу."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "%s is a refund; use Return eBarimt on the original order."
+msgstr "%s нь буцаалт; анхны захиалга дээрх Return eBarimt товчийг ашиглана уу."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "%s is being sent to eBarimt right now; wait a minute and reload."
+msgstr "%s-г яг одоо иБаримт руу илгээж байна; түр хүлээгээд дахин ачаална уу."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "%s already has an eBarimt bill."
+msgstr "%s-д иБаримт аль хэдийн үүссэн байна."
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_return_done
+msgid "eBarimt Return Done"
+msgstr "иБаримт буцаалт хийгдсэн"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_return_done
+msgid "The original order's bill was already returned or replaced"
+msgstr "Анхны захиалгын баримтыг аль хэдийн буцаасан эсвэл сольсон"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_config__ebarimt_branch_no
+msgid "eBarimt Branch No"
+msgstr "иБаримт салбарын дугаар"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_config__ebarimt_branch_no
+msgid "branchNo sent to PosAPI for this POS. Empty: the POS's internal number, padded to 4 digits (what was always sent before)."
+msgstr "Энэ ПОС-оос PosAPI руу илгээх branchNo. Хоосон бол ПОС-ын дотоод дугаарыг 4 оронтойгоор илгээнэ (өмнөх шиг)."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "Order %s: the discounts are larger than the items they apply to; eBarimt cannot be issued for it."
+msgstr "%s захиалга: хөнгөлөлт нь барааны дүнгээс их байна; иБаримт гаргах боломжгүй."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+#, python-format
+msgid "These products are VAT free or VAT 0%% but have no eBarimt VAT code (product form, eBarimt tab): %s"
+msgstr "Эдгээр бараа НӨАТ-аас чөлөөлөгдсөн эсвэл 0%% НӨАТ-тай боловч иБаримтын НӨАТ-ын кодгүй байна (барааны карт, eBarimt таб): %s"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_search
+msgid "Valid"
+msgstr "Хүчинтэй"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_search
+msgid "Returned or Replaced"
+msgstr "Буцаасан эсвэл солигдсон"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_search
+msgid "Sent Date"
+msgstr "Илгээсэн огноо"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_search
+msgid "Day"
+msgstr "Өдөр"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_list
+msgid "Replaced Bill"
+msgstr "Солигдсон баримт"
+
+#. module: pos_ebarimt
+#: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_form
+msgid "eBarimt Bill"
+msgstr "иБаримт"

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Not loaded (commented out in the manifest, as in the 16.0 source). Ported to 19.0 syntax so it can be enabled. -->
+<odoo>
+    <record id="view_move_form_inherit_ss_ebarimt_api" model="ir.ui.view">
+        <field name="name">view_move_form.inherit.ebarimt_api</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_set_checked']" position="after">
+                <field name="vat_sent" invisible="1" />
+                <field name="vat_invoice_sent" invisible="1" />
+                <field name="sale_order_count" invisible="1" />
+
+                <!-- Send eBarimt Invoice товч -->
+                <button name="action_vat_send"
+                        string="Send eBarimt Invoice"
+                        type="object"
+                        groups="account.group_account_user"
+                        class="oe_highlight"
+                        invisible="state != 'posted' or vat_invoice_sent or move_type not in ['out_invoice', 'out_refund'] or payment_state not in ['not_paid', 'partial'] or sale_order_count == 0" />
+
+                <!-- Send eBarimt товч -->
+                <button name="action_vat_send"
+                        string="Send eBarimt"
+                        type="object"
+                        groups="account.group_account_user"
+                        class="oe_highlight"
+                        invisible="vat_invoice_sent or vat_sent or move_type not in ['out_invoice', 'out_refund'] or payment_state in ['not_paid', 'partial'] or sale_order_count == 0" />
+            </xpath>
+
+            <!-- eBarimt Bills хуудас нэмэх -->
+            <xpath expr="//page[@name='aml_tab']" position="after">
+                <page string="eBarimt Bills"
+                      name="ebarimt_bills"
+                      invisible="move_type not in ['out_invoice', 'out_refund'] or sale_order_count == 0">
+                    <field name="vat_receipts" colspan="4" nolabel="1" readonly="1">
+                        <list string="eBarimt Bills" create="0" editable="bottom">
+                            <field name="bill_id" readonly="1" />
+                            <field name="bill_type" readonly="1" />
+                            <field name="city_tax" readonly="1" />
+                            <field name="vat" readonly="1" />
+                            <field name="amount" readonly="1" />
+                            <field name="sent_at" readonly="1" />
+                            <field name="bill_state"
+                                   widget="badge"
+                                   decoration-danger="bill_state == 'old'"
+                                   decoration-info="bill_state == 'refund'"
+                                   decoration-success="bill_state == 'done'" />
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

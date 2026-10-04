@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- BUNA Classification Tree View -->
+        <record id="view_product_classification_buna_tree" model="ir.ui.view">
+            <field name="name">product.classification.buna.list</field>
+            <field name="model">product.classification.buna</field>
+            <field name="arch" type="xml">
+                <list string="БҮНА Classification" expand="1">
+                    <field name="level" column_invisible="1"/>
+                    <field name="display_name"/>
+                    <field name="code"/>
+                    <field name="has_children" column_invisible="1"/>
+                    <field name="barcode_count" string="Baркод тоо" invisible="level != 'buna_code'"/>
+                    <field name="cached_at"/>
+                    <button name="action_load_children" string="Детал татах" type="object" icon="fa-download" invisible="level == 'buna_code'"/>
+                    <button name="action_load_barcodes" string="Баркод татах" type="object" icon="fa-barcode" invisible="level != 'buna_code'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- BUNA Classification Form View -->
+        <record id="view_product_classification_buna_form" model="ir.ui.view">
+            <field name="name">product.classification.buna.form</field>
+            <field name="model">product.classification.buna</field>
+            <field name="arch" type="xml">
+                <form string="БҮНА Classification">
+                    <header>
+                        <button name="action_load_children" string="Хүүхэд ангилал татах" type="object" class="oe_highlight" invisible="level == 'buna_code'"/>
+                        <button name="action_load_barcodes" string="Баркод татах" type="object" class="oe_highlight" invisible="level != 'buna_code'"/>
+                        <field name="level" widget="statusbar" statusbar_visible="sector,subsector,group,class,subclass,detail,buna_code"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="basic_info">
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="parent_id" readonly="1"/>
+                                <field name="has_children" readonly="1"/>
+                            </group>
+                            <group name="api_params">
+                                <field name="p1" readonly="1"/>
+                                <field name="p2" readonly="1"/>
+                                <field name="p3" readonly="1"/>
+                                <field name="p4" readonly="1"/>
+                                <field name="p5" readonly="1"/>
+                                <field name="p6" readonly="1"/>
+                                <field name="cached_at" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Хүүхэд ангилал" name="children" invisible="level == 'buna_code'">
+                                <field name="child_ids" readonly="1">
+                                    <list>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="level"/>
+                                        <field name="has_children"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page string="Баркод" name="barcodes" invisible="level != 'buna_code'">
+                                <group>
+                                    <field name="barcode_count" readonly="1"/>
+                                </group>
+                                <field name="barcode_ids" readonly="1">
+                                    <list>
+                                        <field name="barcode"/>
+                                        <field name="description"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- BUNA Classification Action -->
+        <record id="action_product_classification_buna" model="ir.actions.act_window">
+            <field name="name">БҮНА Classifications</field>
+            <field name="res_model">product.classification.buna</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('level', '=', 'sector')]</field>
+            <field name="context">{'default_level': 'sector'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    БҮНА ангиллын систем хоосон байна
+                </p>
+                <p>
+                    Эхлээд "Салбарын жагсаалт татах" товчийг дарж салбаруудыг татна уу.
+                </p>
+            </field>
+        </record>
+
+        <!-- BUNA Barcode Tree View -->
+        <record id="view_product_barcode_buna_tree" model="ir.ui.view">
+            <field name="name">product.barcode.buna.list</field>
+            <field name="model">product.barcode.buna</field>
+            <field name="arch" type="xml">
+                <list string="БҮНА Barcodes">
+                    <field name="classification_id"/>
+                    <field name="barcode"/>
+                    <field name="description"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- BUNA Barcode Form View -->
+        <record id="view_product_barcode_buna_form" model="ir.ui.view">
+            <field name="name">product.barcode.buna.form</field>
+            <field name="model">product.barcode.buna</field>
+            <field name="arch" type="xml">
+                <form string="БҮНА Barcode">
+                    <sheet>
+                        <group>
+                            <field name="classification_id" readonly="1"/>
+                            <field name="barcode"/>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- BUNA Barcode Action -->
+        <record id="action_product_barcode_buna" model="ir.actions.act_window">
+            <field name="name">БҮНА Barcodes</field>
+            <field name="res_model">product.barcode.buna</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Initialize Sectors Action -->
+        <record id="action_init_buna_sectors" model="ir.actions.server">
+            <field name="name">Салбарын жагсаалт татах</field>
+            <field name="model_id" ref="model_product_classification_buna"/>
+            <field name="state">code</field>
+            <field name="code">
+                model.get_or_create_sector_list()
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_buna_classification_root" name="БҮНА Classifications" parent="account.menu_finance_configuration" sequence="102"/>
+
+        <menuitem id="menu_buna_classifications" name="БҮНА Ангилал" parent="menu_buna_classification_root" action="action_product_classification_buna" sequence="1"/>
+
+        <!-- <menuitem id="menu_buna_barcodes" name="БҮНА Baркод" parent="menu_buna_classification_root" action="action_product_barcode_buna" sequence="2"/>
+
+        <menuitem id="menu_init_buna_sectors" name="Салбарын жагсаалт татах" parent="menu_buna_classification_root" action="action_init_buna_sectors" sequence="3"/> -->
+
+        <!-- Product Template Form View Update - Шинэ page дээр нэмэх -->
+        <record id="product_template_form_view_inherit_buna_classification" model="ir.ui.view">
+            <field name="name">product_template_form_view.inherit.buna_classification</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='inventory']" position="after">
+                    <page string="БҮНА Classification" name="buna_classification" groups="account.group_account_user">
+                        <group>
+                            <group>
+                                <field name="buna_classification_id" />
+                                <button name="action_select_buna_classification" string="БҮНА ангилал сонгох" type="object" class="btn-link"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,990 @@
+# Mongolian translation additions for ebarimt_api and pos_ebarimt (Odoo 19).
+# Merge these entries into each module's i18n/mn.po.
+# The first three entries are Python messages that can only be translated from the .po file.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-30 06:30+0000\n"
+"Language: mn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: ebarimt_api
+#: model:ir.actions.report,print_report_name:ebarimt_api.action_report_saleorder_ebarimt
+msgid "'eBarimt - %s' % (object.name)"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.account_ebarimt_posapi_kanban
+msgid "<b>Last Send Date:</b>"
+msgstr "<b>Сүүлд илгээсэн огноо:</b>"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid ""
+"<br/>\n"
+"                                <strong>Огноо:</strong>"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid ""
+"<br/>\n"
+"                                <strong>Хариуцагч:</strong>"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "<strong>Баримт №:</strong>"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "<strong>Нийт дүн:</strong>"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "<strong>Харилцагч:</strong><br/>"
+msgstr ""
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__account_move_id
+msgid "Account Move"
+msgstr "Дансны гүйлгээ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__account_payment_id
+msgid "Account Payment"
+msgstr "Дансны төлбөр"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__active
+msgid "Active"
+msgstr "Идэвхитэй"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_account_ebarimt_confirmation
+msgid "Ask Confirmation when sending eBarimt"
+msgstr "иБаримт илгээхэд баталгаажуулалт асуух"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,help:ebarimt_api.field_res_partner__district_code
+#: model:ir.model.fields,help:ebarimt_api.field_res_users__district_code
+msgid "Auto-computed from State and Sub-state codes"
+msgstr "Аймаг/хот болон сум/дүүргийн кодоос автоматаар тооцоологдоно"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__bill_id
+msgid "Bill ID"
+msgstr "Баримтын ДДТД"
+
+# Corrections to existing translations
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_move__vat_bill_state__done
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__vat_receipt__bill_state__done
+msgid "Bill Sent"
+msgstr "Баримт илгээсэн"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__bill_type
+msgid "Bill Type"
+msgstr "Баримтын төрөл"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__send_interval_unit
+msgid "Call Interval for Send Data"
+msgstr "Мэдээлэл илгээх дуудлагын интервал"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_confirmation_form
+msgid "Cancel"
+msgstr "Цуцлах"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__name
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_product__vat_classification_id
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_template__vat_classification_id
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_classification_code_form
+msgid "Classification Code"
+msgstr "Ангилалын код"
+
+#. module: ebarimt_api
+#: model:ir.actions.act_window,name:ebarimt_api.action_product_classification_code
+#: model:ir.ui.menu,name:ebarimt_api.menu_product_classification_code
+msgid "Classification Codes"
+msgstr "Ангилалын кодууд"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__label
+msgid "Classification Name"
+msgstr "Ангилалын нэр"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__company_id
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__company_id
+msgid "Company"
+msgstr "Компани"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__ebarimt_company_name
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__ebarimt_company_name
+msgid "Company Name (from eBarimt)"
+msgstr "Компанийн нэр (ибаримтаас)"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Connection timeout - please try again later"
+msgstr "Холболтын хугацаа дууссан - дараа дахин оролдоно уу"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_res_partner
+msgid "Contact"
+msgstr "Харилцах хаяг"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Could not fetch eBarimt info: %s"
+msgstr "eBarimt мэдээллийг дуудаж чадсангүй: %s"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Could not verify VAT: %s"
+msgstr "НӨАТ-ыг баталгаажуулж чадсангүй: %s"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__country_id
+msgid "Country"
+msgstr "Улс"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_res_country_state
+msgid "Country state"
+msgstr "Аймаг/Хот"
+
+#. module: ebarimt_api
+#: model_terms:ir.actions.act_window,help:ebarimt_api.action_product_classification_code
+msgid "Create a new Classification Codes"
+msgstr "Шинэ ангиллын код үүсгэх"
+
+#. module: ebarimt_api
+#: model_terms:ir.actions.act_window,help:ebarimt_api.action_product_vat_code
+msgid "Create a new VAT Codes"
+msgstr "НӨАТ-ын шинэ код үүсгэх"
+
+#. module: ebarimt_api
+#: model_terms:ir.actions.act_window,help:ebarimt_api.action_account_ebarimt_posapi
+msgid "Create a new eBarimt PosAPI"
+msgstr "Шинэ eBarimt PosAPI үүсгэнэ үү"
+
+#. module: ebarimt_api
+#: model_terms:ir.actions.act_window,help:ebarimt_api.action_res_country_sub_state
+msgid "Create a new sub-state"
+msgstr "Шинэ сум/дүүрэг үүсгэх"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__create_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__create_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__create_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__create_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__create_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__create_uid
+msgid "Created by"
+msgstr "Үүсгэсэн хэрэглэгч"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__create_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__create_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__create_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__create_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__create_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__create_date
+msgid "Created on"
+msgstr "Үүсгэсэн огноо"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__customer_tin
+msgid "Customer Tin"
+msgstr "Харилцагчийн ТТД"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_ebarimt_posapi__send_interval_unit__daily
+msgid "Daily"
+msgstr "Өдөр бүр"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/wizard/ebarimt_confirmation.py:0
+#, python-format
+msgid "Data has been sent to the eBarimt.mn system. VAT invoice id: %s"
+msgstr "Мэдээлэл eBarimt.mn рүү илгээгдсэн. НӨАТ-ийн нэхэмжлэлийн ID: %s"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/wizard/ebarimt_confirmation.py:0
+#, python-format
+msgid "Data has been sent to the eBarimt.mn system. VAT order id: %s"
+msgstr "Мэдээлэл eBarimt.mn рүү илгээгдсэн. НӨАТ-ийн баримтын ID: %s"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__display_name
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__display_name
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__display_name
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__display_name
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__display_name
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__display_name
+msgid "Display Name"
+msgstr "Дэлгэцийн нэр"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__district_code
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__district_code
+msgid "District Code"
+msgstr "Дүүргийн код"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/account_move.py:0
+#, python-format
+msgid "District code refreshed: %s"
+msgstr "Дүүргийн кодыг шинэчилсэн: %s"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__sub_state_id
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__sub_state_id
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_partner_property_form_inherit_ebarimt_api
+msgid "District/Sub-state"
+msgstr "Сум/Дүүрэг"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_vat_receipt
+msgid "Ebarimt Receipt"
+msgstr "И-Баримт"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/account_move.py:0
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Error"
+msgstr "Алдаа"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_ebarimt_posapi__send_interval_unit__30minute
+msgid "Every 30 minute"
+msgstr "30 минут тутамд"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/account_move.py:0
+#, python-format
+msgid "Failed to refresh district code: %s"
+msgstr "Дүүргийн кодыг сэргээж чадсангүй: %s"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_ebarimt_posapi__send_interval_unit__hourly
+msgid "Hourly"
+msgstr "Цаг тутамд"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__id
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__id
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__id
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__id
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__id
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__id
+msgid "ID"
+msgstr "ID дугаар"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__inactive_id
+msgid "Inactive Bill ID"
+msgstr "Идэвхгүй баримтын ДДТД"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Info"
+msgstr "Мэдээлэл"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_move__vat_bill_state__invoice
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__vat_receipt__bill_state__invoice
+msgid "Invoice"
+msgstr "Нэхэмжлэх"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__invoice_id
+msgid "Invoice ID"
+msgstr "Нэхэмжлэхийн дугаар"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_tax__city_tax
+msgid "Is This City Tax?"
+msgstr "НХАТ эсэх?"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_account_move
+msgid "Journal Entry"
+msgstr "Ажил гүйлгээ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__label
+msgid "Label"
+msgstr "Гарчиг"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,help:ebarimt_api.field_account_ebarimt_posapi__last_send_date
+msgid "Last Date of sendData function of PosAPI was called"
+msgstr "PosAPI-ийн sendData функцийг хамгийн сүүлд дуудсан огноо"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_posapi_form
+msgid "Last Message"
+msgstr "Сүүлийн мессеж"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation____last_update
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi____last_update
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code____last_update
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code____last_update
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state____last_update
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__last_send_date
+msgid "Last Send Date"
+msgstr "Сүүлд илгээсэн огноо"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__write_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__write_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__write_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__write_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__write_uid
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд шинэчилсэн хэрэглэгч"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__write_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__write_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_classification_code__write_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__write_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__write_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__write_date
+msgid "Last Updated on"
+msgstr "Сүүлд шинэчилсэн огноо"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__ebarimt_verification_date
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__ebarimt_verification_date
+msgid "Last Verified"
+msgstr "Сүүлд баталгаажуулсан"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__merchant_tin
+msgid "Merchant Tin"
+msgstr "Борлуулагчийн ТТД"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__message
+msgid "Message"
+msgstr "Мессеж"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_account_ebarimt_posapi
+msgid "Model for PosAPI 3.0 Integration"
+msgstr "PosAPI 3.0 интеграцийн загвар"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_posapi_form
+msgid "Name"
+msgstr "Нэр"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_move__vat_bill_state__old
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__vat_receipt__bill_state__old
+msgid "Needs to be Refunded"
+msgstr "Буцаан олгох шаардлагатай"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__next_send_date
+msgid "Next Data Send Date"
+msgstr "Дараагийн өгөгдөл илгээх огноо"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_tax__ebarimt_tax_type__vat_able
+msgid "Normal VAT"
+msgstr "Ердийн НӨАТ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__pos_id
+msgid "Pos ID"
+msgstr "ПОС-ын ID"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__pos_order_id
+msgid "Pos Order"
+msgstr "ПОС-ын захиалга"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_product_template
+msgid "Product"
+msgstr "Бараа"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "QR код уншуулж шалгана уу"
+msgstr "QR код уншуулж шалгана уу"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__refunded
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_move__vat_bill_state__refund
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__vat_receipt__bill_state__refund
+msgid "Refunded"
+msgstr "Буцаан олгосон"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__report_month
+msgid "Report Month"
+msgstr "Тайлангийн сар"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_posapi_form
+msgid "Run Check"
+msgstr "Шалгалтыг ажиллуулах"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_sale_order
+msgid "Sales Order"
+msgstr "Борлуулалтын захиалга"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_confirmation__bill_type_individual
+msgid "Sales for Individual"
+msgstr "Хувь хүний борлуулалт"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_confirmation_form
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_move_form_inherit_ebarimt_api
+msgid "Send eBarimt"
+msgstr "Ибаримт илгээх"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_move_form_inherit_ebarimt_api
+msgid "Send eBarimt Invoice"
+msgstr "Ибаримтын нэхэмжлэл илгээх"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__sent_at
+msgid "Sent Date"
+msgstr "Илгээсэн огноо"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__service_url
+msgid "Service URL"
+msgstr "Сервисийн URL"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_product_classification_code
+msgid "Seven digits of Classification Code of products and services"
+msgstr "Бүтээгдэхүүн, үйлчилгээний ангиллын код долоон оронтой"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__state_id
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__bill_state
+msgid "State"
+msgstr "Муж"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__state_id
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__state_id
+msgid "State/Province"
+msgstr "Аймаг/Хот"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_res_country_sub_state_form
+msgid "Sub-state"
+msgstr "Сум/Дүүрэг"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__code
+msgid "Sub-state Code"
+msgstr "Сум/дүүргийн код"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_sub_state__name
+msgid "Sub-state Name"
+msgstr "Сум/дүүргийн нэр"
+
+#. module: ebarimt_api
+#: model:ir.model.constraint,message:ebarimt_api.constraint_res_country_sub_state_code_length
+msgid "Sub-state code must be at least 2 characters!"
+msgstr "Сум/дүүргийн код хамгийн багадаа 2 тэмдэгттэй байх ёстой!"
+
+#. module: ebarimt_api
+#: model:ir.actions.act_window,name:ebarimt_api.action_res_country_sub_state
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_state__sub_state_ids
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_res_country_sub_state_tree
+msgid "Sub-states"
+msgstr "Сум/Дүүрэг"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_res_country_sub_state
+msgid "Sub-states (Districts)"
+msgstr "Сум/Дүүрэг"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_country_state__sub_state_count
+msgid "Sub-states Count"
+msgstr "Сум/дүүргийн тоо"
+
+#. module: ebarimt_api
+#: model_terms:ir.actions.act_window,help:ebarimt_api.action_res_country_sub_state
+msgid "Sub-states are used to manage districts or regions within a state."
+msgstr ""
+"Сум/дүүрэг нь аймаг, хотын доторх нутаг дэвсгэрийн нэгжийг бүртгэхэд "
+"ашиглагдана."
+
+#. module: ebarimt_api
+#: model:ir.ui.menu,name:ebarimt_api.menu_res_country_sub_state
+msgid "Sub-states/Districts"
+msgstr "Дэд муж/Дүүрэг"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/account_move.py:0
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Success"
+msgstr "Ажилттай"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_account_tax
+msgid "Tax"
+msgstr "Татвар"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,help:ebarimt_api.field_res_partner__vat_tin
+#: model:ir.model.fields,help:ebarimt_api.field_res_users__vat_tin
+#: model:ir.model.fields,help:ebarimt_api.field_sale_order__vat_tin
+msgid "Tax Identification Number from eBarimt"
+msgstr "иБаримтаас авсан ТТД"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__tax_type
+msgid "Tax Type"
+msgstr "Татварын төрөл"
+
+#. module: ebarimt_api
+#: model:ir.model.constraint,message:ebarimt_api.constraint_res_country_sub_state_name_code_uniq
+msgid "The code of the sub-state must be unique by state!"
+msgstr "Сум/дүүргийн код нь аймаг/хот дотроо давхцахгүй байх ёстой!"
+
+#. module: ebarimt_api
+#: model:ir.model,name:ebarimt_api.model_product_vat_code
+msgid "Three digits of code when tax type is either VAT_FREE or VAT_ZERO"
+msgstr ""
+"Татварын төрөл нь VAT_FREE эсвэл VAT_ZERO байх үед код гурван оронтой байна"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__amount
+msgid "Total Amount"
+msgstr "Нийт дүн"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__city_tax
+msgid "Total City Tax"
+msgstr "Нийт НХАТ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__vat
+msgid "Total Vat"
+msgstr "Нийт НӨАТ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_bank_statement_line__vat_bill_state
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_move__vat_bill_state
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_payment__vat_bill_state
+msgid "VAT Bill State"
+msgstr "НӨАТ баримтын төлөв"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_product__vat_code_id
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_template__vat_code_id
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_classification_code_tree
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_vat_code_form
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_vat_code_tree
+msgid "VAT Code"
+msgstr "НӨАТ-ын код"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_tax__ebarimt_tax_type__vat_free
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__product_vat_code__tax_type__vat_free
+msgid "VAT Free"
+msgstr "НӨАТ-гүй"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__vat_payer
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__vat_payer
+msgid "VAT Payer"
+msgstr "НӨАТ төлөгч"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__vat_send_payment
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__vat_send_payment
+msgid "VAT Send Payment"
+msgstr "НӨАТ илгээх төлбөр"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__vat_tin
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__vat_tin
+#: model:ir.model.fields,field_description:ebarimt_api.field_sale_order__vat_tin
+msgid "VAT Tin No"
+msgstr "НӨАТ-ын ТТД"
+
+#. module: ebarimt_api
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__account_tax__ebarimt_tax_type__vat_zero
+#: model:ir.model.fields.selection,name:ebarimt_api.selection__product_vat_code__tax_type__vat_zero
+msgid "VAT Zero %"
+msgstr "Тэг % НӨАТ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__name
+msgid "VAT code"
+msgstr "НӨАТ код"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "VAT number is required for verification"
+msgstr "Баталгаажуулахын тулд НӨАТ-ын дугаар шаардлагатай"
+
+#. module: ebarimt_api
+#: model:ir.actions.act_window,name:ebarimt_api.action_product_vat_code
+#: model:ir.ui.menu,name:ebarimt_api.menu_product_vat_codes
+msgid "Vat Codes"
+msgstr "НӨАТ кодууд"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_product_vat_code__tax_type
+msgid "Vat Type"
+msgstr "НӨАТ төрөл"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Verification completed"
+msgstr "Баталгаажуулалт дууссан"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "Warning"
+msgstr "Анхааруулга"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_tax__ebarimt_send_data
+msgid "Will data be sent to eBarimt PosAPI?"
+msgstr "Мэдээллийг eBarimt PosAPI руу илгээх үү?"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid ""
+"Your Service URL might be not qualified. Please use such URL: "
+"http://192.168.10.25:9010"
+msgstr ""
+"Сервисийн URL буруу байж магадгүй. Дараах хэлбэрийн URL ашиглана уу: "
+"http://192.168.10.25:9010"
+
+#. module: ebarimt_api
+#: model:ir.ui.menu,name:ebarimt_api.menu_account_ebarimt_posapi
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.account_ebarimt_posapi_kanban
+msgid "eBarimt"
+msgstr "иБаримт"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_move_form_inherit_ebarimt_api
+msgid "eBarimt Bills"
+msgstr "иБаримтууд"
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.product_template_form_view_inherit_ebarimt_api
+msgid "eBarimt Configuration"
+msgstr "иБаримтын тохиргоо"
+
+#. module: ebarimt_api
+#: model:ir.actions.act_window,name:ebarimt_api.action_account_ebarimt_confirmation
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_confirmation_form
+msgid "eBarimt Confirmation"
+msgstr "иБаримт баталгаажуулах"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_bank_statement_line__vat_invoice_sent
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_move__vat_invoice_sent
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_payment__vat_invoice_sent
+msgid "eBarimt Invoice Sent?"
+msgstr "иБаримтын нэхэмжлэх илгээсэн үү?"
+
+#. module: ebarimt_api
+#: model:ir.actions.act_window,name:ebarimt_api.action_account_ebarimt_posapi
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_ebarimt_posapi__name
+#: model:ir.ui.menu,name:ebarimt_api.menu_action_account_ebarimt_posapi
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.account_ebarimt_posapi_tree
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_posapi_form
+msgid "eBarimt PosAPI"
+msgstr "иБаримт PosAPI"
+
+#. module: ebarimt_api
+#: model:ir.actions.server,name:ebarimt_api.ir_cron_ebarimt_send_data_day_ir_actions_server
+#: model:ir.cron,cron_name:ebarimt_api.ir_cron_ebarimt_send_data_day
+msgid "eBarimt PosAPI::sendData by day"
+msgstr "иБаримт PosAPI: өдрөөр дата илгээх"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_bank_statement_line__vat_receipts
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_move__vat_receipts
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_payment__vat_receipts
+msgid "eBarimt Receipts"
+msgstr "иБаримтын баримтууд"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_bank_statement_line__vat_sent
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_move__vat_sent
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_payment__vat_sent
+msgid "eBarimt Sent?"
+msgstr "иБаримт илгээсэн үү?"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__ebarimt_status
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__ebarimt_status
+msgid "eBarimt Status"
+msgstr "иБаримтын төлөв"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_account_tax__ebarimt_tax_type
+msgid "eBarimt Tax Type"
+msgstr "иБаримтын татварын төрөл"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_partner__ebarimt_verified
+#: model:ir.model.fields,field_description:ebarimt_api.field_res_users__ebarimt_verified
+msgid "eBarimt Verified"
+msgstr "иБаримтаар баталгаажсан"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "eBarimt information cleared"
+msgstr "иБаримтын мэдээллийг цэвэрлэлээ"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/res_partner.py:0
+#, python-format
+msgid "eBarimt information updated successfully"
+msgstr "иБаримтын мэдээлэл амжилттай шинэчлэгдлээ"
+
+#. module: ebarimt_api
+#: model:ir.actions.report,name:ebarimt_api.action_report_saleorder_ebarimt
+msgid "eBarimt баримт"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.view_account_ebarimt_posapi_form
+msgid "http://192.168.10.25:9010"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "БОРЛУУЛАЛТЫН БАРИМТ"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Бараа/Үйлчилгээ"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Баримтын дугаар:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "ДДТД МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Дэд дүн:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Дүн"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Илгээсэн огноо:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "НХАТ:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Нийт дүн:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Нэгж үнэ"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "НӨАТ:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "РД:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "СУГАЛААНЫ ДУГААР"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "ТТД:"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Тоо хэмжээ"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "Хөнгөлөлт %"
+msgstr ""
+
+#. module: ebarimt_api
+#: model_terms:ir.ui.view,arch_db:ebarimt_api.report_saleorder_ebarimt
+msgid "ҮНИЙН САНАЛ"
+msgstr ""
+
+#~ msgid "B2C_RECEIPT or B2B_RECEIPT"
+#~ msgstr "B2C_RECEIPT (хувь хүн) эсвэл B2B_RECEIPT (байгууллага)"
+
+#~ msgid "Cached At"
+#~ msgstr "Кэшлэсэн огноо"
+
+#~ msgid "Children"
+#~ msgstr "Дэд ангиллууд"
+
+#~ msgid "Resend eBarimt"
+#~ msgstr "иБаримт дахин илгээх"
+
+#~ msgid "Return eBarimt"
+#~ msgstr "иБаримт буцаах"
+
+#~ msgid "Tax Identification Number for eBarimt"
+#~ msgstr "иБаримтад ашиглах татвар төлөгчийн дугаар (ТТД)"
+
+#~ msgid "eBarimt Config JSON"
+#~ msgstr "иБаримтын тохиргоо (JSON)"
+
+#~ msgid "eBarimt Resent"
+#~ msgstr "иБаримт дахин илгээгдсэн"
+
+#~ msgid "ebarimt Configuration"
+#~ msgstr "иБаримтын тохиргоо"
+
+#~ msgid "ebarimt POS API Setting"
+#~ msgstr "иБаримт POS API тохиргоо"
+
+#~ msgid "ebarimt Setting"
+#~ msgstr "иБаримтын тохиргоо"
+
+#~ msgid "Has Children"
+#~ msgstr "Дэд ангилалтай"
+
+#~ msgid "Parent"
+#~ msgstr "Эцэг ангилал"
+
+#~ msgid "Company TIN"
+#~ msgstr "Компанийн ТТД"
+
+#~ msgid "Parent Merchant TIN"
+#~ msgstr "Үндсэн борлуулагчийн ТТД"
+
+#~ msgid "eBarimt Customer TIN"
+#~ msgstr "иБаримт харилцагчийн ТТД"
+
+#~ msgid "eBarimt Manual Customer TIN"
+#~ msgstr "Гараар оруулсан харилцагчийн ТТД"
+
+#~ msgid "Final customer TIN used for eBarimt"
+#~ msgstr "иБаримтад ашигласан харилцагчийн эцсийн ТТД"
+
+#~ msgid "Manually entered customer TIN"
+#~ msgstr "Гараар оруулсан харилцагчийн ТТД"
+
+#~ msgid "Tax Identification Number for Parent Merchant in eBarimt"
+#~ msgstr "Үндсэн борлуулагчийн татвар төлөгчийн дугаар (ТТД)"
+
+#~ msgid "Full eBarimt configuration from POS"
+#~ msgstr "ПОС-оос ирсэн иБаримтын бүрэн тохиргоо"
+
+#~ msgid "Automatically send eBarimt receipts when orders are paid"
+#~ msgstr "Захиалга төлөгдөхөд иБаримтыг автоматаар илгээнэ"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__lottery
+msgid "Lottery"
+msgstr "Сугалааны дугаар"
+
+#. module: ebarimt_api
+#: model:ir.model.fields,field_description:ebarimt_api.field_vat_receipt__qr_data
+msgid "QR Data"
+msgstr "QR өгөгдөл"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/wizard/ebarimt_confirmation.py:0
+#, python-format
+msgid "Data has been sent to the eBarimt.mn system. Bill id: %s"
+msgstr "Мэдээллийг eBarimt.mn системд илгээлээ. Баримтын дугаар: %s"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/wizard/ebarimt_confirmation.py:0
+#, python-format
+msgid "%s already has an eBarimt bill."
+msgstr "%s-д иБаримт аль хэдийн үүссэн байна."
+

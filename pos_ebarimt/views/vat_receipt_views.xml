@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- All eBarimt bills of POS orders, read-only. -->
+    <record id="vat_receipt_pos_view_list" model="ir.ui.view">
+        <field name="name">vat.receipt.pos.list</field>
+        <field name="model">vat.receipt</field>
+        <field name="arch" type="xml">
+            <list string="eBarimt Bills" create="0" edit="0" delete="0"
+                  decoration-muted="bill_state == 'refund'"
+                  decoration-danger="bill_state == 'old'">
+                <field name="sent_at"/>
+                <field name="pos_order_id"/>
+                <field name="bill_id"/>
+                <field name="bill_type"/>
+                <field name="amount" sum="Total"/>
+                <field name="vat" sum="Total"/>
+                <field name="city_tax" sum="Total" optional="show"/>
+                <field name="lottery" optional="show"/>
+                <field name="inactive_id" string="Replaced Bill" optional="hide"/>
+                <field name="bill_state" widget="badge"
+                       decoration-success="bill_state == 'done'"
+                       decoration-info="bill_state == 'refund'"
+                       decoration-danger="bill_state == 'old'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vat_receipt_pos_view_form" model="ir.ui.view">
+        <field name="name">vat.receipt.pos.form</field>
+        <field name="model">vat.receipt</field>
+        <field name="arch" type="xml">
+            <form string="eBarimt Bill" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="bill_id"/>
+                            <field name="pos_order_id"/>
+                            <field name="bill_type"/>
+                            <field name="bill_state"/>
+                            <field name="sent_at"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="vat"/>
+                            <field name="city_tax"/>
+                            <field name="lottery"/>
+                            <field name="customer_tin"/>
+                            <field name="inactive_id" string="Replaced Bill"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vat_receipt_pos_view_search" model="ir.ui.view">
+        <field name="name">vat.receipt.pos.search</field>
+        <field name="model">vat.receipt</field>
+        <field name="arch" type="xml">
+            <search string="eBarimt Bills">
+                <field name="bill_id"/>
+                <field name="pos_order_id"/>
+                <field name="lottery"/>
+                <filter name="valid" string="Valid" domain="[('bill_state', '=', 'done')]"/>
+                <filter name="returned" string="Returned or Replaced" domain="[('bill_state', '=', 'refund')]"/>
+                <separator/>
+                <filter name="sent_at" string="Sent Date" date="sent_at"/>
+                <group>
+                    <filter name="group_state" string="State" context="{'group_by': 'bill_state'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'sent_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_vat_receipt_pos" model="ir.actions.act_window">
+        <field name="name">eBarimt Bills</field>
+        <field name="res_model">vat.receipt</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('pos_order_id', '!=', False)]</field>
+        <field name="context">{'create': False}</field>
+        <field name="search_view_id" ref="vat_receipt_pos_view_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('vat_receipt_pos_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('vat_receipt_pos_view_form')})]"/>
+    </record>
+
+    <menuitem id="menu_vat_receipt_pos"
+              name="eBarimt Bills"
+              parent="point_of_sale.menu_point_rep"
+              action="action_vat_receipt_pos"
+              groups="account.group_account_user,point_of_sale.group_pos_manager"
+              sequence="90"/>
+</odoo>

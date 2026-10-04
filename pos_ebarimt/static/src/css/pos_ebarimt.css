@@ -1,0 +1,59 @@
+/* POS eBarimt Receipt Styles */
+.pos-ebarimt-receipt .ebarimt-section {
+    font-family: 'Courier New', monospace;
+    background: #ffffff;
+    color: #000000;
+    line-height: 1.4;
+}
+
+.pos-ebarimt-receipt .ebarimt-section h3 {
+    text-transform: uppercase;
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.pos-ebarimt-receipt .ebarimt-section table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.pos-ebarimt-receipt .ebarimt-section table td {
+    vertical-align: top;
+    padding: 2px 0;
+}
+
+.pos-ebarimt-receipt .lottery-box {
+    animation: pulse 2s infinite;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.pos-ebarimt-receipt .qr-code-container {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: inline-block;
+}
+
+/* Print styles */
+@media print {
+    .pos-ebarimt-receipt .ebarimt-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .pos-ebarimt-receipt .lottery-box {
+        border: 3px solid #000 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+}

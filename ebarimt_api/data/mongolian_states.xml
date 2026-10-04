@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Монгол улсын аймгууд (21 аймаг + 1 хот) -->
+        <record id="state_mn_01" model="res.country.state">
+            <field name="name">Архангай</field>
+            <field name="code">01</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_02" model="res.country.state">
+            <field name="name">Баян-Өлгий</field>
+            <field name="code">02</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_03" model="res.country.state">
+            <field name="name">Баянхонгор</field>
+            <field name="code">03</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_04" model="res.country.state">
+            <field name="name">Булган</field>
+            <field name="code">04</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_05" model="res.country.state">
+            <field name="name">Говь-Алтай</field>
+            <field name="code">05</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <!-- <record id="state_mn_06" model="res.country.state">
+            <field name="name">Говьсүмбэр</field>
+            <field name="code">06</field>
+            <field name="country_id" ref="base.mn"/>
+        </record> -->
+
+        <!-- <record id="state_mn_07" model="res.country.state">
+            <field name="name">Дархан-Уул</field>
+            <field name="code">07</field>
+            <field name="country_id" ref="base.mn"/>
+        </record> -->
+
+        <!-- <record id="state_mn_08" model="res.country.state">
+            <field name="name">Дорноговь</field>
+            <field name="code">08</field>
+            <field name="country_id" ref="base.mn"/>
+        </record> -->
+
+        <!-- <record id="state_mn_09" model="res.country.state">
+            <field name="name">Дорнод</field>
+            <field name="code">09</field>
+            <field name="country_id" ref="base.mn"/>
+        </record> -->
+
+        <!-- <record id="state_mn_10" model="res.country.state">
+            <field name="name">Дундговь</field>
+            <field name="code">10</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_11" model="res.country.state">
+            <field name="name">Завхан</field>
+            <field name="code">11</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_12" model="res.country.state">
+            <field name="name">Орхон</field>
+            <field name="code">12</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_13" model="res.country.state">
+            <field name="name">Өвөрхангай</field>
+            <field name="code">13</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_14" model="res.country.state">
+            <field name="name">Өмнөговь</field>
+            <field name="code">14</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_15" model="res.country.state">
+            <field name="name">Сүхбаатар</field>
+            <field name="code">15</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_16" model="res.country.state">
+            <field name="name">Сэлэнгэ</field>
+            <field name="code">16</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_17" model="res.country.state">
+            <field name="name">Төв</field>
+            <field name="code">17</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_18" model="res.country.state">
+            <field name="name">Увс</field>
+            <field name="code">18</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_19" model="res.country.state">
+            <field name="name">Ховд</field>
+            <field name="code">19</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_20" model="res.country.state">
+            <field name="name">Хөвсгөл</field>
+            <field name="code">20</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <record id="state_mn_21" model="res.country.state">
+            <field name="name">Хэнтий</field>
+            <field name="code">21</field>
+            <field name="country_id" ref="base.mn"/>
+        </record> -->
+
+        <!-- Улаанбаатар хот -->
+        <record id="state_mn_22" model="res.country.state">
+            <field name="name">Улаанбаатар хот</field>
+            <field name="code">22</field>
+            <field name="country_id" ref="base.mn"/>
+        </record>
+
+        <!-- Улаанбаатар хотын дүүргүүд (Sub-states) -->
+        <record id="sub_state_ub_01" model="res.country.sub.state">
+            <field name="name">Баянгол дүүрэг</field>
+            <field name="code">01</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_02" model="res.country.sub.state">
+            <field name="name">Баянзүрх дүүрэг</field>
+            <field name="code">02</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_03" model="res.country.sub.state">
+            <field name="name">Чингэлтэй дүүрэг</field>
+            <field name="code">03</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_04" model="res.country.sub.state">
+            <field name="name">Хан-Уул дүүрэг</field>
+            <field name="code">04</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_05" model="res.country.sub.state">
+            <field name="name">Налайх дүүрэг</field>
+            <field name="code">05</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_06" model="res.country.sub.state">
+            <field name="name">Сонгино-Хайрхан дүүрэг</field>
+            <field name="code">06</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_07" model="res.country.sub.state">
+            <field name="name">Сүхбаатар дүүрэг</field>
+            <field name="code">07</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_08" model="res.country.sub.state">
+            <field name="name">Багахангай дүүрэг</field>
+            <field name="code">08</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <record id="sub_state_ub_09" model="res.country.sub.state">
+            <field name="name">Баганууль дүүрэг</field>
+            <field name="code">09</field>
+            <field name="state_id" ref="state_mn_22"/>
+        </record>
+
+        <!-- Жишээ: Архангай аймгийн зарим сумууд -->
+        <record id="sub_state_ar_01" model="res.country.sub.state">
+            <field name="name">Цэцэрлэг сум</field>
+            <field name="code">01</field>
+            <field name="state_id" ref="state_mn_01"/>
+        </record>
+
+        <record id="sub_state_ar_02" model="res.country.sub.state">
+            <field name="name">Чулуут сум</field>
+            <field name="code">02</field>
+            <field name="state_id" ref="state_mn_01"/>
+        </record>
+
+        <record id="sub_state_ar_03" model="res.country.sub.state">
+            <field name="name">Эрдэнэбулган сум</field>
+            <field name="code">03</field>
+            <field name="state_id" ref="state_mn_01"/>
+        </record>
+
+        <record id="sub_state_ar_04" model="res.country.sub.state">
+            <field name="name">Хангай сум</field>
+            <field name="code">04</field>
+            <field name="state_id" ref="state_mn_01"/>
+        </record>
+
+        <!-- Жишээ: Дархан-Уул аймгийн дүүргүүд -->
+        <record id="sub_state_du_01" model="res.country.sub.state">
+            <field name="name">Дархан сум</field>
+            <field name="code">01</field>
+            <field name="state_id" ref="state_mn_07"/>
+        </record>
+
+        <record id="sub_state_du_02" model="res.country.sub.state">
+            <field name="name">Хонгор сум</field>
+            <field name="code">02</field>
+            <field name="state_id" ref="state_mn_07"/>
+        </record>
+
+        <record id="sub_state_du_03" model="res.country.sub.state">
+            <field name="name">Шарын гол сум</field>
+            <field name="code">03</field>
+            <field name="state_id" ref="state_mn_07"/>
+        </record>
+
+        <record id="sub_state_du_04" model="res.country.sub.state">
+            <field name="name">Орхон сум</field>
+            <field name="code">04</field>
+            <field name="state_id" ref="state_mn_07"/>
+        </record>
+
+        <!-- Жишээ: Орхон аймгийн дүүргүүд -->
+        <record id="sub_state_or_01" model="res.country.sub.state">
+            <field name="name">Баян-Өндөр сум</field>
+            <field name="code">01</field>
+            <field name="state_id" ref="state_mn_12"/>
+        </record>
+
+        <record id="sub_state_or_02" model="res.country.sub.state">
+            <field name="name">Жаргалант сум</field>
+            <field name="code">02</field>
+            <field name="state_id" ref="state_mn_12"/>
+        </record>
+
+        <!-- Дахин тохируулах хэрэггүй давхардсан records-г устгах -->
+        <!-- Таны өмнөх кодоос авсан дүүргүүдийг sub-state болгон засах -->
+
+    </data>
+</odoo>

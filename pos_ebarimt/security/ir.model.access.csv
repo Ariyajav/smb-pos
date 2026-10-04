@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_disctric_code,access_disctric_code,model_disctric_code,base.group_user,1,0,0,0
+access_disctric_code_pos_manager,disctric.code pos manager,model_disctric_code,point_of_sale.group_pos_manager,1,1,1,1
+access_product_classification_buna,access_product_classification_buna,model_product_classification_buna,base.group_user,1,1,1,1
+access_product_barcode_buna,access_product_barcode_buna,model_product_barcode_buna,base.group_user,1,1,1,1
+access_ebarimt_posapi_pos_user,account.ebarimt.posapi pos user,ebarimt_api.model_account_ebarimt_posapi,point_of_sale.group_pos_user,1,0,0,0
+access_vat_receipt_pos_user,vat.receipt pos user,ebarimt_api.model_vat_receipt,point_of_sale.group_pos_user,1,0,0,0
+access_product_classification_code_pos_user,product.classification.code pos user,ebarimt_api.model_product_classification_code,point_of_sale.group_pos_user,1,0,0,0
+access_product_vat_code_pos_user,product.vat.code pos user,ebarimt_api.model_product_vat_code,point_of_sale.group_pos_user,1,0,0,0

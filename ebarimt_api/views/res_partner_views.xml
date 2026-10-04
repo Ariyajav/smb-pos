@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Partner form view-г inherit хийх -->
+        <record id="view_partner_property_form_inherit_ss_ebarimt_api" model="ir.ui.view">
+            <field name="name">view_partner_property_form.inherit.ebarimt_api</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!-- Address section дотор state_id-н дараа нэмэх -->
+                <xpath expr="//field[@name='state_id']" position="after">
+                    <field name="sub_state_id"
+                           placeholder="District/Sub-state"
+                           options="{'no_open': True, 'no_create': True}"
+                           invisible="not state_id"/>
+                    <field name="district_code"
+                           invisible="not sub_state_id"/>
+                </xpath>
+
+                <!-- VAT талбарын өмнө VAT холбогдох мэдээлэл нэмэх -->
+                <xpath expr="//field[@name='vat']" position="before">
+                    <field name="vat_tin"/>
+                    <field name="vat_payer"/>
+                    <field name="vat_send_payment"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Sub-state модельн list view -->
+        <record id="view_res_country_sub_state_tree" model="ir.ui.view">
+            <field name="name">res.country.sub.state.list</field>
+            <field name="model">res.country.sub.state</field>
+            <field name="arch" type="xml">
+                <list string="Sub-states">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="state_id"/>
+                    <field name="country_id"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Sub-state модельн form view -->
+        <record id="view_res_country_sub_state_form" model="ir.ui.view">
+            <field name="name">res.country.sub.state.form</field>
+            <field name="model">res.country.sub.state</field>
+            <field name="arch" type="xml">
+                <form string="Sub-state">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="code"/>
+                            <field name="state_id" required="1"/>
+                            <field name="country_id" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Sub-state модельн action -->
+        <record id="action_res_country_sub_state" model="ir.actions.act_window">
+            <field name="name">Sub-states</field>
+            <field name="res_model">res.country.sub.state</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new sub-state
+                </p>
+                <p>
+                    Sub-states are used to manage districts or regions within a state.
+                </p>
+            </field>
+        </record>
+
+        <!-- <menuitem id="menu_res_country_sub_state"
+                  name="Sub-states"
+                  parent="base.menu_country_partner"
+                  action="action_res_country_sub_state"
+                  sequence="20"/> -->
+    </data>
+</odoo>

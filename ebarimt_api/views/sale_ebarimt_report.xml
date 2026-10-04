@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_ebarimt" name="Sale Order eBarimt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <h2 class="text-center mb-4">
+                            <t t-if="o.state == 'sale'">БОРЛУУЛАЛТЫН БАРИМТ</t>
+                            <t t-else="">ҮНИЙН САНАЛ</t>
+                        </h2>
+                        
+                        <!-- Company & Customer Info -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Харилцагч:</strong><br/>
+                                <span t-field="o.partner_id.name"/><br/>
+                                <t t-if="o.partner_id.vat">
+                                    РД: <span t-field="o.partner_id.vat"/><br/>
+                                </t>
+                                <t t-if="o.partner_id.vat_tin">
+                                    ТТД: <span t-field="o.partner_id.vat_tin"/>
+                                </t>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>Баримт №:</strong> <span t-field="o.name"/><br/>
+                                <strong>Огноо:</strong> <span t-field="o.date_order" t-options='{"widget": "date"}'/><br/>
+                                <strong>Хариуцагч:</strong> <span t-field="o.user_id.name"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Lines -->
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Бараа/Үйлчилгээ</th>
+                                    <th class="text-end">Тоо хэмжээ</th>
+                                    <th class="text-end">Нэгж үнэ</th>
+                                    <th class="text-end">Хөнгөлөлт %</th>
+                                    <th class="text-end">Дүн</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <span t-field="line.product_id.name"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.product_uom_qty"/>
+                                            <span t-field="line.product_uom_id"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.price_unit"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.discount"/>%
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.price_total"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        
+                        <!-- Totals -->
+                        <div class="row justify-content-end mb-4">
+                            <div class="col-4">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Дэд дүн:</td>
+                                        <td class="text-end">
+                                            <span t-field="o.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>НӨАТ:</td>
+                                        <td class="text-end">
+                                            <span t-field="o.amount_tax"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black o_total">
+                                        <td><strong>Нийт дүн:</strong></td>
+                                        <td class="text-end">
+                                            <strong><span t-field="o.amount_total"/></strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- eBarimt Section -->
+                        <t t-set="ebarimt_data" t-value="o._get_ebarimt_data()"/>
+                        <t t-if="ebarimt_data">
+                            <div style="page-break-inside: avoid;" class="mt-5">
+                                <h3 class="text-center mb-3">ДДТД МЭДЭЭЛЭЛ</h3>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td width="40%">Баримтын дугаар:</td>
+                                                <td><strong><t t-esc="ebarimt_data['bill_id']"/></strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Илгээсэн огноо:</td>
+                                                <td><t t-esc="ebarimt_data['date']"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>НӨАТ:</td>
+                                                <td><t t-esc="ebarimt_data['vat']"/> ₮</td>
+                                            </tr>
+                                            <tr t-if="ebarimt_data.get('city_tax', 0) > 0">
+                                                <td>НХАТ:</td>
+                                                <td><t t-esc="ebarimt_data['city_tax']"/> ₮</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Нийт дүн:</td>
+                                                <td><strong><t t-esc="ebarimt_data['amount']"/> ₮</strong></td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- Lottery for B2C -->
+                                        <t t-if="ebarimt_data.get('bill_type') == 'B2C_RECEIPT'">
+                                            <div style="border: 3px solid #000; padding: 20px; text-align: center; margin-top: 20px;">
+                                                <h4>СУГАЛААНЫ ДУГААР</h4>
+                                                <h2 style="font-size: 32px; margin: 10px 0;">
+                                                    <t t-esc="ebarimt_data.get('lottery') or ''"/>
+                                                </h2>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    
+                                    <!-- QR Code -->
+                                    <div class="col-4 text-center">
+                                        <img t-attf-src="/report/barcode/?type=QR&amp;value={{ebarimt_data.get('qr_data') or ebarimt_data['bill_id']}}&amp;width=200&amp;height=200"/>
+                                        <p class="mt-2">QR код уншуулж шалгана уу</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report Action -->
+    <record id="action_report_saleorder_ebarimt" model="ir.actions.report">
+        <field name="name">eBarimt баримт</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ebarimt_api.report_saleorder_ebarimt</field>
+        <field name="report_file">ebarimt_api.report_saleorder_ebarimt</field>
+        <field name="print_report_name">'eBarimt - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

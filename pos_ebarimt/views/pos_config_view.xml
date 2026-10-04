@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Company form view-г inherit хийх - зөвхөн company fields -->
+        <record id="view_company_form_inherit_ss_pos_ebarimt" model="ir.ui.view">
+            <field name="name">view_company_form.inherit.pos_ebarimt</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <!-- Notebook-ын эцэст шинэ page нэмэх -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="ebarimt Setting" name="ebarimt_setting">
+                        <group string="ebarimt POS API Setting">
+                            <field name="service_url"/>
+                            <field name="vat_tin"/>
+                            <field name="parent_merchant_tin"/>
+                            <field name="ebarimt_pos_number"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- POS Config view-г одоогоор хасах -->
+        
+        <record id="pos_config_view_form_inherit_ss_pos_ebarimt" model="ir.ui.view">
+            <field name="name">pos_config_view_form.inherit.pos_ebarimt</field>
+            <field name="model">pos.config</field>
+            <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="ebarimt Configuration" name="ebarimt_config">
+                        <field name="send_ebarimt"/>
+                        <field name="branch_code_id"/>
+                        <field name="ebarimt_branch_no"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+       
+    </data>
+</odoo>

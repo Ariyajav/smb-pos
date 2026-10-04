@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!--
+        16.0 replaced the whole "OrderReceipt" template with a Mongolian layout.
+        19.0: the eBarimt part of that layout is added as an extension of
+        point_of_sale.OrderReceipt (just before the "before-footer" hook), so
+        the standard 19.0 lines/totals/payments and other POS modules'
+        receipt extensions keep working. All eBarimt data points of the 16.0
+        receipt are kept: date, ДДТД, totals, НӨАТ, НХАТ, change, lottery,
+        registration amount, QR, member info and the OFFLINE marker.
+    -->
+    <t t-name="pos_ebarimt.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('before-footer')]" position="before">
+            <div class="pos-ebarimt-receipt mongolian-receipt ebarimt-container pt-2">
+                <div class="ebarimt-section" style="border-top: 1px dashed #999; padding-top: 6px;">
+                    <!-- Огноо -->
+                    <div class="text-start">
+                        Огноо:
+                        <t t-if="order.date_order" t-esc="order.formatDateOrTime('date_order')"/>
+                    </div>
+
+                    <!-- ДДТД - Bill ID -->
+                    <div t-if="hasEbarimt" class="text-start text-break">
+                        ДДТД <t t-esc="ebarimtData.bill_id"/>
+                    </div>
+
+                    <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
+
+                    <!-- After a partial return the bill covers only the kept items -->
+                    <t t-if="isReplacementBill">
+                        <div class="fw-bold">Хэсэгчилсэн буцаалтын дараах баримт</div>
+                        <table class="w-100">
+                            <tr t-foreach="ebarimtData.items" t-as="item" t-key="item_index">
+                                <td><t t-esc="item.name"/> x <t t-esc="item.qty"/></td>
+                                <td class="text-end"><t t-esc="Math.round(item.amount)"/></td>
+                            </tr>
+                        </table>
+                        <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
+                    </t>
+
+                    <!-- Totals section -->
+                    <table class="w-100">
+                        <tr>
+                            <td>Нийт дүн</td>
+                            <td class="text-end"><t t-esc="Math.round(ebarimtTotal)"/></td>
+                        </tr>
+                        <tr>
+                            <td>Татварын өмнөх дүн</td>
+                            <td class="text-end"><t t-esc="Math.round(ebarimtTotalExcl)"/></td>
+                        </tr>
+                        <tr>
+                            <td>НӨАТ</td>
+                            <td class="text-end">
+                                <t t-if="hasEbarimt and ebarimtData.vat"><t t-esc="Math.round(ebarimtData.vat)"/></t>
+                                <t t-else=""><t t-esc="Math.round(order.amountTaxes)"/></t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>НХАТ</td>
+                            <td class="text-end">
+                                <t t-if="hasEbarimt and ebarimtData.city_tax"><t t-esc="Math.round(ebarimtData.city_tax)"/></t>
+                                <t t-else="">0</t>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
+
+                    <!-- Payment info section -->
+                    <div t-if="hasEbarimt" class="text-break">ДДТД <t t-esc="ebarimtData.bill_id"/></div>
+                    <div t-if="order.change and order.change > 0">Хариулт: <t t-esc="Math.round(order.change)"/> ₮</div>
+
+                    <!-- Lottery section -->
+                    <div t-if="hasEbarimt and isConsumerReceipt and formattedLottery" class="lottery-box">
+                        Сугалааны дугаар: <span class="fw-bold"><t t-esc="formattedLottery"/></span>
+                    </div>
+
+                    <!-- Registration amount -->
+                    <div>
+                        иБаримтад бүртгүүлэх дүн:
+                        <span class="fw-bold"><t t-esc="Math.round(ebarimtTotal)"/></span>
+                    </div>
+
+                    <!-- QR Code -->
+                    <div t-if="hasEbarimt and ebarimtQrUrl" class="text-center qr-code-container w-100" style="margin: 10px 0;">
+                        <img t-att-src="ebarimtQrUrl" style="width: 100px; height: 100px; display: block; margin: 0 auto;"/>
+                    </div>
+
+                    <!-- Member info -->
+                    <div t-if="hasEbarimt and isConsumerReceipt">
+                        <div t-if="ebarimtData.member_id">Гишүүн ID: <t t-esc="ebarimtData.member_id"/></div>
+                        <div t-if="ebarimtData.points">Оноо нэмэх: <t t-esc="ebarimtData.points"/></div>
+                        <div t-if="ebarimtData.accumulated_points">Хүрмтлүүлсэн оноо: <t t-esc="ebarimtData.accumulated_points"/></div>
+                    </div>
+
+                    <!-- OFFLINE РЕЖИМ -->
+                    <div t-if="!hasEbarimt" class="text-center" style="color: #ff0000; margin-top: 10px;">OFFLINE РЕЖИМ</div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

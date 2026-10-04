@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- POS Order form view-г inherit хийх -->
+        <record id="view_pos_pos_form_inherit_ss_pos_ebarimt" model="ir.ui.view">
+            <field name="name">view_pos_pos_form.inherit.pos_ebarimt</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+                <!-- Refund товчны дараа шинэ товчнууд нэмэх.
+                     16.0 used refunded_orders_count > 0 ("this order is a refund");
+                     19.0 exposes the same information as refunded_order_id. -->
+                <xpath expr="//button[@name='refund']" position="after">
+                    <field name="vat_sent" invisible="1"/>
+                    <field name="vat_bill_state" invisible="1"/>
+                    <field name="refunded_order_id" invisible="1"/>
+                    <field name="ebarimt_state" invisible="1"/>
+                    <button name="send_ebarimt"
+                            string="Resend eBarimt"
+                            type="object"
+                            invisible="state == 'draft' or refunded_order_id or vat_sent or ebarimt_state == 'sending'"/>
+                    <button name="return_ebarimt"
+                            string="Return eBarimt"
+                            type="object"
+                            invisible="state == 'draft' or refunded_order_id or vat_bill_state != 'old'"/>
+                </xpath>
+
+                <!-- Payments page-ийн дараа eBarimt Bills page нэмэх -->
+                <xpath expr="//page[@name='payments']" position="after">
+                    <page string="eBarimt Bills"
+                          name="ebarimt_bills"
+                          invisible="refunded_order_id and not ebarimt_state">
+                        <group invisible="not ebarimt_state">
+                            <field name="ebarimt_state"
+                                   widget="badge"
+                                   decoration-success="ebarimt_state == 'sent'"
+                                   decoration-info="ebarimt_state in ('pending', 'sending')"
+                                   decoration-warning="ebarimt_state == 'failed'"
+                                   decoration-danger="ebarimt_state == 'manual'"/>
+                            <field name="ebarimt_error" invisible="not ebarimt_error"/>
+                            <field name="ebarimt_attempts" invisible="not ebarimt_attempts"/>
+                            <field name="ebarimt_next_try" invisible="ebarimt_state != 'failed'"/>
+                        </group>
+                        <field name="vat_receipts" colspan="4" nolabel="1" readonly="1">
+                            <list string="eBarimt Bills" create="0" editable="bottom">
+                                <field name="bill_id" readonly="1"/>
+                                <field name="bill_type" readonly="1"/>
+                                <field name="city_tax" readonly="1"/>
+                                <field name="vat" readonly="1"/>
+                                <field name="amount" readonly="1"/>
+                                <field name="sent_at" readonly="1"/>
+                                <field name="bill_state"
+                                       widget="badge"
+                                       decoration-danger="bill_state == 'old'"
+                                       decoration-info="bill_state == 'refund'"
+                                       decoration-success="bill_state == 'done'"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- POS Order list view-г inherit хийх -->
+        <record id="view_pos_order_tree_inherit_ss_pos_ebarimt" model="ir.ui.view">
+            <field name="name">view_pos_order_tree.inherit.pos_ebarimt</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+                <!-- Session талбарын дараа нэмэх -->
+                <xpath expr="//field[@name='session_id']" position="after">
+                    <field name="vat_sent" string="eBarimt Resent"/>
+                    <field name="ebarimt_state"
+                           widget="badge"
+                           optional="show"
+                           decoration-success="ebarimt_state == 'sent'"
+                           decoration-info="ebarimt_state in ('pending', 'sending')"
+                           decoration-warning="ebarimt_state == 'failed'"
+                           decoration-danger="ebarimt_state == 'manual'"/>
+                    <field name="vat_bill_state"
+                           widget="badge"
+                           decoration-danger="vat_bill_state == 'old'"
+                           decoration-info="vat_bill_state == 'refund'"
+                           decoration-success="vat_bill_state == 'done'"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
