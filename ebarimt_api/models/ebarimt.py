@@ -1,10 +1,11 @@
 import json
 import datetime
 import requests
+import sys
 import traceback, logging
 from odoo import api, models, fields, _
 from dateutil.relativedelta import relativedelta
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -14,6 +15,14 @@ POSAPI_TIMEOUT = (3, 10)
 # The warning check runs before every sale, so it gives up sooner.
 POSAPI_WARNING_TIMEOUT = (2, 4)
 _MASKED_LOG_KEYS = {"customerTin", "consumerNo", "lottery", "qrData"}
+
+
+def _short_reason():
+    """One line for the message fields POS users can read; the full
+    traceback goes to the server log only."""
+    _logger.exception("PosAPI call failed")
+    exc = sys.exc_info()[1]
+    return type(exc).__name__ if exc is not None else "unknown error"
 
 class eBarimtPosAPI(models.Model):
     _name = "account.ebarimt.posapi"
@@ -63,6 +72,23 @@ class eBarimtPosAPI(models.Model):
         copy=False,
         readonly=True,
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if any('service_url' in vals for vals in vals_list):
+            self._ebarimt_check_url_access()
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if 'service_url' in vals:
+            self._ebarimt_check_url_access()
+        return super().write(vals)
+
+    def _ebarimt_check_url_access(self):
+        # The gateway key is sent to this URL, so whoever can change it can
+        # read the key: keep it as locked down as the key itself.
+        if not self.env.su and not self.env.user.has_group('base.group_system'):
+            raise AccessError(_("Only administrators can change the PosAPI Service URL."))
 
     def _get_next_send_date(self):
         if self.send_interval_unit == "daily":
@@ -118,7 +144,7 @@ class eBarimtPosAPI(models.Model):
                 headers = {
                     "Connection": "keep-alive",
                 }
-                _status_code, res = record.request_connection(url, headers, [], "GET")
+                _status_code, res = record._request_connection(url, headers, [], "GET")
 
                 if _status_code != 200 or _status_code != 404:
                     message = (
@@ -130,7 +156,7 @@ class eBarimtPosAPI(models.Model):
                     )
             except:
                 message = (
-                    "Couldn't connected to PosAPI service.\nReason might be: %s" % traceback.format_exc()
+                    "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
                 )
 
             record.write(
@@ -141,7 +167,7 @@ class eBarimtPosAPI(models.Model):
             )
         return True
 
-    def request_receipt(self, json_order):
+    def _request_receipt(self, json_order):
         """PosAPI-руу төлбөрийн баримт илгээх сервис"""
         self.ensure_one()
         _logger.debug("PosAPI 3.0 request.receipt params: %s" % json_order)
@@ -167,7 +193,7 @@ class eBarimtPosAPI(models.Model):
             }
             
             _logger.debug("PosAPI POST %s body: %s", url, json.dumps(self._mask_for_log(json_order)))
-            _status_code, res = self.request_connection(url, headers, json_order, "POST")
+            _status_code, res = self._request_connection(url, headers, json_order, "POST")
             _logger.info("PosAPI POST %s -> HTTP %s", url, _status_code)
             _logger.debug("PosAPI response: %s", json.dumps(self._mask_for_log(res)) if isinstance(res, dict) else res)
 
@@ -179,7 +205,7 @@ class eBarimtPosAPI(models.Model):
                 result = res
         except:
             message = (
-                "Couldn't connected to PosAPI service.\nReason might be: %s" % traceback.format_exc()
+                "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
             )
 
         if result and result.get("status") == 'ERROR':
@@ -193,7 +219,7 @@ class eBarimtPosAPI(models.Model):
 
         return {"success": True, "result": result}
 
-    def return_receipt(self, json_order):
+    def _return_receipt(self, json_order):
         """
             PosAPI-руу төлбөрийн баримт буцаах сервис
         """
@@ -218,7 +244,7 @@ class eBarimtPosAPI(models.Model):
                 "Accept": "application/json",
                 "Connection": "keep-alive",
             }
-            _status_code, res = self.request_connection(url, headers, json_order, "DELETE")
+            _status_code, res = self._request_connection(url, headers, json_order, "DELETE")
             if _status_code != 200:
                 message = (
                     "PosAPI service connection failed.\nHTTP Error response: %s" % res
@@ -227,7 +253,7 @@ class eBarimtPosAPI(models.Model):
                 result = res
         except:
             message = (
-                "Couldn't connected to PosAPI service.\nReason might be: %s" % traceback.format_exc()
+                "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
             )
 
         if result and not result.get("status", "SUCCESS"):
@@ -261,7 +287,7 @@ class eBarimtPosAPI(models.Model):
                 headers = {
                     "Content-Type": "application/json",
                 }
-                _status_code, res = record.request_connection(url, headers, [], "GET")
+                _status_code, res = record._request_connection(url, headers, [], "GET")
 
                 if _status_code != 200:
                     message = (
@@ -276,7 +302,7 @@ class eBarimtPosAPI(models.Model):
                     )
             except:
                 message = (
-                    "Couldn't connected to PosAPI service.\nReason might be: %s" % traceback.format_exc()
+                    "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
                 )
                 success = False
 
@@ -327,7 +353,7 @@ class eBarimtPosAPI(models.Model):
             url += "rest/info"
 
             headers = {"Content-Type": "application/json"}
-            _status_code, res = posapi.request_connection(
+            _status_code, res = posapi._request_connection(
                 url, headers, [], "GET", timeout=POSAPI_WARNING_TIMEOUT
             )
 
@@ -394,10 +420,10 @@ class eBarimtPosAPI(models.Model):
             }
 
         except Exception as e:
-            _logger.error(f"Error checking PosAPI warnings: {e}")
+            _logger.exception("Error checking PosAPI warnings")
             return {
                 'success': False,
-                'warnings': [{'type': 'error', 'message': f'Алдаа: {str(e)}'}],
+                'warnings': [{'type': 'error', 'message': 'PosAPI шалгахад алдаа гарлаа'}],
                 'lottery_ok': False,
                 'sync_ok': False,
             }
@@ -415,7 +441,10 @@ class eBarimtPosAPI(models.Model):
             return [self._mask_for_log(v) for v in data]
         return data
 
-    def request_connection(self, url_string, headers, params, request_type="GET", timeout=None):
+    # The PosAPI calls are private (leading underscore) so they can't be
+    # called over RPC: POS users can read this record, and a public method
+    # let any cashier issue or void bills, or send the gateway key to any URL.
+    def _request_connection(self, url_string, headers, params, request_type="GET", timeout=None):
         """Call PosAPI (or the gateway in front of it).
 
         Raises requests.RequestException (Timeout, ConnectionError, ...) when

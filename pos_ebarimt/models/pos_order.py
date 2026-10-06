@@ -4,12 +4,18 @@ import requests
 from functools import partial
 from decimal import Decimal, ROUND_HALF_UP
 from odoo import api, models, fields, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 import logging
 
 _logger = logging.getLogger(__name__)
 
 EBARIMT_MAX_ATTEMPTS = 20
+# Sending state kept by the server. Changing it over RPC could make the cron
+# send a bill twice or never; only the module's own code changes it.
+EBARIMT_PROTECTED_FIELDS = frozenset({
+    'vat_sent', 'ebarimt_state', 'ebarimt_error', 'ebarimt_attempts',
+    'ebarimt_next_try', 'ebarimt_return_done',
+})
 EBARIMT_SENDING_STALE_MINUTES = 15
 
 
@@ -64,7 +70,7 @@ class PosOrder(models.Model):
     def get_district_code_from_api(self):
         """eBarimt API-аас district code татаж авах"""
         try:
-            url = "https://st-api.ebarimt.mn/api/info/check/getBranchInfo"
+            url = "https://api.ebarimt.mn/api/info/check/getBranchInfo"
             headers = {"Accept": "application/javascript"}
             
             # Timeout болон SSL verification нэмэх
@@ -139,6 +145,7 @@ class PosOrder(models.Model):
     # by the "eBarimt: send pending bills" cron.
 
     def write(self, vals):
+        self._ebarimt_check_protected_write(vals)
         res = super(PosOrder, self).write(vals)
         if vals.get('state') == 'paid':
             to_queue = self.filtered(lambda o: o._ebarimt_should_queue())
@@ -153,6 +160,27 @@ class PosOrder(models.Model):
                     partial(self._ebarimt_send_after_commit, self.env.uid, dict(self.env.context), self.env.su, to_queue.ids)
                 )
         return res
+
+    def _ebarimt_check_protected_write(self, vals):
+        """Refuse changes to the sending state, except from the module itself
+        (which writes it through super().write or as superuser). Writing the
+        same value again, as a POS sync may do, is allowed."""
+        keys = EBARIMT_PROTECTED_FIELDS.intersection(vals)
+        if not keys or self.env.su:
+            return
+        for order in self:
+            for key in keys:
+                field = self._fields[key]
+                new = field.convert_to_record(field.convert_to_cache(vals[key], order), order)
+                if new != order[key]:
+                    raise AccessError(_("The eBarimt sending status of %s can't be changed by hand.", order.name))
+
+    def _ebarimt_check_bill_access(self):
+        """Issuing or voiding a bill by hand is for POS managers and accountants."""
+        user = self.env.user
+        if not self.env.su and not (user.has_group('point_of_sale.group_pos_manager')
+                                    or user.has_group('account.group_account_invoice')):
+            raise AccessError(_("Only POS managers and accountants can send or return eBarimt bills by hand."))
 
     def _ebarimt_should_queue(self):
         self.ensure_one()
@@ -260,7 +288,7 @@ class PosOrder(models.Model):
             self.env.cr.commit()
 
         if self._ebarimt_sold_lines() and not (self.vat_sent or self.vat_receipts.filtered(lambda r: r.bill_state == 'done')):
-            self.vat_pos_order_commit(self.get_ebarimt_bill_type())
+            self._vat_pos_order_commit(self.get_ebarimt_bill_type())
         return 'sent', False
 
     def _ebarimt_take_back(self):
@@ -276,9 +304,9 @@ class PosOrder(models.Model):
             return True
         if self._ebarimt_sold_lines():
             _logger.info("Partial return of %s: replacing bill %s", self.name, current.bill_id)
-            self.vat_pos_order_commit(self.get_ebarimt_bill_type())
+            self._vat_pos_order_commit(self.get_ebarimt_bill_type())
             return True
-        res = self.return_ebarimt()
+        res = self._ebarimt_return_bill()
         if not (res and res.get('success')):
             raise UserError(_("eBarimt return of %(order)s failed: %(error)s",
                               order=self.name, error=(res or {}).get('message') or _("no response")))
@@ -332,6 +360,7 @@ class PosOrder(models.Model):
         """Resend from the confirmation wizard (one order). Locks the order so
         the cron cannot send it at the same time."""
         self.ensure_one()
+        self._ebarimt_check_bill_access()
         if not self._ebarimt_sold_lines():
             raise UserError(_("%s is a refund; use Return eBarimt on the original order.", self.name))
         self.env.cr.execute("SELECT id FROM pos_order WHERE id = %s FOR UPDATE", (self.id,))
@@ -340,8 +369,9 @@ class PosOrder(models.Model):
             raise UserError(_("%s is being sent to eBarimt right now; wait a minute and reload.", self.name))
         if self.vat_sent or self.vat_receipts.filtered('bill_id'):
             raise UserError(_("%s already has an eBarimt bill.", self.name))
-        self.vat_pos_order_commit(bill_type)
+        self._vat_pos_order_commit(bill_type)
         super(PosOrder, self).write({'ebarimt_state': 'sent', 'ebarimt_error': False})
+        self.message_post(body=_("eBarimt bill sent by hand (%s).", bill_type))
         return True
 
     def find_original_order_for_refund(self, refund_order):
@@ -774,7 +804,7 @@ class PosOrder(models.Model):
 
 
 
-    def vat_pos_order_commit(self, bill_type="B2C_INVOICE"):
+    def _vat_pos_order_commit(self, bill_type="B2C_INVOICE"):
         """POS захиалгын eBarimt илгээх - буцаалтын захиалгыг блоклох"""
         
         # Nothing sold on this order (a plain refund): no receipt to POST.
@@ -831,7 +861,7 @@ class PosOrder(models.Model):
             # 4. Request илгээх
             _logger.info(f"📤 Sending eBarimt request for {self.name}")
             
-            res = posapi.request_receipt(request_body)
+            res = posapi._request_receipt(request_body)
             
             # 5. Response боловсруулах
             _logger.debug(f"📥 Received response: {res}")
@@ -864,7 +894,7 @@ class PosOrder(models.Model):
                 _logger.debug(f"   - Lottery: {response.get('lottery')}")
             
             # 7. VAT sent тэмдэглэх
-            self.vat_sent = True
+            super(PosOrder, self).write({'vat_sent': True})
             
             # 8. VAT Receipt үүсгэх
             newEbarimtBill = self.env['vat.receipt'].sudo()
@@ -925,7 +955,7 @@ class PosOrder(models.Model):
         except ValidationError:
             raise
         except Exception as e:
-            _logger.error(f"❌ Unexpected error in vat_pos_order_commit: {str(e)}", exc_info=True)
+            _logger.error(f"❌ Unexpected error in _vat_pos_order_commit: {str(e)}", exc_info=True)
             raise ValidationError(f"eBarimt илгээхэд алдаа гарлаа: {str(e)}")
 
     def send_ebarimt(self):
@@ -949,6 +979,13 @@ class PosOrder(models.Model):
         return False
 
     def return_ebarimt(self):
+        """Return eBarimt button."""
+        self._ebarimt_check_bill_access()
+        res = self._ebarimt_return_bill()
+        self.message_post(body=_("eBarimt bill returned by hand: %s", (res.get('result') or {}).get('status') or res.get('message') or ''))
+        return res
+
+    def _ebarimt_return_bill(self):
         order_vat_receipt = self.env['vat.receipt'].search([
             ('pos_order_id', '=', self.id)
         ], order="create_date desc", limit=1)
@@ -970,7 +1007,7 @@ class PosOrder(models.Model):
             raise ValidationError("eBarimt POS API service is not configured")
         
         posapi = posapi_services[0]
-        res = posapi.return_receipt({
+        res = posapi._return_receipt({
             'id': order_vat_receipt.bill_id,
             'date': order_vat_receipt.sent_at.strftime("%Y-%m-%d %H:%M:%S"),
         })
@@ -1110,27 +1147,6 @@ class PosOrder(models.Model):
             'buyer_name': self._ebarimt_buyer_name(receipt),
             'qr': self._ebarimt_qr_base64(receipt.qr_data) if receipt else '',
         }
-
-    @api.model
-    def get_ebarimt_info(self, order_ids):
-        """POS-д eBarimt мэдээлэл буцаах"""
-        result = {}
-        orders = self.browse(order_ids)
-        
-        for order in orders:
-            receipt = order._ebarimt_current_receipt()
-            if receipt:
-                result[order.id] = {
-                    'bill_id': receipt.bill_id,
-                    'vat': receipt.vat,
-                    'city_tax': receipt.city_tax,
-                    'amount': receipt.amount,
-                    'date': receipt.sent_at.strftime('%Y-%m-%d %H:%M:%S') if receipt.sent_at else '',
-                    'lottery': receipt.lottery or '',
-                    'bill_type': receipt.bill_type,
-                }
-        
-        return result
 
     def print_ebarimt_receipt(self):
         """eBarimt мэдээлэлтэй receipt хэвлэх"""
@@ -1306,7 +1322,7 @@ class PosOrder(models.Model):
             _logger.error(f"❌ Error getting ebarimt data for identifier {order_identifier}: {e}", exc_info=True)
             return {
                 'success': False,
-                'error': str(e),
+                'error': 'ebarimt мэдээлэл авахад алдаа гарлаа',
                 'message': 'ebarimt мэдээлэл авахад алдаа гарлаа',
                 'identifier': order_identifier
             }

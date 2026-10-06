@@ -76,8 +76,11 @@ class ProductClassificationBuna(models.Model):
             return base_url
 
     @api.model
-    def fetch_from_api(self, p1='', p2='', p3='', p4='', p5='', p6=''):
+    def _fetch_from_api(self, p1='', p2='', p3='', p4='', p5='', p6=''):
         """eBarimt API-аас мэдээлэл татах"""
+        # The parameters become URL path segments: codes only, no '/' or '..'.
+        if any(p and not str(p).isalnum() for p in (p1, p2, p3, p4, p5, p6)):
+            return {'success': False, 'error': 'Invalid classification code'}
         try:
             # URL үүсгэх
             base_url = "https://api.ebarimt.mn/api/info/check/barcode/v2"
@@ -175,7 +178,7 @@ class ProductClassificationBuna(models.Model):
             return self.action_load_barcodes()
         
         # API-аас мэдээлэл татах
-        result = self.fetch_from_api(self.p1, self.p2, self.p3, self.p4, self.p5, self.p6)
+        result = self._fetch_from_api(self.p1, self.p2, self.p3, self.p4, self.p5, self.p6)
         
         if not result['success']:
             raise ValidationError(f"API алдаа: {result['error']}")
@@ -208,7 +211,7 @@ class ProductClassificationBuna(models.Model):
             raise ValidationError("Зөвхөн БҮНА код түвшинд баркод татах боломжтой")
         
         # API-аас баркод мэдээлэл татах
-        result = self.fetch_from_api(self.p1, self.p2, self.p3, self.p4, self.p5, self.p6)
+        result = self._fetch_from_api(self.p1, self.p2, self.p3, self.p4, self.p5, self.p6)
         
         if not result['success']:
             raise ValidationError(f"API алдаа: {result['error']}")
@@ -250,7 +253,7 @@ class ProductClassificationBuna(models.Model):
         
         if not sectors:
             # API-аас салбаруудыг татах
-            result = self.fetch_from_api()
+            result = self._fetch_from_api()
             
             if result['success']:
                 for item in result['data']:

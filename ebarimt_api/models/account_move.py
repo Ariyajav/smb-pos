@@ -3,7 +3,7 @@ import datetime
 import requests
 import logging
 from odoo import api, models, fields, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -169,7 +169,7 @@ class AccountMove(models.Model):
                 for invoice in invoices:
                     if invoice.id != move.id:
                         try:
-                            invoice.return_ebarimt()
+                            invoice._ebarimt_return_bill()
                             _logger.info(f"[eBarimt Refund] Returned eBarimt for invoice {invoice.id}")
                         except Exception as e:
                             _logger.error(f"[eBarimt Refund] Error returning eBarimt for invoice {invoice.id}: {e}")
@@ -350,7 +350,12 @@ class AccountMove(models.Model):
 
         return json_body
 
+    def _ebarimt_check_invoice_access(self):
+        if not self.env.su and not self.env.user.has_group('account.group_account_invoice'):
+            raise AccessError(_("Only invoicing users can send or return eBarimt bills of invoices."))
+
     def vat_invoice_commit(self, bill_type="B2C_INVOICE"):
+        self._ebarimt_check_invoice_access()
         merchant_no = str(self.company_id.partner_id.vat_tin or self.company_id.vat or '')
         
         if not merchant_no:
@@ -389,7 +394,7 @@ class AccountMove(models.Model):
         posapi = posapi_services[0]
         _logger.debug("Request body: %s", json.dumps(self.env["account.ebarimt.posapi"]._mask_for_log(request_body)))
         
-        res = posapi.request_receipt(request_body)
+        res = posapi._request_receipt(request_body)
 
         if 'message' in res:
             raise ValidationError(res["message"])
@@ -402,7 +407,7 @@ class AccountMove(models.Model):
                 self.vat_invoice_sent = True
                 self.vat_sent = True
 
-            newEbarimtBill = self.env['vat.receipt']
+            newEbarimtBill = self.env['vat.receipt'].sudo()
             has_invoice_id = response.get('invoice_id')
             has_inactive_id = response.get('inactiveId')
             
@@ -425,7 +430,7 @@ class AccountMove(models.Model):
             })
             
             if has_inactive_id:
-                inactive_bill = self.env['vat.receipt'].search([
+                inactive_bill = self.env['vat.receipt'].sudo().search([
                     ('bill_id', '=', response["inactiveId"])
                 ])
                 if inactive_bill:
@@ -451,6 +456,11 @@ class AccountMove(models.Model):
         return False
 
     def return_ebarimt(self):
+        """Return eBarimt button."""
+        self._ebarimt_check_invoice_access()
+        return self._ebarimt_return_bill()
+
+    def _ebarimt_return_bill(self):
         invoice_vat_receipt = self.env['vat.receipt'].search([
             ('account_move_id', '=', self.id)
         ], order="create_date desc", limit=1)
@@ -462,7 +472,7 @@ class AccountMove(models.Model):
         posapi = posapi_services[0] if posapi_services else False
         
         if posapi and invoice_vat_receipt:
-            res = posapi.return_receipt({
+            res = posapi._return_receipt({
                 'id': invoice_vat_receipt.bill_id,
                 'date': invoice_vat_receipt.sent_at.strftime("%Y-%m-%d %H:%M:%S"),
             })
@@ -478,13 +488,12 @@ class AccountMove(models.Model):
         _logger.debug('Return receipt result: %s', res)
 
         if 'message' in res and invoice_vat_receipt:
-            invoice_vat_receipt.bill_state = "old"
+            invoice_vat_receipt.sudo().bill_state = "old"
 
         if 'result' in res and invoice_vat_receipt:
             response = res["result"]
             if response.get("status") == "SUCCESS":
-                invoice_vat_receipt.refunded = True
-                invoice_vat_receipt.bill_state = "refund"
+                invoice_vat_receipt.sudo().write({"refunded": True, "bill_state": "refund"})
                 
         return res
 

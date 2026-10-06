@@ -18,10 +18,12 @@
                     <button name="send_ebarimt"
                             string="Resend eBarimt"
                             type="object"
+                            groups="point_of_sale.group_pos_manager,account.group_account_invoice"
                             invisible="state == 'draft' or refunded_order_id or vat_sent or ebarimt_state == 'sending'"/>
                     <button name="return_ebarimt"
                             string="Return eBarimt"
                             type="object"
+                            groups="point_of_sale.group_pos_manager,account.group_account_invoice"
                             invisible="state == 'draft' or refunded_order_id or vat_bill_state != 'old'"/>
                 </xpath>
 

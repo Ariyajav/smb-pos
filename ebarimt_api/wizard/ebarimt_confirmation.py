@@ -29,12 +29,9 @@ class eBarimtConfirmation(models.TransientModel):
         elif res_model == "pos.order":
             for order in records:
                 bill_type = self._bill_type_prefix() + ('RECEIPT' if order.payment_ids else 'INVOICE')
-                if hasattr(order, '_ebarimt_send_manual'):
-                    order._ebarimt_send_manual(bill_type)
-                else:
-                    if order.vat_sent:
-                        raise UserError(_("%s already has an eBarimt bill.", order.display_name))
-                    order.vat_pos_order_commit(bill_type=bill_type)
+                if not hasattr(order, '_ebarimt_send_manual'):
+                    raise UserError(_("Install pos_ebarimt to send eBarimt bills of POS orders."))
+                order._ebarimt_send_manual(bill_type)
                 bill_ids += order.vat_receipts.sorted('create_date', reverse=True)[:1].mapped('bill_id')
         if bill_ids:
             return {
