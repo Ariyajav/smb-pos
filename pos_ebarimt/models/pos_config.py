@@ -21,6 +21,15 @@ class PosConfig(models.Model):
              "number, padded to 4 digits (what was always sent before)."
     )
 
+    receipt_paper_width = fields.Selection(
+        selection=[("80", "80 mm"), ("58", "58 mm")],
+        string="Receipt Paper Width",
+        default="80",
+        required=True,
+        help="Paper width of this POS's receipt printer. 58 mm prints a "
+             "narrower receipt with a larger eBarimt QR code."
+    )
+
 
 class ResCompany(models.Model):
     _inherit = "res.company"

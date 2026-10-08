@@ -1141,6 +1141,26 @@ msgid "branchNo sent to PosAPI for this POS. Empty: the POS's internal number, p
 msgstr "Энэ ПОС-оос PosAPI руу илгээх branchNo. Хоосон бол ПОС-ын дотоод дугаарыг 4 оронтойгоор илгээнэ (өмнөх шиг)."
 
 #. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_config__receipt_paper_width
+msgid "Receipt Paper Width"
+msgstr "Баримтын цаасны өргөн"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_config__receipt_paper_width
+msgid "Paper width of this POS's receipt printer. 58 mm prints a narrower receipt with a larger eBarimt QR code."
+msgstr "Энэ ПОС-ын баримт хэвлэгчийн цаасны өргөн. 58 мм сонговол баримт нарийн хэвлэгдэж, иБаримтын QR код томорно."
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_config__receipt_paper_width__80
+msgid "80 mm"
+msgstr "80 мм"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields.selection,name:pos_ebarimt.selection__pos_config__receipt_paper_width__58
+msgid "58 mm"
+msgstr "58 мм"
+
+#. module: pos_ebarimt
 #. odoo-python
 #: code:addons/pos_ebarimt/models/pos_order.py:0
 #, python-format

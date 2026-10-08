@@ -33,6 +33,7 @@
                         <field name="send_ebarimt"/>
                         <field name="branch_code_id"/>
                         <field name="ebarimt_branch_no"/>
+                        <field name="receipt_paper_width" widget="radio" options="{'horizontal': true}"/>
                     </group>
                 </xpath>
             </field>
