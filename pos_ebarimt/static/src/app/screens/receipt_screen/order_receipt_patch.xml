@@ -10,6 +10,11 @@
         registration amount, QR, member info and the OFFLINE marker.
     -->
     <t t-name="pos_ebarimt.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <!-- Paper width class (pos.config receipt_paper_width), used by the
+             print rules in css/pos_ebarimt.css. -->
+        <xpath expr="//div[hasclass('pos-receipt')]" position="attributes">
+            <attribute name="t-att-class">ebarimtPaperClass</attribute>
+        </xpath>
         <xpath expr="//div[hasclass('before-footer')]" position="before">
             <div class="pos-ebarimt-receipt mongolian-receipt ebarimt-container pt-2">
                 <div class="ebarimt-section" style="border-top: 1px dashed #999; padding-top: 6px;">
@@ -89,7 +94,7 @@
 
                     <!-- QR Code -->
                     <div t-if="hasEbarimt and ebarimtQrUrl" class="text-center qr-code-container w-100" style="margin: 10px 0;">
-                        <img t-att-src="ebarimtQrUrl" style="width: 100px; height: 100px; display: block; margin: 0 auto;"/>
+                        <img t-att-src="ebarimtQrUrl" class="ebarimt-qr"/>
                     </div>
 
                     <!-- Member info -->

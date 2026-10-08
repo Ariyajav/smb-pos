@@ -12,6 +12,21 @@ import { onMounted, onWillUnmount, useState } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { fetchEbarimtData } from "@pos_ebarimt/app/utils/ebarimt_data";
 
+// @page rules cannot be scoped to a class, so the zero page margin that a
+// 58 mm roll needs (Chrome's default margins would eat a quarter of the
+// width) is added only on POS whose receipt paper is 58 mm.
+const NARROW_PAGE_STYLE_ID = "pos-ebarimt-page-58mm";
+
+function ensureNarrowPrintPage() {
+    if (document.getElementById(NARROW_PAGE_STYLE_ID)) {
+        return;
+    }
+    const style = document.createElement("style");
+    style.id = NARROW_PAGE_STYLE_ID;
+    style.textContent = "@media print { @page { margin: 0; padding: 0; } }";
+    document.head.appendChild(style);
+}
+
 const EBARIMT_MAX_RETRIES = 8;
 const EBARIMT_RETRY_DELAY = 12000;
 
@@ -32,6 +47,9 @@ patch(OrderReceipt.prototype, {
             initialized: false,
         });
         this._ebarimtAlive = true;
+        if (this.ebarimtPaperWidth === "58") {
+            ensureNarrowPrintPage();
+        }
         onMounted(() => this.initEbarimt());
         onWillUnmount(() => this.cleanupEbarimt());
     },
@@ -146,6 +164,14 @@ patch(OrderReceipt.prototype, {
         }
         const data = this.ebarimtData;
         return data.amount - (data.vat || 0) - (data.city_tax || 0);
+    },
+
+    get ebarimtPaperWidth() {
+        return this.props.order?.config?.receipt_paper_width || "80";
+    },
+
+    get ebarimtPaperClass() {
+        return `receipt-${this.ebarimtPaperWidth}mm`;
     },
 
     get isConsumerReceipt() {
