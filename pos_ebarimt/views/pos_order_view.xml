@@ -40,6 +40,12 @@
                                    decoration-warning="ebarimt_state == 'failed'"
                                    decoration-danger="ebarimt_state == 'manual'"/>
                             <field name="ebarimt_error" invisible="not ebarimt_error"/>
+                            <field name="ebarimt_customer_tin"
+                                   string="Buyer TIN or registry no."
+                                   invisible="ebarimt_bill_type != 'B2B_RECEIPT' and not ebarimt_customer_tin"
+                                   readonly="ebarimt_state not in ('failed', 'manual')"
+                                   groups="point_of_sale.group_pos_manager,account.group_account_invoice"/>
+                            <field name="ebarimt_bill_type" invisible="1"/>
                             <field name="ebarimt_attempts" invisible="not ebarimt_attempts"/>
                             <field name="ebarimt_next_try" invisible="ebarimt_state != 'failed'"/>
                         </group>

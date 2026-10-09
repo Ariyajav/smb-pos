@@ -89,10 +89,15 @@ export class EbarimtConfirmPopup extends Component {
                 });
                 return false;
             }
-            if (result.customerTin.length < 7) {
+            // PosAPI takes an 11-14 digit TIN; the server looks up the TIN
+            // of a registry number (7 digits, or 2 letters + 8 digits).
+            const tin = result.customerTin;
+            if (!/^(\d{11,14}|\d{7}|[А-ЯЁӨҮа-яёөү]{2}\d{8})$/.test(tin)) {
                 this.dialog.add(AlertDialog, {
                     title: _t("⚠️ Алдаа"),
-                    body: _t("ТТД дор хаяж 7 тэмдэгт байх ёстой.\n\nТТД-г зөв оруулна уу."),
+                    body: _t(
+                        "Байгууллагын регистр (7 оронтой) эсвэл ТТД (11-14 оронтой) оруулна уу.\n\n8 оронтой дугаар нь иргэний eBarimt дугаар тул байгууллагын баримтад тохирохгүй."
+                    ),
                 });
                 return false;
             }
@@ -101,7 +106,7 @@ export class EbarimtConfirmPopup extends Component {
     }
 
     onManualTinChange() {
-        const cleanValue = this.state.manualCustomerTin.replace(/[^a-zA-Z0-9]/g, "");
+        const cleanValue = this.state.manualCustomerTin.replace(/[^0-9A-Za-zА-ЯЁӨҮа-яёөү]/g, "");
         if (cleanValue !== this.state.manualCustomerTin) {
             this.state.manualCustomerTin = cleanValue;
         }
