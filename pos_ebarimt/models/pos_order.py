@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 import requests
 from functools import partial
 from decimal import Decimal, ROUND_HALF_UP
@@ -18,6 +19,13 @@ EBARIMT_PROTECTED_FIELDS = frozenset({
 })
 EBARIMT_SENDING_STALE_MINUTES = 15
 
+
+
+EBARIMT_TIN_INFO_URL = "https://api.ebarimt.mn/api/info/check/getTinInfo"
+# PosAPI accepts only this as receipt.customerTin.
+EBARIMT_TIN_RE = re.compile(r"\d{11,14}")
+# A company registry number (7 digits) or a citizen's (2 letters + 8 digits).
+EBARIMT_REG_NO_RE = re.compile(r"\d{7}|[А-ЯЁӨҮа-яёөү]{2}\d{8}")
 
 
 class EbarimtDataError(ValidationError):
@@ -510,6 +518,44 @@ class PosOrder(models.Model):
             _logger.error(f"❌ Error getting customer TIN: {e}")
             return ''
 
+    def _ebarimt_resolve_customer_tin(self, value):
+        """Return the buyer's TIN for a B2B bill.
+
+        PosAPI accepts only an 11-14 digit TIN. Cashiers usually type the
+        company's registry number instead, so a registry number is looked up
+        on eBarimt and the TIN found is kept on the order."""
+        self.ensure_one()
+        value = re.sub(r"\s", "", value or "")
+        if EBARIMT_TIN_RE.fullmatch(value):
+            return value
+        if not EBARIMT_REG_NO_RE.fullmatch(value):
+            raise EbarimtDataError(_(
+                "Order %(order)s: \"%(value)s\" is not a TIN (11-14 digits) or a registry number "
+                "(7 digits for a company). An 8-digit number is a citizen's eBarimt consumer number, "
+                "not a company. Fix the buyer and send the bill again.",
+                order=self.name, value=value))
+        try:
+            response = requests.get(EBARIMT_TIN_INFO_URL, params={"regNo": value},
+                                    headers={"Accept": "application/json"}, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+        except (requests.RequestException, ValueError) as e:
+            # eBarimt unreachable: the cron tries again later.
+            raise UserError(_("Could not look up the TIN of registry number %(value)s: %(error)s",
+                              value=value, error=e))
+        tin = result.get("data") if result.get("status") == 200 else None
+        if isinstance(tin, dict):
+            tin = tin.get("tin")
+        tin = str(tin or "")
+        if not EBARIMT_TIN_RE.fullmatch(tin):
+            raise EbarimtDataError(_(
+                "Order %(order)s: eBarimt has no TIN for registry number %(value)s (%(msg)s). "
+                "Check the number and send the bill again.",
+                order=self.name, value=value, msg=result.get("msg") or "-"))
+        _logger.info("eBarimt: registry number %s of %s resolved to TIN %s", value, self.name, tin)
+        super(PosOrder, self).write({"ebarimt_customer_tin": tin})
+        return tin
+
     def _get_classification_code(self, product_item):
         """Бүтээгдэхүүний classification code авах"""
         try:
@@ -773,6 +819,8 @@ class PosOrder(models.Model):
         pos_no = pos_no or default_no
         district_code = self.get_district_code()
         customer_tin = self.get_ebarimt_customer_tin()
+        if type == 'B2B_RECEIPT':
+            customer_tin = self._ebarimt_resolve_customer_tin(customer_tin)
         # consumerNo is the buyer's 8-digit eBarimt consumer number. Odoo
         # returns False for an empty vat, which PosAPI rejects (it expects a
         # string), and a registry number is not a consumer number.
