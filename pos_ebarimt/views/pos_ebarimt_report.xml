@@ -63,7 +63,7 @@
                                 <td><strong>Нийт:</strong></td>
                                 <td class="text-right" style="white-space: nowrap;"><strong><t t-esc="ebarimt['total']"/> ₮</strong></td>
                             </tr>
-                            <tr t-if="receipt">
+                            <tr t-if="receipt and receipt.vat">
                                 <td>НӨАТ:</td>
                                 <td class="text-right" style="white-space: nowrap;"><t t-esc="ebarimt['vat']"/> ₮</td>
                             </tr>

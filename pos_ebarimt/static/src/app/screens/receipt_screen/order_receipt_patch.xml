@@ -60,19 +60,13 @@
                             <td>Татварын өмнөх дүн</td>
                             <td class="text-end"><t t-esc="ebarimtFmt(ebarimtTotalExcl)"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="ebarimtFmt(ebarimtVat) !== '0'">
                             <td>НӨАТ</td>
-                            <td class="text-end">
-                                <t t-if="hasEbarimt and ebarimtData.vat"><t t-esc="ebarimtFmt(ebarimtData.vat)"/></t>
-                                <t t-else=""><t t-esc="ebarimtFmt(order.amountTaxes)"/></t>
-                            </td>
+                            <td class="text-end"><t t-esc="ebarimtFmt(ebarimtVat)"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="ebarimtFmt(ebarimtCityTax) !== '0'">
                             <td>НХАТ</td>
-                            <td class="text-end">
-                                <t t-if="hasEbarimt and ebarimtData.city_tax"><t t-esc="ebarimtFmt(ebarimtData.city_tax)"/></t>
-                                <t t-else="">0</t>
-                            </td>
+                            <td class="text-end"><t t-esc="ebarimtFmt(ebarimtCityTax)"/></td>
                         </tr>
                     </table>
 
