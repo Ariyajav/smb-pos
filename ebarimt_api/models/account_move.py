@@ -66,7 +66,7 @@ class AccountMove(models.Model):
             return self.company_id.partner_id.district_code
         
         # System parameter-аас авах
-        default_code = self.env['ir.config_parameter'].sudo().get_param('ebarimt.default_district_code', '0101')
+        default_code = self.env['ir.config_parameter'].sudo().get_param('ebarimt.default_district_code', '2426')
         return default_code
 
     def get_district_code(self):

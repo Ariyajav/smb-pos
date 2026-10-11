@@ -229,7 +229,7 @@ class ResPartner(models.Model):
             pass
         
         # Final fallback
-        return "0101"  # Улаанбаатар default
+        return "2426"  # default district code
 
 
 # Сум/Дүүргийн модель

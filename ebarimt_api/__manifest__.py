@@ -6,7 +6,7 @@
     """,
     'author': "egrow",
     'category': 'Accounting',
-    'version': '19.0.1.5.7',
+    'version': '19.0.1.5.8',
     'license': 'LGPL-3',
     'depends': ['base', 'account', 'sale', 'point_of_sale', 'product'],
     'data': [
