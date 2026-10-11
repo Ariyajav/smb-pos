@@ -42,7 +42,7 @@ class ResPartner(models.Model):
     ebarimt_company_name = fields.Char("Company Name (from eBarimt)", readonly=True)
     ebarimt_status = fields.Char("eBarimt Status", readonly=True)
 
-    @api.depends('state_id', 'sub_state_id')
+    @api.depends('state_id.code', 'sub_state_id.code')
     def _compute_district_code(self):
         for partner in self:
             if partner.state_id and partner.sub_state_id:

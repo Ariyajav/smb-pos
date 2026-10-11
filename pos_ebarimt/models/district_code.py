@@ -65,8 +65,48 @@ class DistrictCode(models.Model):
                     self.create(vals)
 
             _logger.info("Synced %d district code records", len(district_data))
+            self._sync_mn_address(district_data)
             return True
         else:
             error = results.get('error')
             _logger.error("Failed to retrieve District Code data: %s", error)
             return False
+
+    @api.model
+    def _sync_mn_address(self, district_data):
+        """Make the Mongolian address lists match the tax agency's codes:
+        branch -> res.country.state (code = branchCode), sub-branch ->
+        res.country.sub.state (code = subBranchCode). A partner's district
+        code (state code + sub-state code) is then the districtCode PosAPI
+        expects. Sub-states the tax agency no longer lists are archived."""
+        mongolia = self.env.ref('base.mn', raise_if_not_found=False)
+        if not mongolia:
+            return
+        State = self.env['res.country.state'].sudo()
+        SubState = self.env['res.country.sub.state'].sudo().with_context(active_test=False)
+        states = {s.code: s for s in State.search([('country_id', '=', mongolia.id)])}
+        seen = {}
+        for item in district_data:
+            b_code, b_name = item.get('branchCode'), item.get('branchName')
+            sb_code, sb_name = item.get('subBranchCode'), item.get('subBranchName')
+            if not b_code or not b_name:
+                continue
+            state = states.get(b_code)
+            if not state:
+                state = states[b_code] = State.create({
+                    'name': b_name, 'code': b_code, 'country_id': mongolia.id,
+                })
+            elif state.name != b_name:
+                state.name = b_name
+            if not sb_code or not sb_name:
+                continue
+            seen.setdefault(state.id, set()).add(sb_code)
+            sub = SubState.search([('state_id', '=', state.id), ('code', '=', sb_code)], limit=1)
+            if not sub:
+                SubState.create({'name': sb_name, 'code': sb_code, 'state_id': state.id})
+            elif sub.name != sb_name or not sub.active:
+                sub.write({'name': sb_name, 'active': True})
+        for state_id, codes in seen.items():
+            SubState.search([
+                ('state_id', '=', state_id), ('code', 'not in', list(codes)), ('active', '=', True),
+            ]).write({'active': False})

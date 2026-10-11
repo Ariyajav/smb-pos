@@ -4,3 +4,4 @@ from . import test_customer_tin
 from . import test_buna_codes
 from . import test_no_vat
 from . import test_send_data
+from . import test_district_sync
