@@ -1203,3 +1203,9 @@ msgstr "Солигдсон баримт"
 #: model_terms:ir.ui.view,arch_db:pos_ebarimt.vat_receipt_pos_view_form
 msgid "eBarimt Bill"
 msgstr "иБаримт"
+
+#. module: pos_ebarimt
+#. odoo-javascript
+#: code:addons/pos_ebarimt/static/src/app/components/navbar/navbar_patch.js:0
+msgid "Could not reach the server. Check the connection and try again."
+msgstr "Сервертэй холбогдож чадсангүй. Холболтоо шалгаад дахин оролдоно уу."

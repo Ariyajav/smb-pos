@@ -988,3 +988,44 @@ msgstr "Мэдээллийг eBarimt.mn системд илгээлээ. Бар�
 msgid "%s already has an eBarimt bill."
 msgstr "%s-д иБаримт аль хэдийн үүссэн байна."
 
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid "Receipts were sent to the eBarimt system."
+msgstr "Баримтуудыг татварын системд илгээлээ."
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid "Last sent: %s"
+msgstr "Сүүлд илгээсэн: %s"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid "PosAPI sendData failed (HTTP %(code)s): %(res)s"
+msgstr "PosAPI sendData амжилтгүй (HTTP %(code)s): %(res)s"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid "Couldn't connect to PosAPI service. Reason might be: %s"
+msgstr "PosAPI-д холбогдож чадсангүй. Шалтгаан: %s"
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid "You have no access to this company."
+msgstr "Танд энэ компанид хандах эрх алга."
+
+#. module: ebarimt_api
+#. odoo-python
+#: code:addons/ebarimt_api/models/ebarimt.py:0
+#, python-format
+msgid "No PosAPI settings for %s."
+msgstr "%s компанид PosAPI тохиргоо алга."

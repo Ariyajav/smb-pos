@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_ebarimt.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-burger-menu-items')]" position="inside">
+            <DropdownItem t-if="!this.pos.data.network.offline" onSelected="() => this.ebarimtSendData()">
+                eBarimt илгээх
+            </DropdownItem>
+        </xpath>
+    </t>
+</templates>
