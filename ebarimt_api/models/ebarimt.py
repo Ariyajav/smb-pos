@@ -128,44 +128,57 @@ class eBarimtPosAPI(models.Model):
             PosAPI-с Төлбөрийн баримтын нэгдсэн системд мэдээлэл илгээх сервис
         """
         for record in self:
-            if not record.service_url or (
-                "http://" not in record.service_url
-                and "https://" not in record.service_url
-            ):
-                raise UserError(
-                    _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
-                )
-            message = False
-            try:
-                url = record.service_url
-                if url[-1] != "/":
-                    url += "/"
-                url += "rest/send"
-                headers = {
-                    "Connection": "keep-alive",
-                }
-                _status_code, res = record._request_connection(url, headers, [], "GET")
-
-                if _status_code != 200 or _status_code != 404:
-                    message = (
-                        "PosAPI service connection failed.\nHTTP Error response: %s" % res
-                    )
-                else:
-                    message = (
-                        "PosAPI service connection succes.\nResult checkAPI:%s" % res
-                    )
-            except:
-                message = (
-                    "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
-                )
-
-            record.write(
-                {
-                    "message": message,
-                    "last_send_date": fields.Datetime.now(),
-                }
-            )
+            record._send_data_one()
         return True
+
+    def _send_data_one(self):
+        """Call PosAPI sendData once; store and return (ok, message)."""
+        self.ensure_one()
+        if not self.service_url or (
+            "http://" not in self.service_url
+            and "https://" not in self.service_url
+        ):
+            raise UserError(
+                _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
+            )
+        ok = False
+        url = self.service_url
+        if url[-1] != "/":
+            url += "/"
+        try:
+            _status_code, res = self._request_connection(url + "rest/sendData", {"Connection": "keep-alive"}, [], "GET")
+            if _status_code == 200:
+                ok = True
+                message = _("Receipts were sent to the eBarimt system.")
+                try:
+                    _info_status, info = self._request_connection(url + "rest/info", {}, [], "GET")
+                    if _info_status == 200 and isinstance(info, dict) and info.get("lastSentDate"):
+                        message += "\n" + _("Last sent: %s", info["lastSentDate"])
+                except requests.RequestException:
+                    pass
+            else:
+                message = _("PosAPI sendData failed (HTTP %(code)s): %(res)s", code=_status_code, res=res)
+        except requests.RequestException:
+            message = _("Couldn't connect to PosAPI service. Reason might be: %s", _short_reason())
+        vals = {"message": message}
+        if ok:
+            vals["last_send_date"] = fields.Datetime.now()
+        self.write(vals)
+        return ok, message
+
+    @api.model
+    def pos_send_data(self, company_id=None):
+        """POS button: ask PosAPI to send the stored receipts now. Any POS
+        user may trigger it; sendData only pushes receipts that PosAPI
+        already holds."""
+        company = self.env["res.company"].browse(company_id) if company_id else self.env.company
+        if company not in self.env.user.company_ids:
+            raise AccessError(_("You have no access to this company."))
+        posapi = self.sudo().search([("company_id", "=", company.id)], limit=1)
+        if not posapi:
+            return {"ok": False, "message": _("No PosAPI settings for %s.", company.name)}
+        ok, message = posapi._send_data_one()
+        return {"ok": ok, "message": message}
 
     def _request_receipt(self, json_order):
         """PosAPI-руу төлбөрийн баримт илгээх сервис"""

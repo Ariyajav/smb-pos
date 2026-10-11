@@ -3,3 +3,4 @@ from . import test_security
 from . import test_customer_tin
 from . import test_buna_codes
 from . import test_no_vat
+from . import test_send_data
