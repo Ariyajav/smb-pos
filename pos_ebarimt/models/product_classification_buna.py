@@ -135,16 +135,9 @@ class ProductClassificationBuna(models.Model):
                 code = item[0]
                 name = item[1]
                 
-                # Параметрүүдийг шинэчлэх
-                new_params = {
-                    'p1': self.p1 or (code if self.level == 'sector' else ''),
-                    'p2': self.p2 or (code if self.level == 'subsector' else ''),
-                    'p3': self.p3 or (code if self.level == 'group' else ''),
-                    'p4': self.p4 or (code if self.level == 'class' else ''),
-                    'p5': self.p5 or (code if self.level == 'subclass' else ''),
-                    'p6': self.p6 or (code if self.level == 'detail' else ''),
-                }
-                
+                path = self._buna_path(str(code))
+                new_params = {'p%d' % (i + 1): path[i] if i < len(path) else '' for i in range(6)}
+
                 # Одоо байгаа эсэхийг шалгах
                 existing = self.search([
                     ('code', '=', code),
@@ -244,6 +237,70 @@ class ProductClassificationBuna(models.Model):
                 'type': 'success'
             }
         }
+
+    # BUNA codes are hierarchical: each level adds one digit to its parent's
+    # code (6 > 61 > 611 > 6118 > 61184 > 61184xx). A product uses a full
+    # 7-digit code.
+    BUNA_LEVELS = ['sector', 'subsector', 'group', 'class', 'subclass', 'detail']
+    BUNA_CODE_LENGTH = 7
+
+    @api.model
+    def _buna_path(self, code):
+        """API path (p1..p6) of a code: the codes of its ancestors and itself."""
+        return [code[:i] for i in range(1, min(len(code), 5) + 1)] + ([code] if len(code) > 5 else [])
+
+    @api.model
+    def _buna_node(self, code, name, parent):
+        path = self._buna_path(code)
+        vals = {
+            'code': code,
+            'name': name,
+            'level': self.BUNA_LEVELS[len(path) - 1],
+            'parent_id': parent.id if parent else False,
+            **{'p%d' % (i + 1): path[i] if i < len(path) else False for i in range(6)},
+        }
+        node = self.search([('code', '=', code)], limit=1)
+        if node:
+            node.write(vals)
+        else:
+            node = self.create(vals)
+        return node
+
+    @api.model
+    def _buna_children(self, code=''):
+        """[(code, name), ...] that eBarimt lists under ``code``."""
+        result = self._fetch_from_api(*self._buna_path(code)) if code else self._fetch_from_api()
+        if not result['success']:
+            raise ValidationError(_("eBarimt BUNA API error: %s", result['error']))
+        return [(str(item[0]), item[1]) for item in result['data']
+                if isinstance(item, (list, tuple)) and len(item) >= 2]
+
+    @api.model
+    def load_code_subtree(self, code):
+        """Load ``code`` (for example subclass 61184 or class 9591) with its
+        ancestors and every code under it, down to the 7-digit codes products
+        use. Returns the number of 7-digit codes loaded."""
+        code = (code or '').strip()
+        if not code.isdigit() or not 1 <= len(code) <= self.BUNA_CODE_LENGTH:
+            raise ValidationError(_("\"%s\" is not a BUNA code (1-7 digits).", code))
+        path = self._buna_path(code)
+        parent = self.browse()
+        for depth, step in enumerate(path):
+            names = dict(self._buna_children(path[depth - 1] if depth else ''))
+            if step not in names:
+                raise ValidationError(_("eBarimt has no BUNA code %s.", step))
+            parent = self._buna_node(step, names[step], parent)
+        return self._load_below(parent)
+
+    def _load_below(self, node):
+        if len(node.code) >= self.BUNA_CODE_LENGTH:
+            return 1
+        children = self._buna_children(node.code)
+        node.has_children = bool(children)
+        count = 0
+        for code, name in children:
+            count += self._load_below(self._buna_node(code, name, node))
+        return count
 
     @api.model
     def get_or_create_sector_list(self):

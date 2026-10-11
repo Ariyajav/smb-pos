@@ -564,6 +564,8 @@ class PosOrder(models.Model):
                 and product_item.product_tmpl_id.buna_classification_id):
                 
                 buna_classification = product_item.product_tmpl_id.buna_classification_id
+                if len(buna_classification.code or '') == 7:
+                    return buna_classification.code
                 
                 # Хамгийн тохирох параметрыг сонгож хойноос 0-ээр дүүргэх
                 classification_code = ""
