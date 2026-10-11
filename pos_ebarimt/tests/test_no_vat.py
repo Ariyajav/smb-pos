@@ -5,7 +5,7 @@ from odoo.addons.point_of_sale.tests.common import TestPoSCommon
 
 @tagged('post_install', '-at_install')
 class TestNoVatMerchant(TestPoSCommon):
-    """A merchant that is not a VAT payer sends every item as NO_VAT."""
+    """A merchant that is not a VAT payer sends every item as NOT_VAT."""
 
     def setUp(self):
         super().setUp()
@@ -27,7 +27,7 @@ class TestNoVatMerchant(TestPoSCommon):
         self.order.company_id.ebarimt_no_vat = True
         line = self.order.lines
         values = self.order._ebarimt_line_values(line, 1)
-        self.assertEqual(values['tax_type'], 'NO_VAT')
+        self.assertEqual(values['tax_type'], 'NOT_VAT')
         self.assertEqual(values['vat'], 0)
         self.assertFalse(values['taxProductCode'])
 

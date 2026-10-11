@@ -648,8 +648,8 @@ class PosOrder(models.Model):
         configured on the taxes instead of an assumed 10% / 2%.
         """
         taxes = self._ebarimt_line_taxes(line)
-        # A merchant that is not a VAT payer sells everything as NO_VAT.
-        tax_type = 'NO_VAT' if self.company_id.ebarimt_no_vat else self._ebarimt_tax_type(taxes)
+        # A merchant that is not a VAT payer sells everything as NOT_VAT.
+        tax_type = 'NOT_VAT' if self.company_id.ebarimt_no_vat else self._ebarimt_tax_type(taxes)
         price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
         res = taxes.compute_all(
             price, line.order_id.currency_id, qty,
@@ -726,7 +726,7 @@ class PosOrder(models.Model):
             items = positives
 
         no_tax = [it['name'] for it in items
-                  if it['tax_type'] != 'NO_VAT' and not it['has_tax'] and not it['taxProductCode']]
+                  if it['tax_type'] != 'NOT_VAT' and not it['has_tax'] and not it['taxProductCode']]
         if no_tax:
             raise EbarimtDataError(_("These products have no sales tax. Add VAT 10%%, or, if they are "
                                      "VAT free, an eBarimt VAT code (product form, eBarimt tab): %s",
