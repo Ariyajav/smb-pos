@@ -166,6 +166,19 @@ patch(OrderReceipt.prototype, {
         return data.amount - (data.vat || 0) - (data.city_tax || 0);
     },
 
+    // Tax amounts in the eBarimt section; a row is printed only when its
+    // amount is not zero.
+    get ebarimtVat() {
+        if (this.hasEbarimt && this.ebarimtData.vat) {
+            return this.ebarimtData.vat;
+        }
+        return this.isReplacementBill ? 0 : this.props.order.amountTaxes;
+    },
+
+    get ebarimtCityTax() {
+        return (this.hasEbarimt && this.ebarimtData.city_tax) || 0;
+    },
+
     get ebarimtPaperWidth() {
         return this.props.order?.config?.receipt_paper_width || "80";
     },
