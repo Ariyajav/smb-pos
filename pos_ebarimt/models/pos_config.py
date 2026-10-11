@@ -48,7 +48,8 @@ class ResCompany(models.Model):
     ebarimt_no_vat = fields.Boolean(
         string="Not a VAT payer",
         help="The company is not registered for VAT: every item goes to "
-             "eBarimt as NOT_VAT, with no VAT amount and no VAT code."
+             "eBarimt as NOT_VAT, with no VAT amount. Each product still needs "
+             "an eBarimt VAT code (taxProductCode), which PosAPI requires."
     )
 
     vat_tin = fields.Char(
