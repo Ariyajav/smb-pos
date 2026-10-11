@@ -5,3 +5,4 @@ from . import test_buna_codes
 from . import test_no_vat
 from . import test_send_data
 from . import test_district_sync
+from . import test_bill_date

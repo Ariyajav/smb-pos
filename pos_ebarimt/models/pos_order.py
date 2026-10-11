@@ -966,7 +966,7 @@ class PosOrder(models.Model):
                 "city_tax": self.round_decimal(float(response.get("totalCityTax", 0)), 2),
                 "bill_type": response.get("type", bill_type),
                 "pos_id": str(response.get("posId", "")),
-                "sent_at": response.get("date", fields.Datetime.now()),
+                **self.env["vat.receipt"]._posapi_sent_vals(response.get("date")),
                 "merchant_tin": response.get("merchantTin", merchant_no),
                 "customer_tin": response.get("customerTin", ""),
                 "bill_state": "done",
@@ -1062,7 +1062,7 @@ class PosOrder(models.Model):
         posapi = posapi_services[0]
         res = posapi._return_receipt({
             'id': order_vat_receipt.bill_id,
-            'date': order_vat_receipt.sent_at.strftime("%Y-%m-%d %H:%M:%S"),
+            'date': order_vat_receipt._posapi_return_date(),
         })
         
         _logger.debug(f'Return receipt result: {res}')
@@ -1327,10 +1327,7 @@ class PosOrder(models.Model):
             # Огноо format
             formatted_date = ""
             if receipt.sent_at:
-                try:
-                    formatted_date = receipt.sent_at.strftime('%Y-%m-%d %H:%M:%S')
-                except:
-                    formatted_date = str(receipt.sent_at)
+                formatted_date = receipt._posapi_return_date()
             
             # Буцаах мэдээлэл
             result = {
