@@ -420,7 +420,7 @@ class AccountMove(models.Model):
                 "city_tax": response.get("totalCityTax", 0),
                 "bill_type": response["type"],
                 "pos_id": response["posId"],
-                "sent_at": response["date"],
+                **self.env["vat.receipt"]._posapi_sent_vals(response.get("date")),
                 "merchant_tin": response["merchantTin"],
                 "invoice_id": '' if not has_invoice_id else response["invoiceId"],
                 "inactive_id": '' if not has_inactive_id else response["inactiveId"],
@@ -474,7 +474,7 @@ class AccountMove(models.Model):
         if posapi and invoice_vat_receipt:
             res = posapi._return_receipt({
                 'id': invoice_vat_receipt.bill_id,
-                'date': invoice_vat_receipt.sent_at.strftime("%Y-%m-%d %H:%M:%S"),
+                'date': invoice_vat_receipt._posapi_return_date(),
             })
         else:
             if not invoice_vat_receipt:

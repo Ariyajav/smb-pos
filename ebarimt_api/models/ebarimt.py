@@ -510,6 +510,11 @@ class VatBillReceipt(models.Model):
     vat = fields.Float("Total Vat")
     city_tax = fields.Float("Total City Tax")
     sent_at = fields.Datetime("Sent Date")
+    posapi_date = fields.Char(
+        "PosAPI Date", readonly=True,
+        help="Bill date exactly as PosAPI returned it (PosAPI's local time). "
+             "Sent back unchanged when the bill is returned.",
+    )
     report_month = fields.Date("Report Month")
     invoice_id = fields.Char("Invoice ID")
     pos_id = fields.Char("Pos ID")
@@ -527,3 +532,20 @@ class VatBillReceipt(models.Model):
         "State",
         default="done",
     )
+
+    @api.model
+    def _posapi_sent_vals(self, posapi_date):
+        """sent_at is the server's own clock; PosAPI's ``date`` is kept as
+        given, because a return must send it back unchanged."""
+        if not isinstance(posapi_date, str):
+            posapi_date = False
+        return {"sent_at": fields.Datetime.now(), "posapi_date": posapi_date}
+
+    def _posapi_return_date(self):
+        """The bill date PosAPI expects back when the bill is returned.
+        Bills saved before posapi_date existed kept PosAPI's local time in
+        sent_at itself."""
+        self.ensure_one()
+        if self.posapi_date:
+            return self.posapi_date
+        return self.sent_at.strftime("%Y-%m-%d %H:%M:%S") if self.sent_at else ""
