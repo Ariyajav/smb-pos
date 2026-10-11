@@ -11,3 +11,5 @@ access_ebarimt_posapi_pos_user,account.ebarimt.posapi pos user,ebarimt_api.model
 access_vat_receipt_pos_user,vat.receipt pos user,ebarimt_api.model_vat_receipt,point_of_sale.group_pos_user,1,0,0,0
 access_product_classification_code_pos_user,product.classification.code pos user,ebarimt_api.model_product_classification_code,point_of_sale.group_pos_user,1,0,0,0
 access_product_vat_code_pos_user,product.vat.code pos user,ebarimt_api.model_product_vat_code,point_of_sale.group_pos_user,1,0,0,0
+access_product_classification_buna_load_account,product.classification.buna.load account,model_product_classification_buna_load,account.group_account_user,1,1,1,1
+access_product_classification_buna_load_pos_manager,product.classification.buna.load pos manager,model_product_classification_buna_load,point_of_sale.group_pos_manager,1,1,1,1

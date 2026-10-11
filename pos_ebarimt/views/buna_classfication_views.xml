@@ -6,7 +6,7 @@
             <field name="name">product.classification.buna.list</field>
             <field name="model">product.classification.buna</field>
             <field name="arch" type="xml">
-                <list string="БҮНА Classification" expand="1">
+                <list string="БҮНА Classification" expand="1" create="0">
                     <field name="level" column_invisible="1"/>
                     <field name="display_name"/>
                     <field name="code"/>
@@ -24,7 +24,7 @@
             <field name="name">product.classification.buna.form</field>
             <field name="model">product.classification.buna</field>
             <field name="arch" type="xml">
-                <form string="БҮНА Classification">
+                <form string="БҮНА Classification" create="0">
                     <header>
                         <button name="action_load_children" string="Хүүхэд ангилал татах" type="object" class="oe_highlight" invisible="level == 'buna_code'"/>
                         <button name="action_load_barcodes" string="Баркод татах" type="object" class="oe_highlight" invisible="level != 'buna_code'"/>
@@ -153,6 +153,33 @@
 
         <menuitem id="menu_buna_classifications" name="БҮНА Ангилал" parent="menu_buna_classification_root" action="action_product_classification_buna" sequence="1"/>
 
+        <!-- Load a BUNA code and everything under it from eBarimt -->
+        <record id="view_product_classification_buna_load_form" model="ir.ui.view">
+            <field name="name">product.classification.buna.load.form</field>
+            <field name="model">product.classification.buna.load</field>
+            <field name="arch" type="xml">
+                <form string="БҮНА код татах">
+                    <p>Ангиллын кодыг таслалаар тусгаарлан оруулна. Тухайн ангилал болон түүний доорх бүх 7 оронтой кодыг eBarimt-аас татна.</p>
+                    <group>
+                        <field name="codes" placeholder="61184, 9591"/>
+                    </group>
+                    <footer>
+                        <button name="action_load" string="Татах" type="object" class="btn-primary"/>
+                        <button string="Болих" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_product_classification_buna_load" model="ir.actions.act_window">
+            <field name="name">БҮНА код татах</field>
+            <field name="res_model">product.classification.buna.load</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_buna_classification_load" name="БҮНА код татах" parent="menu_buna_classification_root" action="action_product_classification_buna_load" sequence="2"/>
+
         <!-- <menuitem id="menu_buna_barcodes" name="БҮНА Baркод" parent="menu_buna_classification_root" action="action_product_barcode_buna" sequence="2"/>
 
         <menuitem id="menu_init_buna_sectors" name="Салбарын жагсаалт татах" parent="menu_buna_classification_root" action="action_init_buna_sectors" sequence="3"/> -->
@@ -167,7 +194,7 @@
                     <page string="БҮНА Classification" name="buna_classification" groups="account.group_account_user">
                         <group>
                             <group>
-                                <field name="buna_classification_id" />
+                                <field name="buna_classification_id" options="{'no_create': True}"/>
                                 <button name="action_select_buna_classification" string="БҮНА ангилал сонгох" type="object" class="btn-link"/>
                             </group>
                         </group>
