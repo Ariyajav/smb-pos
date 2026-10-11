@@ -1,6 +1,5 @@
 import json
 import datetime
-import pytz
 import requests
 import sys
 import traceback, logging
@@ -536,22 +535,11 @@ class VatBillReceipt(models.Model):
 
     @api.model
     def _posapi_sent_vals(self, posapi_date):
-        """sent_at / posapi_date values for a PosAPI ``date``. PosAPI gives
-        its local time without a zone; Odoo stores UTC."""
-        if not posapi_date or not isinstance(posapi_date, str):
-            return {"sent_at": fields.Datetime.now(), "posapi_date": False}
-        try:
-            local = datetime.datetime.strptime(posapi_date[:19], "%Y-%m-%d %H:%M:%S")
-        except ValueError:
-            return {"sent_at": fields.Datetime.now(), "posapi_date": posapi_date}
-        tz_name = self.env["ir.config_parameter"].sudo().get_param(
-            "ebarimt.posapi_tz", "Asia/Ulaanbaatar")
-        try:
-            tz = pytz.timezone(tz_name)
-        except pytz.UnknownTimeZoneError:
-            tz = pytz.timezone("Asia/Ulaanbaatar")
-        utc = tz.localize(local).astimezone(pytz.utc).replace(tzinfo=None)
-        return {"sent_at": utc, "posapi_date": posapi_date}
+        """sent_at is the server's own clock; PosAPI's ``date`` is kept as
+        given, because a return must send it back unchanged."""
+        if not isinstance(posapi_date, str):
+            posapi_date = False
+        return {"sent_at": fields.Datetime.now(), "posapi_date": posapi_date}
 
     def _posapi_return_date(self):
         """The bill date PosAPI expects back when the bill is returned.

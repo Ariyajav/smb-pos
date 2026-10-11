@@ -1,15 +1,18 @@
 import datetime
 
+from freezegun import freeze_time
+
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
 
 @tagged('post_install', '-at_install')
 class TestBillDate(TransactionCase):
-    """PosAPI returns the bill date in Ulaanbaatar local time; Odoo stores UTC."""
+    """sent_at is the server's clock; PosAPI's date is kept unchanged for returns."""
 
-    def test_local_date_stored_as_utc(self):
-        vals = self.env['vat.receipt']._posapi_sent_vals('2026-10-11 19:17:00')
+    def test_sent_at_is_server_time(self):
+        with freeze_time('2026-10-11 11:17:00'):
+            vals = self.env['vat.receipt']._posapi_sent_vals('2026-10-11 19:17:00')
         self.assertEqual(vals['sent_at'], datetime.datetime(2026, 10, 11, 11, 17, 0))
         self.assertEqual(vals['posapi_date'], '2026-10-11 19:17:00')
 
