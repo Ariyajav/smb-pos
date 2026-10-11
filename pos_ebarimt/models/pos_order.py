@@ -667,7 +667,7 @@ class PosOrder(models.Model):
                 vat += amount
         tmpl = line.product_id.product_tmpl_id
         tax_product_code = ''
-        if tax_type in ('VAT_FREE', 'VAT_ZERO') and 'vat_code_id' in tmpl._fields and tmpl.vat_code_id:
+        if tax_type in ('VAT_FREE', 'VAT_ZERO', 'NOT_VAT') and 'vat_code_id' in tmpl._fields and tmpl.vat_code_id:
             tax_product_code = tmpl.vat_code_id.name or ''
         return {
             'tax_type': tax_type,
@@ -732,9 +732,9 @@ class PosOrder(models.Model):
                                      "VAT free, an eBarimt VAT code (product form, eBarimt tab): %s",
                                      ", ".join(no_tax)))
         missing_code = [it['name'] for it in items
-                        if it['tax_type'] in ('VAT_FREE', 'VAT_ZERO') and not it['taxProductCode']]
+                        if it['tax_type'] in ('VAT_FREE', 'VAT_ZERO', 'NOT_VAT') and not it['taxProductCode']]
         if missing_code:
-            raise EbarimtDataError(_("These products are VAT free or VAT 0%% but have no eBarimt VAT code "
+            raise EbarimtDataError(_("These products are VAT free, VAT 0%% or sold by a non-VAT payer but have no eBarimt VAT code "
                                      "(product form, eBarimt tab): %s", ", ".join(missing_code)))
 
         sub_receipts = []

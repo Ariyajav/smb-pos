@@ -31,6 +31,13 @@ class TestNoVatMerchant(TestPoSCommon):
         self.assertEqual(values['vat'], 0)
         self.assertFalse(values['taxProductCode'])
 
+    def test_no_vat_item_sends_vat_code(self):
+        self.order.company_id.ebarimt_no_vat = True
+        code = self.env['product.vat.code'].create({'name': '501', 'tax_type': 'NOT_VAT'})
+        self.product.product_tmpl_id.vat_code_id = code
+        values = self.order._ebarimt_line_values(self.order.lines, 1)
+        self.assertEqual(values['taxProductCode'], '501')
+
     def test_vat_payer_keeps_vat_free(self):
         values = self.order._ebarimt_line_values(self.order.lines, 1)
         self.assertEqual(values['tax_type'], 'VAT_FREE')

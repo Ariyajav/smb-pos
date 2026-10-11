@@ -17,14 +17,15 @@ class ClassificationCode(models.Model):
 
 class VatCode(models.Model):
     _name = "product.vat.code"
-    _description = "Three digits of code when tax type is either VAT_FREE or VAT_ZERO"
+    _description = "3-10 digit tax product code for VAT_FREE, VAT_ZERO and NOT_VAT items"
 
-    name = fields.Char("VAT code", required=True, size=3)
+    name = fields.Char("VAT code", required=True, size=10)
     label = fields.Text("Label")
     tax_type = fields.Selection(
         [
             ("VAT_FREE", "VAT Free"),
             ("VAT_ZERO", "VAT Zero %"),
+            ("NOT_VAT", "Not a VAT payer"),
         ],
         'Vat Type',
         default="VAT_FREE",
