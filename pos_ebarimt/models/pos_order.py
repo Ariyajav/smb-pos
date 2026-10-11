@@ -648,7 +648,8 @@ class PosOrder(models.Model):
         configured on the taxes instead of an assumed 10% / 2%.
         """
         taxes = self._ebarimt_line_taxes(line)
-        tax_type = self._ebarimt_tax_type(taxes)
+        # A merchant that is not a VAT payer sells everything as NO_VAT.
+        tax_type = 'NO_VAT' if self.company_id.ebarimt_no_vat else self._ebarimt_tax_type(taxes)
         price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
         res = taxes.compute_all(
             price, line.order_id.currency_id, qty,
@@ -666,7 +667,7 @@ class PosOrder(models.Model):
                 vat += amount
         tmpl = line.product_id.product_tmpl_id
         tax_product_code = ''
-        if tax_type != 'VAT_ABLE' and 'vat_code_id' in tmpl._fields and tmpl.vat_code_id:
+        if tax_type in ('VAT_FREE', 'VAT_ZERO') and 'vat_code_id' in tmpl._fields and tmpl.vat_code_id:
             tax_product_code = tmpl.vat_code_id.name or ''
         return {
             'tax_type': tax_type,
@@ -724,12 +725,14 @@ class PosOrder(models.Model):
                     it[key] = it[key] * factor
             items = positives
 
-        no_tax = [it['name'] for it in items if not it['has_tax'] and not it['taxProductCode']]
+        no_tax = [it['name'] for it in items
+                  if it['tax_type'] != 'NO_VAT' and not it['has_tax'] and not it['taxProductCode']]
         if no_tax:
             raise EbarimtDataError(_("These products have no sales tax. Add VAT 10%%, or, if they are "
                                      "VAT free, an eBarimt VAT code (product form, eBarimt tab): %s",
                                      ", ".join(no_tax)))
-        missing_code = [it['name'] for it in items if it['tax_type'] != 'VAT_ABLE' and not it['taxProductCode']]
+        missing_code = [it['name'] for it in items
+                        if it['tax_type'] in ('VAT_FREE', 'VAT_ZERO') and not it['taxProductCode']]
         if missing_code:
             raise EbarimtDataError(_("These products are VAT free or VAT 0%% but have no eBarimt VAT code "
                                      "(product form, eBarimt tab): %s", ", ".join(missing_code)))
