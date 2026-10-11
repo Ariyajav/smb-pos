@@ -15,6 +15,7 @@
                             <field name="vat_tin"/>
                             <field name="parent_merchant_tin"/>
                             <field name="ebarimt_pos_number"/>
+                            <field name="ebarimt_no_vat"/>
                         </group>
                     </page>
                 </xpath>
