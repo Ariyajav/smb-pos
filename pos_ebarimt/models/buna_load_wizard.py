@@ -16,7 +16,7 @@ class ProductClassificationBunaLoad(models.TransientModel):
         Buna = self.env['product.classification.buna']
         loaded = []
         for code in filter(None, (c.strip() for c in self.codes.split(','))):
-            loaded.append('%s: %d' % (code, Buna.load_code_subtree(code)))
+            loaded.append('%s: %d' % (code, Buna._load_code_subtree(code)))
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',

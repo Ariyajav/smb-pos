@@ -2,8 +2,9 @@ import json
 import datetime
 import requests
 import logging
+import psycopg2
 from odoo import api, models, fields, _
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ class AccountMove(models.Model):
         default_code = self.env['ir.config_parameter'].sudo().get_param('ebarimt.default_district_code', '2426')
         return default_code
 
-    def get_district_code(self):
+    def _get_district_code(self):
         """Компанийн дүүргийн кодыг олж авах - нэгтгэсэн method"""
         # Эхлээд API-аас татаж үзэх
         api_code = self.get_district_code_from_api()
@@ -169,10 +170,21 @@ class AccountMove(models.Model):
                 for invoice in invoices:
                     if invoice.id != move.id:
                         try:
-                            invoice._ebarimt_return_bill()
-                            _logger.info(f"[eBarimt Refund] Returned eBarimt for invoice {invoice.id}")
+                            res = invoice._ebarimt_return_bill()
                         except Exception as e:
-                            _logger.error(f"[eBarimt Refund] Error returning eBarimt for invoice {invoice.id}: {e}")
+                            _logger.exception("[eBarimt Refund] Error returning eBarimt for invoice %s", invoice.id)
+                            res = {"message": type(e).__name__}
+                        if 'message' in res:
+                            # The credit note is posted either way: say so
+                            # where the accountant looks, so the bill is
+                            # returned by hand instead of staying active.
+                            note = _("eBarimt bill of %(invoice)s was NOT returned after %(refund)s was posted: "
+                                     "%(error)s. Return it by hand.",
+                                     invoice=invoice.name, refund=move.name, error=res["message"])
+                            invoice.message_post(body=note)
+                            move.message_post(body=note)
+                        else:
+                            _logger.info("[eBarimt Refund] Returned eBarimt for invoice %s", invoice.id)
 
         return res
 
@@ -324,7 +336,7 @@ class AccountMove(models.Model):
         com_no = self.company_id.id
 
         # District code-г динамикаар авах
-        district_code = self.get_district_code()
+        district_code = self._get_district_code()
 
         json_body = {
             'totalAmount': round(total_amount, 2),
@@ -355,7 +367,14 @@ class AccountMove(models.Model):
             raise AccessError(_("Only invoicing users can send or return eBarimt bills of invoices."))
 
     def vat_invoice_commit(self, bill_type="B2C_INVOICE"):
+        self.ensure_one()
         self._ebarimt_check_invoice_access()
+        # Two sends of the same invoice at once would issue two bills.
+        try:
+            with self.env.cr.savepoint(flush=False):
+                self.env.cr.execute("SELECT id FROM account_move WHERE id = %s FOR UPDATE NOWAIT", (self.id,))
+        except psycopg2.errors.LockNotAvailable:
+            raise UserError(_("%s is being sent to eBarimt right now; wait a minute and reload.", self.name))
         merchant_no = str(self.company_id.partner_id.vat_tin or self.company_id.vat or '')
         
         if not merchant_no:
@@ -431,7 +450,8 @@ class AccountMove(models.Model):
             
             if has_inactive_id:
                 inactive_bill = self.env['vat.receipt'].sudo().search([
-                    ('bill_id', '=', response["inactiveId"])
+                    ('bill_id', '=', response["inactiveId"]),
+                    ('company_id', '=', self.company_id.id),
                 ])
                 if inactive_bill:
                     inactive_bill.refunded = True

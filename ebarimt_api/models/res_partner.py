@@ -151,13 +151,13 @@ class ResPartner(models.Model):
                 }
             }
         except Exception as ex:
-            _logger.error(f"Error fetching eBarimt info for {self.vat}: {str(ex)}")
+            _logger.exception("Error fetching eBarimt info for %s", self.vat)
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Error'),
-                    'message': _('Could not fetch eBarimt info: %s') % str(ex),
+                    'message': _('Could not fetch eBarimt info: %s') % type(ex).__name__,
                     'type': 'danger'
                 }
             }
@@ -202,7 +202,7 @@ class ResPartner(models.Model):
         }
 
     @api.model
-    def get_district_code_for_company(self, company_id=None):
+    def _get_district_code_for_company(self, company_id=None):
         """Компанийн district code авах helper method"""
         if not company_id:
             company_id = self.env.company.id

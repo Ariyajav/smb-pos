@@ -2,7 +2,8 @@ import json
 import datetime
 import requests
 import sys
-import traceback, logging
+import logging
+from urllib.parse import urlsplit
 from odoo import api, models, fields, _
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import AccessError, UserError
@@ -15,6 +16,9 @@ POSAPI_TIMEOUT = (3, 10)
 # The warning check runs before every sale, so it gives up sooner.
 POSAPI_WARNING_TIMEOUT = (2, 4)
 _MASKED_LOG_KEYS = {"customerTin", "consumerNo", "lottery", "qrData"}
+RECEIPT_SECRET_GROUPS = "account.group_account_invoice,point_of_sale.group_pos_manager"
+# Hosts where a gateway key may travel over plain http (same machine).
+_LOOPBACK_HOSTS = {"localhost", "127.0.0.1", "::1"}
 
 
 def _short_reason():
@@ -77,18 +81,44 @@ class eBarimtPosAPI(models.Model):
     def create(self, vals_list):
         if any('service_url' in vals for vals in vals_list):
             self._ebarimt_check_url_access()
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        records._ebarimt_check_url_scheme()
+        return records
 
     def write(self, vals):
         if 'service_url' in vals:
             self._ebarimt_check_url_access()
-        return super().write(vals)
+        res = super().write(vals)
+        if 'service_url' in vals or 'api_key' in vals:
+            self._ebarimt_check_url_scheme()
+        return res
 
     def _ebarimt_check_url_access(self):
         # The gateway key is sent to this URL, so whoever can change it can
         # read the key: keep it as locked down as the key itself.
         if not self.env.su and not self.env.user.has_group('base.group_system'):
             raise AccessError(_("Only administrators can change the PosAPI Service URL."))
+
+    def _ebarimt_check_url_scheme(self):
+        """The gateway key must not travel unencrypted to another machine."""
+        for record in self.sudo():
+            if record.service_url and record.api_key:
+                record._ebarimt_base_url()
+
+    def _ebarimt_base_url(self):
+        """Service URL ending with '/', checked: http(s) with a host, and
+        https whenever a gateway key is sent (except to this machine)."""
+        self.ensure_one()
+        url = (self.service_url or "").strip()
+        parts = urlsplit(url)
+        if parts.scheme not in ("http", "https") or not parts.hostname:
+            raise UserError(
+                _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
+            )
+        if (parts.scheme != "https" and self.sudo().api_key
+                and parts.hostname.lower() not in _LOOPBACK_HOSTS):
+            raise UserError(_("The PosAPI Service URL must use https when a Gateway API Key is set."))
+        return url if url.endswith("/") else url + "/"
 
     def _get_next_send_date(self):
         if self.send_interval_unit == "daily":
@@ -134,17 +164,8 @@ class eBarimtPosAPI(models.Model):
     def _send_data_one(self):
         """Call PosAPI sendData once; store and return (ok, message)."""
         self.ensure_one()
-        if not self.service_url or (
-            "http://" not in self.service_url
-            and "https://" not in self.service_url
-        ):
-            raise UserError(
-                _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
-            )
         ok = False
-        url = self.service_url
-        if url[-1] != "/":
-            url += "/"
+        url = self._ebarimt_base_url()
         try:
             _status_code, res = self._request_connection(url + "rest/sendData", {"Connection": "keep-alive"}, [], "GET")
             if _status_code == 200:
@@ -183,22 +204,12 @@ class eBarimtPosAPI(models.Model):
     def _request_receipt(self, json_order):
         """PosAPI-руу төлбөрийн баримт илгээх сервис"""
         self.ensure_one()
-        _logger.debug("PosAPI 3.0 request.receipt params: %s" % json_order)
+        _logger.debug("PosAPI 3.0 request.receipt params: %s", json.dumps(self._mask_for_log(json_order)))
 
         result = False
-        if not self.service_url or (
-            "http://" not in self.service_url and "https://" not in self.service_url
-        ):
-            raise UserError(
-                _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
-            )
+        url = self._ebarimt_base_url() + "rest/receipt"
         message = False
-        content = False
         try:
-            url = self.service_url
-            if url[-1] != "/":
-                url += "/"
-            url += "rest/receipt"
             headers = {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
@@ -216,7 +227,7 @@ class eBarimtPosAPI(models.Model):
                 )
             else:
                 result = res
-        except:
+        except Exception:
             message = (
                 "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
             )
@@ -240,18 +251,9 @@ class eBarimtPosAPI(models.Model):
         _logger.debug("PosAPI 3.0 delete.receipt params: %s" % json_order)
 
         result = False
-        if not self.service_url or (
-            "http://" not in self.service_url and "https://" not in self.service_url
-        ):
-            raise UserError(
-                _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
-            )
+        url = self._ebarimt_base_url() + "rest/receipt"
         message = False
         try:
-            url = self.service_url
-            if url[-1] != "/":
-                url += "/"
-            url += "rest/receipt"
             headers = {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
@@ -264,7 +266,7 @@ class eBarimtPosAPI(models.Model):
                 )
             else:
                 result = res
-        except:
+        except Exception:
             message = (
                 "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
             )
@@ -283,20 +285,10 @@ class eBarimtPosAPI(models.Model):
     def action_check_service(self):
         self.ensure_one()
         for record in self:
-            if not record.service_url or (
-                "http://" not in record.service_url
-                and "https://" not in record.service_url
-            ):
-                raise UserError(
-                    _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
-                )
+            url = record._ebarimt_base_url() + "rest/info"
             success = True
             message = False
             try:
-                url = record.service_url
-                if url[-1] != "/":
-                    url += "/"
-                url += "rest/info"
                 headers = {
                     "Content-Type": "application/json",
                 }
@@ -313,7 +305,7 @@ class eBarimtPosAPI(models.Model):
                     message = (
                         "Result INFO:\n%s" % get_info_result
                     )
-            except:
+            except Exception:
                 message = (
                     "Couldn't connected to PosAPI service.\nReason might be: %s" % _short_reason()
                 )
@@ -346,10 +338,13 @@ class eBarimtPosAPI(models.Model):
         left_lotteries = 0
         days_until_deadline = 3
 
+        company = self.env["res.company"].browse(company_id) if company_id else self.env.company
+        if company not in self.env.user.company_ids:
+            raise AccessError(_("You have no access to this company."))
+
         try:
             # Find PosAPI config
-            domain = [('company_id', '=', company_id)] if company_id else []
-            posapi = self.search(domain, limit=1)
+            posapi = self.search([('company_id', '=', company.id)], limit=1)
 
             if not posapi or not posapi.service_url:
                 return {
@@ -360,10 +355,7 @@ class eBarimtPosAPI(models.Model):
                 }
 
             # Call PosAPI /rest/info
-            url = posapi.service_url
-            if url[-1] != "/":
-                url += "/"
-            url += "rest/info"
+            url = posapi._ebarimt_base_url() + "rest/info"
 
             headers = {"Content-Type": "application/json"}
             _status_code, res = posapi._request_connection(
@@ -520,8 +512,10 @@ class VatBillReceipt(models.Model):
     pos_id = fields.Char("Pos ID")
     refunded = fields.Boolean("Refunded", default=False)
     inactive_id = fields.Char("Inactive Bill ID")
-    lottery = fields.Char("Lottery")
-    qr_data = fields.Text("QR Data")
+    # A lottery number (and the QR that carries it) can be claimed by whoever
+    # holds it: cashiers get them only for the receipt they are printing.
+    lottery = fields.Char("Lottery", groups=RECEIPT_SECRET_GROUPS)
+    qr_data = fields.Text("QR Data", groups=RECEIPT_SECRET_GROUPS)
     bill_state = fields.Selection(
         [
             ('done', 'Bill Sent'),

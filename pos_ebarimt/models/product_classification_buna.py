@@ -276,7 +276,7 @@ class ProductClassificationBuna(models.Model):
                 if isinstance(item, (list, tuple)) and len(item) >= 2]
 
     @api.model
-    def load_code_subtree(self, code):
+    def _load_code_subtree(self, code):
         """Load ``code`` (for example subclass 61184 or class 9591) with its
         ancestors and every code under it, down to the 7-digit codes products
         use. Returns the number of 7-digit codes loaded."""

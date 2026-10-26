@@ -37,23 +37,23 @@ class TestBunaCodes(TransactionCase):
         self.addCleanup(patcher.stop)
 
     def test_load_subclass_and_class(self):
-        self.assertEqual(self.Buna.load_code_subtree('61184'), 2)
-        self.assertEqual(self.Buna.load_code_subtree('9591'), 1)
+        self.assertEqual(self.Buna._load_code_subtree('61184'), 2)
+        self.assertEqual(self.Buna._load_code_subtree('9591'), 1)
         software = self.Buna.search([('code', '=', '6118420')])
         self.assertEqual(software.parent_id.code, '61184')
         self.assertEqual(software.parent_id.parent_id.parent_id.parent_id.parent_id.code, '6')
         self.assertEqual(software.p5, '61184')
         self.assertEqual(software.p6, '6118420')
         # Loading again updates, never duplicates.
-        self.Buna.load_code_subtree('61184')
+        self.Buna._load_code_subtree('61184')
         self.assertEqual(self.Buna.search_count([('code', '=', '6118420')]), 1)
 
     def test_unknown_code_is_refused(self):
         with self.assertRaises(ValidationError):
-            self.Buna.load_code_subtree('61185')
+            self.Buna._load_code_subtree('61185')
 
     def test_product_takes_only_loaded_codes(self):
-        self.Buna.load_code_subtree('61184')
+        self.Buna._load_code_subtree('61184')
         product = self.env['product.template'].create({'name': 'Laptop'})
         product.buna_classification_id = self.Buna.search([('code', '=', '6118410')])
         category = self.Buna.search([('code', '=', '61184')])

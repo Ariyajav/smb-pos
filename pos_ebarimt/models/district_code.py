@@ -1,5 +1,6 @@
 import requests
 from odoo import fields, api, models, _
+from odoo.exceptions import AccessError
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -38,6 +39,9 @@ class DistrictCode(models.Model):
             return {'success': False, 'error': str(e)}
 
     def get_district_code_data(self):
+        # Also rewrites the country's states and districts (as superuser).
+        if not self.env.su and not self.env.user.has_group('point_of_sale.group_pos_manager'):
+            raise AccessError(_("Only POS managers can sync the district codes."))
         results = self.request()
         if results.get('success'):
             response_data = results.get('data')

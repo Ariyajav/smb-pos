@@ -18,6 +18,9 @@ EBARIMT_PROTECTED_FIELDS = frozenset({
     'ebarimt_next_try', 'ebarimt_return_done',
 })
 EBARIMT_SENDING_STALE_MINUTES = 15
+# Bill types a POS order may ask for. The POS sends its choice with the
+# order; anything else falls back to the type worked out from the buyer.
+EBARIMT_POS_BILL_TYPES = frozenset({'B2C_RECEIPT', 'B2B_RECEIPT'})
 
 
 
@@ -152,6 +155,17 @@ class PosOrder(models.Model):
     # lottery and QR as before). Failures are kept on the order and retried
     # by the "eBarimt: send pending bills" cron.
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        # An order created as already sent (or parked) would never get a
+        # bill: the sending state starts empty unless the module sets it.
+        if not self.env.su:
+            vals_list = [
+                {key: value for key, value in vals.items() if key not in EBARIMT_PROTECTED_FIELDS}
+                for vals in vals_list
+            ]
+        return super().create(vals_list)
+
     def write(self, vals):
         self._ebarimt_check_protected_write(vals)
         res = super(PosOrder, self).write(vals)
@@ -189,6 +203,17 @@ class PosOrder(models.Model):
         if not self.env.su and not (user.has_group('point_of_sale.group_pos_manager')
                                     or user.has_group('account.group_account_invoice')):
             raise AccessError(_("Only POS managers and accountants can send or return eBarimt bills by hand."))
+
+    def _ebarimt_may_see_lottery(self):
+        """Lottery numbers and QR codes can be claimed by whoever holds them.
+        Cashiers get them only for orders of a session still in progress
+        (the receipt they are printing); managers and accountants always."""
+        self.ensure_one()
+        user = self.env.user
+        return (self.env.su
+                or user.has_group('point_of_sale.group_pos_manager')
+                or user.has_group('account.group_account_invoice')
+                or self.session_id.state != 'closed')
 
     def _ebarimt_should_queue(self):
         self.ensure_one()
@@ -421,78 +446,61 @@ class PosOrder(models.Model):
         """eBarimt bill type тодорхойлох - FRONTEND-ЭЭС ИРСЭН МЭДЭЭЛЭЛ ЭХЭНД"""
         try:
             # 1. Frontend-ээс ирсэн bill type шууд ашиглах
-            if self.ebarimt_bill_type:
-                _logger.info(f"📋 Using stored bill type: {self.ebarimt_bill_type}")
+            if self.ebarimt_bill_type in EBARIMT_POS_BILL_TYPES:
                 return self.ebarimt_bill_type
             
             # 2. eBarimt config JSON-аас авах
             if self.ebarimt_config_json:
                 try:
                     config = json.loads(self.ebarimt_config_json)
-                    if config.get('billType'):
-                        _logger.info(f"📋 Using bill type from config: {config['billType']}")
+                    if isinstance(config, dict) and config.get('billType') in EBARIMT_POS_BILL_TYPES:
                         return config['billType']
-                except:
+                except ValueError:
                     pass
             
             # 3. Receipt type-аас тодорхойлох
             if self.ebarimt_receipt_type == 'organization':
-                _logger.info(f"📋 Organization receipt type -> B2B_RECEIPT")
                 return 'B2B_RECEIPT'
             elif self.ebarimt_receipt_type == 'individual':
-                _logger.info(f"📋 Individual receipt type -> B2C_RECEIPT")
                 return 'B2C_RECEIPT'
             
             # 4. Fallback: Customer TIN байгаа эсэхээр шийдэх
-            customer_tin = self.get_ebarimt_customer_tin()
-            if customer_tin:
-                _logger.debug(f"📋 Customer TIN found -> B2B_RECEIPT")
-                return 'B2B_RECEIPT'
-            else:
-                _logger.debug(f"📋 No customer TIN -> B2C_RECEIPT")
-                return 'B2C_RECEIPT'
+            return 'B2B_RECEIPT' if self.get_ebarimt_customer_tin() else 'B2C_RECEIPT'
                 
-        except Exception as e:
-            _logger.error(f"❌ Error determining bill type: {e}")
+        except Exception:
+            _logger.exception("eBarimt: could not determine the bill type of %s", self.name)
             return 'B2C_RECEIPT'  # Default
 
     def get_ebarimt_customer_tin(self):
         """eBarimt customer TIN авах - FRONTEND-ЭЭС ИРСЭН МЭДЭЭЛЭЛ ЭХЭНД"""
         try:
-            _logger.debug(f"🔍 Getting customer TIN for order {self.name}")
-            
             # 1. Frontend-ээс ирсэн customer TIN шууд ашиглах
             if self.ebarimt_customer_tin:
-                _logger.debug(f"📋 Using stored customer TIN: {self.ebarimt_customer_tin}")
                 return self.ebarimt_customer_tin
             
             # 2. eBarimt config JSON-аас авах
             if self.ebarimt_config_json:
                 try:
                     config = json.loads(self.ebarimt_config_json)
-                    if config.get('customerTin'):
-                        _logger.debug(f"📋 Using customer TIN from config: {config['customerTin']}")
+                    if isinstance(config, dict) and config.get('customerTin'):
                         return config['customerTin']
-                except Exception as e:
-                    _logger.warning(f"⚠️ Error parsing config JSON: {e}")
+                except ValueError:
+                    _logger.warning("eBarimt: config JSON of %s is not valid JSON", self.name)
             
             # 3. Manual customer TIN шалгах
             if self.ebarimt_manual_customer_tin:
-                _logger.debug(f"✍️ Using manual customer TIN: {self.ebarimt_manual_customer_tin}")
                 return self.ebarimt_manual_customer_tin
             
             # 4. Receipt type байгууллага бол manualCustomerTin эсвэл partner-аас авах
             if self.ebarimt_receipt_type == 'organization':
                 # Эхлээд manualCustomerTin шалгах
                 if self.ebarimt_manual_customer_tin:
-                    _logger.debug(f"✍️ Using manual customer TIN for organization: {self.ebarimt_manual_customer_tin}")
                     return self.ebarimt_manual_customer_tin
                 
                 # Дараа нь partner_id.vat_tin шалгах
                 if self.partner_id and hasattr(self.partner_id, 'vat_tin'):
                     partner_tin = self.partner_id.vat_tin or ''
                     if partner_tin:
-                        _logger.debug(f"👥 Using partner TIN for organization: {partner_tin}")
                         return partner_tin
                 
                 # Хэрвээ хоёулаа байхгүй бол алдаа өгчих
@@ -501,21 +509,17 @@ class PosOrder(models.Model):
             
             # 5. Individual receipt бол ТТД хоосон
             if self.ebarimt_receipt_type == 'individual':
-                _logger.debug(f"👤 Individual receipt -> empty customer TIN")
                 return ''
             
             # 6. Fallback: Хуучин логик ашиглах
-            _logger.info(f"🔄 Fallback to legacy logic")
             if self.partner_id and hasattr(self.partner_id, 'vat_tin'):
-                legacy_tin = self.partner_id.vat_tin or ''
-                _logger.debug(f"🔄 Legacy partner TIN: {legacy_tin}")
-                return legacy_tin
-            
-            _logger.debug(f"🔄 No customer TIN found")
+                return self.partner_id.vat_tin or ''
             return ''
             
-        except Exception as e:
-            _logger.error(f"❌ Error getting customer TIN: {e}")
+        except EbarimtDataError:
+            raise
+        except Exception:
+            _logger.exception("eBarimt: could not get the customer TIN of %s", self.name)
             return ''
 
     def _ebarimt_resolve_customer_tin(self, value):
@@ -552,7 +556,7 @@ class PosOrder(models.Model):
                 "Order %(order)s: eBarimt has no TIN for registry number %(value)s (%(msg)s). "
                 "Check the number and send the bill again.",
                 order=self.name, value=value, msg=result.get("msg") or "-"))
-        _logger.info("eBarimt: registry number %s of %s resolved to TIN %s", value, self.name, tin)
+        _logger.info("eBarimt: registry number of %s resolved to a TIN", self.name)
         super(PosOrder, self).write({"ebarimt_customer_tin": tin})
         return tin
 
@@ -884,16 +888,7 @@ class PosOrder(models.Model):
             if not merchant_no:
                 raise ValidationError("Company TIN is not configured. Please set TIN in Company settings.")
             
-            _logger.debug(f"🔵 Starting eBarimt send for order {self.name} with TIN: {merchant_no}")
-            
-            # eBarimt тохиргоо debug
-            _logger.info(f"📋 eBarimt Debug Info:")
-            _logger.info(f"   - Order: {self.name}")
-            _logger.info(f"   - Receipt Type: {self.ebarimt_receipt_type}")
-            _logger.info(f"   - Bill Type: {bill_type}")
-            _logger.debug(f"   - Stored Customer TIN: '{self.ebarimt_customer_tin}'")
-            _logger.debug(f"   - Manual Customer TIN: '{self.ebarimt_manual_customer_tin}'")
-            _logger.debug(f"   - Config JSON: {self.ebarimt_config_json}")
+            _logger.info("eBarimt: sending %s (%s, %s)", self.name, self.ebarimt_receipt_type, bill_type)
             
             # 2. Request body бэлдэх
             request_body = self.generate_receipt_values(merchant_no, parent_merchant_tin, ebarimt_pos_number, bill_type)
@@ -917,7 +912,6 @@ class PosOrder(models.Model):
             res = posapi._request_receipt(request_body)
             
             # 5. Response боловсруулах
-            _logger.debug(f"📥 Received response: {res}")
             
             # Error check
             if not res.get('success'):
@@ -930,21 +924,6 @@ class PosOrder(models.Model):
 
             # 6. Response data process
             response = res["result"]
-            
-            _logger.info(f"✅ eBarimt SUCCESS for {self.name}:")
-            _logger.debug(f"   - Bill ID: {response.get('id')}")
-            _logger.debug(f"   - Type: {response.get('type')}")
-            _logger.debug(f"   - Amount: {response.get('totalAmount')}")
-            _logger.debug(f"   - VAT: {response.get('totalVAT')}")
-            _logger.debug(f"   - City Tax: {response.get('totalCityTax', 0)}")
-            _logger.debug(f"   - Date: {response.get('date')}")
-            _logger.debug(f"   - POS ID: {response.get('posId')}")
-            
-            # QR болон Lottery мэдээлэл
-            if response.get('qrData'):
-                _logger.debug(f"   - QR Data: {response.get('qrData')}")
-            if response.get('lottery'):
-                _logger.debug(f"   - Lottery: {response.get('lottery')}")
             
             # 7. VAT sent тэмдэглэх
             super(PosOrder, self).write({'vat_sent': True})
@@ -980,8 +959,6 @@ class PosOrder(models.Model):
                     receipt_vals["inactive_id"] = f"{has_inactive_id}|LOTTERY:{api_lottery}"
                 else:
                     receipt_vals["inactive_id"] = f"LOTTERY:{api_lottery}"
-                
-                _logger.debug(f"💾 Storing lottery in inactive_id: {api_lottery}")
             else:
                 receipt_vals["inactive_id"] = has_inactive_id or ""
             
@@ -991,7 +968,8 @@ class PosOrder(models.Model):
             # 9. Inactive bill update
             if has_inactive_id:
                 inactive_bill = self.env['vat.receipt'].sudo().search([
-                    ('bill_id', '=', has_inactive_id)
+                    ('bill_id', '=', has_inactive_id),
+                    ('company_id', '=', self.company_id.id),
                 ], limit=1)
                 if inactive_bill:
                     inactive_bill.write({
@@ -1005,11 +983,14 @@ class PosOrder(models.Model):
             
             return True
             
-        except ValidationError:
+        except UserError:
+            # Our own messages (bad data, PosAPI errors) are meant for the user.
             raise
         except Exception as e:
-            _logger.error(f"❌ Unexpected error in _vat_pos_order_commit: {str(e)}", exc_info=True)
-            raise ValidationError(f"eBarimt илгээхэд алдаа гарлаа: {str(e)}")
+            # Full details go to the server log only: the message is shown to
+            # POS users on the order.
+            _logger.exception("eBarimt: unexpected error sending %s", self.name)
+            raise ValidationError(f"eBarimt илгээхэд алдаа гарлаа: {type(e).__name__}")
 
     def send_ebarimt(self):
         order_to_send_vat = self.filtered(
@@ -1065,7 +1046,7 @@ class PosOrder(models.Model):
             'date': order_vat_receipt._posapi_return_date(),
         })
         
-        _logger.debug(f'Return receipt result: {res}')
+        _logger.debug("Return receipt result for %s: success=%s", self.name, res.get('success'))
 
         if 'message' in res:
             order_vat_receipt.sudo().bill_state = "old"
@@ -1100,12 +1081,13 @@ class PosOrder(models.Model):
                 }
             }
         except Exception as e:
+            _logger.exception("Failed to refresh district code")
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Error'),
-                    'message': _('Failed to refresh district code: %s') % str(e),
+                    'message': _('Failed to refresh district code: %s') % type(e).__name__,
                     'type': 'danger'
                 }
             }
@@ -1188,6 +1170,7 @@ class PosOrder(models.Model):
         total = receipt.amount if replaced else self.amount_total
         company = self.company_id
         seller_tin = (getattr(company.partner_id, 'vat_tin', False) or company.vat or '')
+        may_see_lottery = self._ebarimt_may_see_lottery()
         return {
             'receipt': receipt,
             'replaced': replaced,
@@ -1198,7 +1181,8 @@ class PosOrder(models.Model):
             'seller_tin': seller_tin,
             'buyer_tin': receipt.customer_tin if receipt and receipt.bill_type == 'B2B_RECEIPT' else '',
             'buyer_name': self._ebarimt_buyer_name(receipt),
-            'qr': self._ebarimt_qr_base64(receipt.qr_data) if receipt else '',
+            'qr': self._ebarimt_qr_base64(receipt.qr_data) if receipt and may_see_lottery else '',
+            'lottery': (receipt.lottery or '') if receipt and may_see_lottery else '',
         }
 
     def print_ebarimt_receipt(self):
@@ -1274,10 +1258,11 @@ class PosOrder(models.Model):
             _logger.info(f"✅ Found VAT receipt: {receipt.bill_id}")
             
             # LOTTERY-г INACTIVE_ID-аас авах энгийн логик
+            may_see_lottery = order._ebarimt_may_see_lottery()
             lottery = receipt.lottery or ""
             
             # Inactive_id талбараас lottery олох
-            if not lottery and receipt.inactive_id and 'LOTTERY:' in receipt.inactive_id:
+            if may_see_lottery and not lottery and receipt.inactive_id and 'LOTTERY:' in receipt.inactive_id:
                 try:
                     # LOTTERY: хэсгийг олох
                     lottery_part = receipt.inactive_id.split('LOTTERY:')[1]
@@ -1287,14 +1272,15 @@ class PosOrder(models.Model):
                     else:
                         lottery = lottery_part
                     
-                    _logger.debug(f"🎯 Found lottery in inactive_id: {lottery}")
-                    
                 except Exception as e:
                     _logger.warning(f"⚠️ Could not parse lottery from inactive_id: {e}")
             
             # QR код үүсгэх
+            if not may_see_lottery:
+                lottery = ""
+            qr_data = receipt.qr_data if may_see_lottery else ""
             qr_code_base64 = ""
-            if receipt.qr_data:
+            if qr_data:
                 try:
                     import qrcode
                     from PIL import Image
@@ -1308,7 +1294,6 @@ class PosOrder(models.Model):
                         border=2,
                     )
                     
-                    qr_data = receipt.qr_data
                     qr.add_data(qr_data)
                     qr.make(fit=True)
                     
@@ -1335,7 +1320,7 @@ class PosOrder(models.Model):
                 'bill_id': receipt.bill_id or '',
                 'lottery': lottery,
                 'qr_code_base64': qr_code_base64,
-                'qr_data': receipt.qr_data or '',
+                'qr_data': qr_data or '',
                 'vat': float(receipt.vat or 0),
                 'city_tax': float(receipt.city_tax or 0),
                 'amount': float(receipt.amount or 0),
@@ -1359,7 +1344,6 @@ class PosOrder(models.Model):
             
             _logger.info(f"📤 Returning ebarimt data for order {order.name}:")
             _logger.debug(f"   - Bill ID: {result['bill_id']}")
-            _logger.debug(f"   - Lottery: {result['lottery']}")
             _logger.debug(f"   - QR available: {bool(result['qr_code_base64'])}")
             _logger.debug(f"   - VAT: {result['vat']}")
             _logger.debug(f"   - City Tax: {result['city_tax']}")
