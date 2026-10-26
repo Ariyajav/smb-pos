@@ -1,5 +1,6 @@
 import json
 import datetime
+import ipaddress
 import requests
 import sys
 import logging
@@ -17,8 +18,20 @@ POSAPI_TIMEOUT = (3, 10)
 POSAPI_WARNING_TIMEOUT = (2, 4)
 _MASKED_LOG_KEYS = {"customerTin", "consumerNo", "lottery", "qrData"}
 RECEIPT_SECRET_GROUPS = "account.group_account_invoice,point_of_sale.group_pos_manager"
-# Hosts where a gateway key may travel over plain http (same machine).
-_LOOPBACK_HOSTS = {"localhost", "127.0.0.1", "::1"}
+
+
+
+def _is_local_host(hostname):
+    """This machine or a private LAN address (10.x, 172.16-31.x, 192.168.x),
+    where a gateway key may travel over plain http. Only IP literals count:
+    a DNS name could resolve anywhere."""
+    if hostname.lower() == "localhost":
+        return True
+    try:
+        address = ipaddress.ip_address(hostname)
+    except ValueError:
+        return False
+    return address.is_loopback or (address.is_private and not address.is_link_local)
 
 
 def _short_reason():
@@ -107,7 +120,7 @@ class eBarimtPosAPI(models.Model):
 
     def _ebarimt_base_url(self):
         """Service URL ending with '/', checked: http(s) with a host, and
-        https whenever a gateway key is sent (except to this machine)."""
+        https whenever a gateway key is sent (except to this machine or the LAN)."""
         self.ensure_one()
         url = (self.service_url or "").strip()
         parts = urlsplit(url)
@@ -116,8 +129,9 @@ class eBarimtPosAPI(models.Model):
                 _("Your Service URL might be not qualified. Please use such URL: http://192.168.10.25:9010")
             )
         if (parts.scheme != "https" and self.sudo().api_key
-                and parts.hostname.lower() not in _LOOPBACK_HOSTS):
-            raise UserError(_("The PosAPI Service URL must use https when a Gateway API Key is set."))
+                and not _is_local_host(parts.hostname)):
+            raise UserError(_("The PosAPI Service URL must use https when a Gateway API Key is set "
+                              "(plain http is allowed only to localhost or a private LAN address)."))
         return url if url.endswith("/") else url + "/"
 
     def _get_next_send_date(self):
