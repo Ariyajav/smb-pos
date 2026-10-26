@@ -1,4 +1,4 @@
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, UserError
 from odoo.service.model import call_kw
 from odoo.tests import tagged
 
@@ -68,3 +68,65 @@ class TestEbarimtSecurity(TestPoSCommon):
             bill.write({'bill_state': 'old'})
         with self.assertRaises(AccessError):
             bill.unlink()
+
+    def _as_ids(self, result):
+        return [result] if isinstance(result, int) else list(result) if isinstance(result, list) else result.ids
+
+    def test_cashier_cannot_create_order_as_sent(self):
+        """An order created as already sent or parked would never get a bill."""
+        result = self._rpc(self.cashier, 'pos.order', 'create', {
+            'session_id': self.pos_session.id,
+            'amount_total': 0, 'amount_tax': 0, 'amount_paid': 0, 'amount_return': 0,
+            'vat_sent': True, 'ebarimt_state': 'manual', 'ebarimt_return_done': True,
+        })
+        order = self.env['pos.order'].browse(self._as_ids(result))
+        self.assertFalse(order.vat_sent)
+        self.assertFalse(order.ebarimt_state)
+        self.assertFalse(order.ebarimt_return_done)
+
+    def test_cashier_cannot_read_lottery(self):
+        self.bill.write({'lottery': 'AA 00000001', 'qr_data': '123456'})
+        bill = self.bill.with_user(self.cashier)
+        self.assertEqual(bill.bill_id, 'BILL-1')
+        with self.assertRaises(AccessError):
+            bill.lottery
+        with self.assertRaises(AccessError):
+            bill.qr_data
+        self.assertEqual(self.bill.with_user(self.accountant).lottery, 'AA 00000001')
+
+    def test_receipt_data_lottery_only_while_session_open(self):
+        self.bill.write({'lottery': 'AA 00000001', 'qr_data': '123456'})
+        data = self._rpc(self.cashier, 'pos.order', 'get_ebarimt_receipt_data', self.order.id)
+        self.assertEqual(data['lottery'], 'AA 00000001')
+        self.assertEqual(data['qr_data'], '123456')
+        self.pos_session.write({'state': 'closed'})
+        data = self._rpc(self.cashier, 'pos.order', 'get_ebarimt_receipt_data', self.order.id)
+        self.assertTrue(data['success'])
+        self.assertEqual(data['bill_id'], 'BILL-1')
+        self.assertFalse(data['lottery'])
+        self.assertFalse(data['qr_data'])
+        self.assertFalse(data['qr_code_base64'])
+
+    def test_other_company_bills_are_hidden(self):
+        other = self.env['res.company'].create({'name': 'Other eBarimt Co'})
+        self.env['vat.receipt'].create({'company_id': other.id, 'bill_id': 'OTHER-1'})
+        self.env['account.ebarimt.posapi'].create({'name': 'Other PosAPI', 'company_id': other.id})
+        Bills = self.env['vat.receipt'].with_user(self.accountant)
+        self.assertFalse(Bills.search([('bill_id', '=', 'OTHER-1')]))
+        self.assertTrue(Bills.search([('bill_id', '=', 'BILL-1')]))
+        PosAPI = self.env['account.ebarimt.posapi'].with_user(self.cashier)
+        self.assertFalse(PosAPI.search([('company_id', '=', other.id)]))
+        with self.assertRaises(AccessError):
+            self._rpc(self.cashier, 'account.ebarimt.posapi', 'check_posapi_warnings', other.id)
+
+    def test_gateway_key_needs_https(self):
+        self.posapi.write({'service_url': 'http://posapi.example.com:7080', 'api_key': False})
+        with self.assertRaises(UserError):
+            self.posapi.write({'api_key': 'secret'})
+        self.posapi.write({'service_url': 'https://posapi.example.com', 'api_key': 'secret'})
+        with self.assertRaises(UserError):
+            self.posapi.write({'service_url': 'http://posapi.example.com'})
+        # PosAPI on the same machine may stay on http.
+        self.posapi.write({'service_url': 'http://localhost:7080'})
+        with self.assertRaises(UserError):
+            self.posapi.write({'service_url': 'ftp://posapi.example.com'})

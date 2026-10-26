@@ -11,6 +11,7 @@
     'depends': ['base', 'account', 'sale', 'point_of_sale', 'product'],
     'data': [
         'security/ir.model.access.csv',
+        'security/ebarimt_security.xml',
         'data/ebarimt_data.xml',
         # 'data/mongolian_states.xml',
         'views/ebarimt_views.xml',

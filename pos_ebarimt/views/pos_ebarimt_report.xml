@@ -82,9 +82,9 @@
                                 <img t-att-src="'data:image/png;base64,%s' % ebarimt['qr']" style="width: 150px; height: 150px;"/>
                             </div>
 
-                            <div t-if="receipt.lottery" class="text-center" style="border: 2px solid #000; padding: 8px; margin: 10px 0;">
+                            <div t-if="ebarimt['lottery']" class="text-center" style="border: 2px solid #000; padding: 8px; margin: 10px 0;">
                                 <strong>СУГАЛААНЫ ДУГААР</strong><br/>
-                                <span style="font-size: 18px; font-weight: bold;"><t t-esc="receipt.lottery"/></span>
+                                <span style="font-size: 18px; font-weight: bold;"><t t-esc="ebarimt['lottery']"/></span>
                             </div>
 
                             <p class="text-center" style="font-size: 10px;">

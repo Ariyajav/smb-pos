@@ -13,7 +13,8 @@ class SaleOrder(models.Model):
         if self.invoice_ids:
             for invoice in self.invoice_ids:
                 if invoice.vat_receipts:
-                    receipt = invoice.vat_receipts[0]
+                    # The customer's own lottery, printed on their sale report.
+                    receipt = invoice.vat_receipts[0].sudo()
                     return {
                         'bill_id': receipt.bill_id,
                         'date': receipt.sent_at,
