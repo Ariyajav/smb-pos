@@ -126,7 +126,11 @@ class TestEbarimtSecurity(TestPoSCommon):
         self.posapi.write({'service_url': 'https://posapi.example.com', 'api_key': 'secret'})
         with self.assertRaises(UserError):
             self.posapi.write({'service_url': 'http://posapi.example.com'})
-        # PosAPI on the same machine may stay on http.
+        # PosAPI on the same machine or the LAN may stay on http.
         self.posapi.write({'service_url': 'http://localhost:7080'})
+        self.posapi.write({'service_url': 'http://10.31.0.8:9080'})
+        self.posapi.write({'service_url': 'http://192.168.10.25:9010'})
+        with self.assertRaises(UserError):
+            self.posapi.write({'service_url': 'http://8.8.8.8:9080'})
         with self.assertRaises(UserError):
             self.posapi.write({'service_url': 'ftp://posapi.example.com'})
