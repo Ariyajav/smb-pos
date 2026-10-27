@@ -55,3 +55,19 @@ class TestReceiptData(TestPoSCommon):
         self.assertEqual(data['customer_tin'], '61200064714')
         self.assertEqual(data['customer_name'], 'Test Buyer LLC')
         self.assertFalse(self._receipt_data(b2c.id)['customer_name'])
+
+    def test_company_bill_prints_registry_number(self):
+        """The receipt shows the buyer's registry number (РД), not its TIN."""
+        self.company_partner.vat = '6235972'
+        from_partner = self._order_with_bill('BILL-REG', 'B2B_RECEIPT', self.company_partner, '61200064714')
+        self.assertEqual(self._receipt_data(from_partner.id)['customer_reg_no'], '6235972')
+        # Typed in the popup: what the cashier typed is the buyer.
+        typed = self._order_with_bill('BILL-TYPED', 'B2B_RECEIPT', customer_tin='61101326127')
+        typed.ebarimt_manual_customer_tin = '5317878'
+        self.assertEqual(self._receipt_data(typed.id)['customer_reg_no'], '5317878')
+        # A TIN typed directly: no registry number known, the TIN is printed.
+        typed.ebarimt_manual_customer_tin = '61101326127'
+        self.assertFalse(self._receipt_data(typed.id)['customer_reg_no'])
+        # The customer on the order is not the buyer the bill was issued to.
+        other = self._order_with_bill('BILL-OTHER', 'B2B_RECEIPT', self.company_partner, '61101326127')
+        self.assertFalse(self._receipt_data(other.id)['customer_reg_no'])

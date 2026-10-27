@@ -36,7 +36,8 @@
                     <div t-if="hasEbarimt and ebarimtData.bill_type === 'B2B_RECEIPT' and ebarimtData.customer_tin" class="text-start text-break">
                         Худалдан авагч:
                         <t t-if="ebarimtData.customer_name"><t t-esc="ebarimtData.customer_name"/>,</t>
-                        ТТД <t t-esc="ebarimtData.customer_tin"/>
+                        <t t-if="ebarimtData.customer_reg_no">РД <t t-esc="ebarimtData.customer_reg_no"/></t>
+                        <t t-else="">ТТД <t t-esc="ebarimtData.customer_tin"/></t>
                     </div>
 
                     <div style="border-bottom: 1px dashed #999; margin: 6px 0;"></div>
