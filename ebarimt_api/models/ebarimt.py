@@ -21,17 +21,24 @@ RECEIPT_SECRET_GROUPS = "account.group_account_invoice,point_of_sale.group_pos_m
 
 
 
+# Tailscale gives each device an address in the CGNAT range; traffic between
+# them is WireGuard-encrypted, so plain http to it does not expose the key.
+_TAILNET = ipaddress.ip_network("100.64.0.0/10")
+
+
 def _is_local_host(hostname):
-    """This machine or a private LAN address (10.x, 172.16-31.x, 192.168.x),
-    where a gateway key may travel over plain http. Only IP literals count:
-    a DNS name could resolve anywhere."""
+    """This machine, a private LAN address (10.x, 172.16-31.x, 192.168.x) or
+    a Tailscale address (100.64.0.0/10), where a gateway key may travel over
+    plain http. Only IP literals count: a DNS name could resolve anywhere."""
     if hostname.lower() == "localhost":
         return True
     try:
         address = ipaddress.ip_address(hostname)
     except ValueError:
         return False
-    return address.is_loopback or (address.is_private and not address.is_link_local)
+    return (address.is_loopback
+            or (address.is_private and not address.is_link_local)
+            or address in _TAILNET)
 
 
 def _short_reason():
@@ -131,7 +138,7 @@ class eBarimtPosAPI(models.Model):
         if (parts.scheme != "https" and self.sudo().api_key
                 and not _is_local_host(parts.hostname)):
             raise UserError(_("The PosAPI Service URL must use https when a Gateway API Key is set "
-                              "(plain http is allowed only to localhost or a private LAN address)."))
+                              "(plain http is allowed only to localhost, a private LAN address or a Tailscale address)."))
         return url if url.endswith("/") else url + "/"
 
     def _get_next_send_date(self):
