@@ -1181,6 +1181,7 @@ class PosOrder(models.Model):
             'seller_tin': seller_tin,
             'buyer_tin': receipt.customer_tin if receipt and receipt.bill_type == 'B2B_RECEIPT' else '',
             'buyer_name': self._ebarimt_buyer_name(receipt),
+            'buyer_reg_no': self._ebarimt_buyer_reg_no(receipt),
             'qr': self._ebarimt_qr_base64(receipt.qr_data) if receipt and may_see_lottery else '',
             'lottery': (receipt.lottery or '') if receipt and may_see_lottery else '',
         }
@@ -1191,6 +1192,28 @@ class PosOrder(models.Model):
         
         # Report action буцаах
         return self.env.ref('pos_ebarimt.action_report_pos_ebarimt').report_action(self)
+
+    def _ebarimt_buyer_reg_no(self, receipt):
+        """Registry number of the company a B2B bill was issued to, printed
+        instead of its TIN. PosAPI only keeps the TIN, so it comes from what
+        the cashier typed in the popup, else from the order's customer when
+        that customer is the buyer. Empty when unknown (the TIN is printed)."""
+        self.ensure_one()
+        if not receipt or receipt.bill_type != 'B2B_RECEIPT' or not receipt.customer_tin:
+            return ''
+        manual = re.sub(r"\s", "", self.ebarimt_manual_customer_tin or "")
+        if manual:
+            # The popup's value is what the bill was issued to.
+            return manual if EBARIMT_REG_NO_RE.fullmatch(manual) else ''
+        partner = self.partner_id
+        partner_tin = getattr(partner, 'vat_tin', False)
+        if partner_tin and partner_tin != receipt.customer_tin:
+            return ''
+        for value in (partner.vat, getattr(partner, 'company_registry', False)):
+            value = re.sub(r"\s", "", value or "")
+            if EBARIMT_REG_NO_RE.fullmatch(value):
+                return value
+        return ''
 
     def _ebarimt_buyer_name(self, receipt):
         """Name of the company a B2B bill was issued to, when the order's
@@ -1330,6 +1353,7 @@ class PosOrder(models.Model):
                 'merchant_tin': receipt.merchant_tin or '',
                 'customer_tin': receipt.customer_tin or '',
                 'customer_name': order._ebarimt_buyer_name(receipt),
+                'customer_reg_no': order._ebarimt_buyer_reg_no(receipt),
                 'bill_state': receipt.bill_state or 'done',
                 'order_id': order.id,
                 'order_name': order.name,

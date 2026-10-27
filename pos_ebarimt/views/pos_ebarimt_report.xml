@@ -34,7 +34,8 @@
                             <t t-if="ebarimt['buyer_tin']">
                                 <br/><strong>Худалдан авагч:</strong>
                                 <t t-if="ebarimt['buyer_name']"><t t-esc="ebarimt['buyer_name']"/>,</t>
-                                ТТД: <t t-esc="ebarimt['buyer_tin']"/>
+                                <t t-if="ebarimt['buyer_reg_no']">РД: <t t-esc="ebarimt['buyer_reg_no']"/></t>
+                                <t t-else="">ТТД: <t t-esc="ebarimt['buyer_tin']"/></t>
                             </t>
                         </div>
 
