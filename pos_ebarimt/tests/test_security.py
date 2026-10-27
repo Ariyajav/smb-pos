@@ -130,6 +130,8 @@ class TestEbarimtSecurity(TestPoSCommon):
         self.posapi.write({'service_url': 'http://localhost:7080'})
         self.posapi.write({'service_url': 'http://10.31.0.8:9080'})
         self.posapi.write({'service_url': 'http://192.168.10.25:9010'})
+        # Tailscale (shop PC -> 308 gateway).
+        self.posapi.write({'service_url': 'http://100.99.154.85:9080'})
         with self.assertRaises(UserError):
             self.posapi.write({'service_url': 'http://8.8.8.8:9080'})
         with self.assertRaises(UserError):
