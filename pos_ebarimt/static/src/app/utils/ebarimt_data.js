@@ -19,7 +19,10 @@ export function getEbarimtOrderIdentifier(order) {
  * order.uiState.ebarimtData. Returns the data or null.
  */
 export async function fetchEbarimtData(pos, order) {
-    const identifier = order && getEbarimtOrderIdentifier(order);
+    if (!order || !order.isEbarimtRequired()) {
+        return null;
+    }
+    const identifier = getEbarimtOrderIdentifier(order);
     if (!identifier) {
         return null;
     }
