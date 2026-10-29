@@ -65,7 +65,7 @@ patch(OrderReceipt.prototype, {
             return;
         }
         // Draft orders (bill printing before payment) have no eBarimt yet.
-        if (this.ebarimtState.data || !order.finalized || !this.ebarimtPos) {
+        if (this.ebarimtState.data || !order.finalized || !this.ebarimtPos || !this.ebarimtShown) {
             return;
         }
         await this.loadEbarimtData();
@@ -117,6 +117,12 @@ patch(OrderReceipt.prototype, {
         this.ebarimtState.error = null;
         this.ebarimtState.data = null;
         await this.loadEbarimtData();
+    },
+
+    // Orders that get no bill (see PosOrder.isEbarimtRequired) print without
+    // the eBarimt part.
+    get ebarimtShown() {
+        return this.props.order?.isEbarimtRequired?.() !== false;
     },
 
     get hasEbarimt() {
