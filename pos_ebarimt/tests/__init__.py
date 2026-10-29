@@ -6,3 +6,4 @@ from . import test_no_vat
 from . import test_send_data
 from . import test_district_sync
 from . import test_bill_date
+from . import test_issued_at_shop

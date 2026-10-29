@@ -15,16 +15,17 @@
                     <field name="vat_bill_state" invisible="1"/>
                     <field name="refunded_order_id" invisible="1"/>
                     <field name="ebarimt_state" invisible="1"/>
+                    <field name="ebarimt_issued_at_shop" invisible="1"/>
                     <button name="send_ebarimt"
                             string="Resend eBarimt"
                             type="object"
                             groups="point_of_sale.group_pos_manager,account.group_account_invoice"
-                            invisible="state == 'draft' or refunded_order_id or vat_sent or ebarimt_state == 'sending'"/>
+                            invisible="state == 'draft' or refunded_order_id or vat_sent or ebarimt_state == 'sending' or ebarimt_issued_at_shop"/>
                     <button name="return_ebarimt"
                             string="Return eBarimt"
                             type="object"
                             groups="point_of_sale.group_pos_manager,account.group_account_invoice"
-                            invisible="state == 'draft' or refunded_order_id or vat_bill_state != 'old'"/>
+                            invisible="state == 'draft' or refunded_order_id or vat_bill_state != 'old' or ebarimt_issued_at_shop"/>
                 </xpath>
 
                 <!-- Payments page-ийн дараа eBarimt Bills page нэмэх -->
@@ -39,6 +40,7 @@
                                    decoration-info="ebarimt_state in ('pending', 'sending')"
                                    decoration-warning="ebarimt_state == 'failed'"
                                    decoration-danger="ebarimt_state == 'manual'"/>
+                            <field name="ebarimt_issued_at_shop" invisible="not ebarimt_issued_at_shop"/>
                             <field name="ebarimt_error" invisible="not ebarimt_error"/>
                             <field name="ebarimt_customer_tin"
                                    string="Buyer TIN or registry no."

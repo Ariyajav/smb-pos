@@ -15,7 +15,7 @@ EBARIMT_MAX_ATTEMPTS = 20
 # send a bill twice or never; only the module's own code changes it.
 EBARIMT_PROTECTED_FIELDS = frozenset({
     'vat_sent', 'ebarimt_state', 'ebarimt_error', 'ebarimt_attempts',
-    'ebarimt_next_try', 'ebarimt_return_done',
+    'ebarimt_next_try', 'ebarimt_return_done', 'ebarimt_issued_at_shop',
 })
 EBARIMT_SENDING_STALE_MINUTES = 15
 # Bill types a POS order may ask for. The POS sends its choice with the
@@ -77,6 +77,11 @@ class PosOrder(models.Model):
     ebarimt_next_try = fields.Datetime("eBarimt Next Try", copy=False, readonly=True)
     ebarimt_return_done = fields.Boolean("eBarimt Return Done", copy=False, readonly=True,
                                          help="The original order's bill was already returned or replaced")
+    # Set when the order was copied in from a shop's own Odoo (multi-shop
+    # sync): that shop issued (or will issue) the bill, so this database must
+    # never send, resend or return one for it.
+    ebarimt_issued_at_shop = fields.Boolean("eBarimt Issued at Shop", copy=False, readonly=True, index=True,
+                                            help="The bill belongs to the shop this order was synced from")
 
     def get_district_code_from_api(self):
         """eBarimt API-аас district code татаж авах"""
@@ -204,6 +209,12 @@ class PosOrder(models.Model):
                                     or user.has_group('account.group_account_invoice')):
             raise AccessError(_("Only POS managers and accountants can send or return eBarimt bills by hand."))
 
+    def _ebarimt_check_not_shop_bill(self):
+        """Bills of orders synced from a shop are issued and returned there."""
+        for order in self:
+            if order.ebarimt_issued_at_shop:
+                raise UserError(_("The eBarimt bill of %s was issued at its shop; send or return it there.", order.name))
+
     def _ebarimt_may_see_lottery(self):
         """Lottery numbers and QR codes can be claimed by whoever holds them.
         Cashiers get them only for orders of a session still in progress
@@ -217,6 +228,8 @@ class PosOrder(models.Model):
 
     def _ebarimt_should_queue(self):
         self.ensure_one()
+        if self.ebarimt_issued_at_shop:
+            return False
         config = self.session_id.config_id
         send_ebarimt = config.send_ebarimt if 'send_ebarimt' in config._fields else True
         if not send_ebarimt or self.vat_sent:
@@ -250,6 +263,7 @@ class PosOrder(models.Model):
                 """UPDATE pos_order
                       SET ebarimt_state = 'sending', write_date = (now() at time zone 'UTC')
                     WHERE id = %s AND ebarimt_state IN ('pending', 'failed')
+                      AND ebarimt_issued_at_shop IS NOT TRUE
                 RETURNING id""",
                 (order_id,),
             )
@@ -309,6 +323,8 @@ class PosOrder(models.Model):
             original = self.find_original_order_for_refund(self)
             if not original:
                 return 'manual', _("Refund is not linked to exactly one original order; return its eBarimt bill by hand.")
+            if original.ebarimt_issued_at_shop:
+                return 'manual', _("The bill of %s was issued at its shop; return it there.", original.name)
             if original.ebarimt_state in ('pending', 'sending', 'failed'):
                 return 'failed', _("Original order %s has no eBarimt bill yet; waiting for it.", original.name)
             if not original.vat_sent:
@@ -329,6 +345,7 @@ class PosOrder(models.Model):
         nothing is left, else replace it with a bill for what is left
         (PosAPI voids the bill named in inactiveId and issues the new one)."""
         self.ensure_one()
+        self._ebarimt_check_not_shop_bill()
         current = self.env['vat.receipt'].sudo().search([
             ('pos_order_id', '=', self.id), ('bill_id', '!=', False),
         ], order="create_date desc", limit=1)
@@ -377,6 +394,7 @@ class PosOrder(models.Model):
 
         due = self.search([
             ('ebarimt_state', 'in', ('pending', 'failed')),
+            ('ebarimt_issued_at_shop', '=', False),
             '|', ('ebarimt_next_try', '=', False), ('ebarimt_next_try', '<=', fields.Datetime.now()),
         ], order='id', limit=limit)
         failed_in_a_row = 0
@@ -394,6 +412,7 @@ class PosOrder(models.Model):
         the cron cannot send it at the same time."""
         self.ensure_one()
         self._ebarimt_check_bill_access()
+        self._ebarimt_check_not_shop_bill()
         if not self._ebarimt_sold_lines():
             raise UserError(_("%s is a refund; use Return eBarimt on the original order.", self.name))
         self.env.cr.execute("SELECT id FROM pos_order WHERE id = %s FOR UPDATE", (self.id,))
@@ -1020,6 +1039,7 @@ class PosOrder(models.Model):
         return res
 
     def _ebarimt_return_bill(self):
+        self._ebarimt_check_not_shop_bill()
         order_vat_receipt = self.env['vat.receipt'].search([
             ('pos_order_id', '=', self.id)
         ], order="create_date desc", limit=1)
