@@ -38,6 +38,15 @@ patch(PosOrder.prototype, {
     },
 
     /**
+     * Whether this order gets an eBarimt bill. Other modules return false for
+     * orders that are not sales (e.g. offerings, see pos_offering): no bill
+     * type popup, no PosAPI warning check and no eBarimt part on the receipt.
+     */
+    isEbarimtRequired() {
+        return true;
+    },
+
+    /**
      * eBarimt тохиргоо хадгалах
      */
     setEbarimtConfig(config) {

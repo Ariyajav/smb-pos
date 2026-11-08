@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_offering_day_view_list" model="ir.ui.view">
+        <field name="name">pos.offering.day.list</field>
+        <field name="model">pos.offering.day</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="pos_offering_day_action" model="ir.actions.act_window">
+        <field name="name">Reading Days</field>
+        <field name="res_model">pos.offering.day</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="pos_offering_day_menu"
+              name="Reading Days"
+              parent="point_of_sale.menu_point_config_product"
+              action="pos_offering_day_action"
+              sequence="40"
+              groups="point_of_sale.group_pos_manager"/>
+
+    <record id="product_template_form_view_inherit_pos_offering" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.pos_offering</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="point_of_sale.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="available_in_pos" position="after">
+                <field name="offering_kind" invisible="not available_in_pos"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_pos_pos_form_inherit_pos_offering" model="ir.ui.view">
+        <field name="name">pos.order.form.inherit.pos_offering</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="offering_from" invisible="not offering_from"/>
+                <field name="offering_family_size" invisible="not offering_from"/>
+                <field name="offering_day" invisible="not offering_from"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_pos_order_tree_inherit_pos_offering" model="ir.ui.view">
+        <field name="name">pos.order.list.inherit.pos_offering</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="offering_from" optional="hide"/>
+                <field name="offering_day" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_pos_order_filter_inherit_pos_offering" model="ir.ui.view">
+        <field name="name">pos.order.search.inherit.pos_offering</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="offering_from"/>
+            </field>
+            <xpath expr="//filter[@name='invoiced']" position="before">
+                <filter string="Offerings" name="offerings" domain="[('offering_from', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

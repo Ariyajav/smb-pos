@@ -12,7 +12,7 @@ import { EBARIMT_DEFAULT_CONFIG } from "@pos_ebarimt/app/models/pos_order_patch"
 patch(PaymentScreen.prototype, {
     async validateOrder(isForceValidate) {
         const currentOrder = this.currentOrder;
-        if (!currentOrder) {
+        if (!currentOrder || !currentOrder.isEbarimtRequired()) {
             return await super.validateOrder(...arguments);
         }
 

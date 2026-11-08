@@ -19,7 +19,7 @@
              standard "get your invoice" QR so the receipt has only one. -->
         <xpath expr="//div[hasclass('pos-receipt-qr')]" position="replace"/>
         <xpath expr="//div[hasclass('before-footer')]" position="before">
-            <div class="pos-ebarimt-receipt mongolian-receipt ebarimt-container pt-2">
+            <div t-if="ebarimtShown" class="pos-ebarimt-receipt mongolian-receipt ebarimt-container pt-2">
                 <div class="ebarimt-section" style="border-top: 1px dashed #999; padding-top: 6px;">
                     <!-- Огноо -->
                     <div class="text-start">

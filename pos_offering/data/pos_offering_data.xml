@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Reading days offered at the till; edit them under
+         Point of Sale > Configuration > Reading Days. -->
+    <record id="offering_day_every_day" model="pos.offering.day">
+        <field name="name">Өдөр бүр</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="offering_day_lunar_8" model="pos.offering.day">
+        <field name="name">Шинийн 8</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="offering_day_lunar_15" model="pos.offering.day">
+        <field name="name">Шинийн 15</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="offering_day_lunar_30" model="pos.offering.day">
+        <field name="name">Битүүн (шинийн 30)</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <!-- Carries the order's offering amount. No taxes: offerings are not sales. -->
+    <record id="product_offering_amount" model="product.product">
+        <field name="name">Сүсэг</field>
+        <field name="type">service</field>
+        <field name="list_price">0</field>
+        <field name="taxes_id" eval="[(5, 0, 0)]"/>
+        <field name="supplier_taxes_id" eval="[(5, 0, 0)]"/>
+        <field name="available_in_pos">True</field>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+        <field name="offering_kind">amount</field>
+    </record>
+</odoo>

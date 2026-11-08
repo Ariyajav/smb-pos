@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_offering.OfferingPopup">
+        <Dialog title.translate="Сүсэг" size="'md'">
+            <div class="pos-offering-popup">
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="offering_from">Хэнээс</label>
+                    <input id="offering_from" type="text" class="form-control form-control-lg"
+                           t-model="state.offeringFrom" maxlength="120"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="offering_family_size">Ам бүлийн тоо</label>
+                    <input id="offering_family_size" type="number" min="1" step="1" inputmode="numeric"
+                           class="form-control form-control-lg" t-model="state.familySize"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="offering_day">Айлдах өдөр</label>
+                    <select id="offering_day" class="form-select form-select-lg" t-model="state.day">
+                        <option t-foreach="props.days" t-as="day" t-key="day" t-att-value="day" t-esc="day"/>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label fw-bold" for="offering_amount">Сүсэглэх дүн</label>
+                    <input id="offering_amount" type="text" inputmode="numeric"
+                           class="form-control form-control-lg" t-model="state.amount"/>
+                </div>
+                <div t-if="state.error" class="alert alert-danger mb-0 mt-2" t-esc="state.error"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg lh-lg confirm" t-on-click="onConfirm">Төлбөр рүү</button>
+                <button class="btn btn-secondary btn-lg lh-lg cancel" t-on-click="() => this.props.close()">Цуцлах</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

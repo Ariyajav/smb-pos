@@ -1,0 +1,51 @@
+# Mongolian translation of pos_offering (Odoo 19).
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Language: mn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: pos_offering
+#: model:ir.model.fields,field_description:pos_offering.field_product_product__offering_kind
+#: model:ir.model.fields,field_description:pos_offering.field_product_template__offering_kind
+msgid "Offering"
+msgstr "Сүсэг"
+
+#. module: pos_offering
+#: model:ir.model.fields.selection,name:pos_offering.selection__product_template__offering_kind__reading
+msgid "Reading"
+msgstr "Ном (үнэгүй)"
+
+#. module: pos_offering
+#: model:ir.model.fields.selection,name:pos_offering.selection__product_template__offering_kind__amount
+msgid "Offering amount"
+msgstr "Сүсгийн дүн"
+
+#. module: pos_offering
+#: model:ir.model.fields,field_description:pos_offering.field_pos_order__offering_from
+msgid "Offering From"
+msgstr "Хэнээс"
+
+#. module: pos_offering
+#: model:ir.model.fields,field_description:pos_offering.field_pos_order__offering_family_size
+msgid "Family Members"
+msgstr "Ам бүлийн тоо"
+
+#. module: pos_offering
+#: model:ir.model.fields,field_description:pos_offering.field_pos_offering_day__name
+#: model:ir.model.fields,field_description:pos_offering.field_pos_order__offering_day
+msgid "Reading Day"
+msgstr "Айлдах өдөр"
+
+#. module: pos_offering
+#: model:ir.actions.act_window,name:pos_offering.pos_offering_day_action
+#: model:ir.ui.menu,name:pos_offering.pos_offering_day_menu
+msgid "Reading Days"
+msgstr "Айлдах өдрүүд"
+
+#. module: pos_offering
+#: model_terms:ir.ui.view,arch_db:pos_offering.view_pos_order_filter_inherit_pos_offering
+msgid "Offerings"
+msgstr "Сүсэг"
