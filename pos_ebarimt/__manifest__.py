@@ -15,7 +15,7 @@
     """,
     "author": "egrow",
     "category": "Point of Sale",
-    "version": "19.0.1.9.3",
+    "version": "19.0.1.10.0",
     "license": "LGPL-3",
     "depends": [
         "base",

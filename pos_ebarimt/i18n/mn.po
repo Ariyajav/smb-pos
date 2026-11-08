@@ -1209,3 +1209,25 @@ msgstr "иБаримт"
 #: code:addons/pos_ebarimt/static/src/app/components/navbar/navbar_patch.js:0
 msgid "Could not reach the server. Check the connection and try again."
 msgstr "Сервертэй холбогдож чадсангүй. Холболтоо шалгаад дахин оролдоно уу."
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,field_description:pos_ebarimt.field_pos_order__ebarimt_issued_at_shop
+msgid "eBarimt Issued at Shop"
+msgstr "иБаримтыг дэлгүүр дээр гаргасан"
+
+#. module: pos_ebarimt
+#: model:ir.model.fields,help:pos_ebarimt.field_pos_order__ebarimt_issued_at_shop
+msgid "The bill belongs to the shop this order was synced from"
+msgstr "Энэ баримт захиалгыг илгээсэн дэлгүүрийнх"
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+msgid "The eBarimt bill of %s was issued at its shop; send or return it there."
+msgstr "%s-ийн иБаримтыг дэлгүүр дээр нь гаргасан тул тэнд илгээх эсвэл буцаана уу."
+
+#. module: pos_ebarimt
+#. odoo-python
+#: code:addons/pos_ebarimt/models/pos_order.py:0
+msgid "The bill of %s was issued at its shop; return it there."
+msgstr "%s-ийн баримтыг дэлгүүр дээр нь гаргасан тул тэнд буцаана уу."
