@@ -1,0 +1,44 @@
+# Installs every module on a fresh Odoo 19 database and runs their tests (scripts/odoo-test.sh).
+# Merging to main is deploying: the shop PCs pull main, so this has to be green before a merge.
+name: Odoo tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: odoo-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  odoo-19:
+    # A branch of this repo is tested by its push; the pull_request event only adds PRs from forks.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install the modules and run their tests
+        run: scripts/odoo-test.sh
+        env:
+          ODOO_TEST_LOG: ${{ runner.temp }}/odoo-tests.log
+
+      - name: ebarimt_demo installs on a fresh database
+        if: hashFiles('ebarimt_demo/__manifest__.py') != ''
+        run: scripts/odoo-test.sh --install-only ebarimt_demo
+        env:
+          ODOO_TEST_LOG: ${{ runner.temp }}/odoo-demo.log
+
+      - name: Keep the Odoo logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: odoo-logs
+          path: ${{ runner.temp }}/odoo-*.log
+          if-no-files-found: ignore
+          retention-days: 14
